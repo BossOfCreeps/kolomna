@@ -40,10 +40,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     #
+    "django_bootstrap5",
     #
     "events.apps.EventsConfig",
     "tickets.apps.TicketsConfig",
     "core.apps.CoreConfig",
+    "users.apps.UsersConfig",
 ]
 
 MIDDLEWARE = [
@@ -119,3 +121,7 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_USER_MODEL = "users.CustomUser"
+
+BITRIX_URL = getenv("BITRIX_URL")
