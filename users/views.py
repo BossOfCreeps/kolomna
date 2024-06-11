@@ -1,7 +1,7 @@
 from django.contrib.auth import login
 from django.views.generic import FormView
 
-from users.forms import RegistrationForm
+from users.forms import RegistrationForm, LoginForm
 from users.models import CustomUser
 
 
@@ -17,5 +17,17 @@ class RegistrationView(FormView):
             first_name=form.cleaned_data["first_name"],
             last_name=form.cleaned_data["last_name"],
         )
+        login(self.request, user)
+        return super().form_valid(form)
+
+
+class LoginView(FormView):
+    form_class = LoginForm
+
+    def get_success_url(self):
+        return self.request.GET.get("next", "/")
+
+    def form_valid(self, form):
+        user = CustomUser.objects.get(email=form.cleaned_data["email"])
         login(self.request, user)
         return super().form_valid(form)

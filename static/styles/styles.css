@@ -32,6 +32,22 @@ body {
     margin: 0 100px;
 }
 
+.main-btn {
+    background: #2D1703;
+    color: white;
+    padding: 5px 20px;
+}
+
+.main-btn:hover {
+    border-color: #2D1703;
+}
+
+.second-btn {
+    background: white;
+    border-color: #2D1703;
+    padding: 5px 20px;
+}
+
 @media only screen and (max-width: 600px) {
     .navbar-brand {
         margin: 0

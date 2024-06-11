@@ -6,3 +6,8 @@ class RegistrationForm(forms.Form):
     last_name = forms.CharField(label="Фамилия")
     first_name = forms.CharField(label="Имя")
     password = forms.CharField(label="Пароль", widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}))
+
+
+class LoginForm(forms.Form):
+    email = forms.EmailField(label="Почта")
+    password = forms.CharField(label="Пароль", widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}))
