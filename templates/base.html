@@ -10,37 +10,74 @@
     <script src="{% static 'scripts/fa-all.js' %}"></script>
     <script src="{% static 'scripts/jquery-3.6.0.js' %}"></script>
     <script src="{% static 'scripts/fullcalendar.js' %}"></script>
+    <link href="{% static 'styles/roboto.css' %}" rel="stylesheet">
     <link href="{% static 'styles/styles.css' %}" rel="stylesheet">
     {% block head %}{% endblock %}
 </head>
 <body>
-{% with request.resolver_match.app_name as app_name %}
-    <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="{% static 'images/logo.jpg' %}" alt="Bootstrap" width="50" height="50">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" aria-controls="nav"
-                    data-bs-target="#nav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="nav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link {% if app_name == 'core' %}active{% endif %}" aria-current="page"
-                           href="{% url 'core:index' %}">Главная</a>
-                    </li>
-                </ul>
-                <div class="d-flex" role="search">
-                    <a href="{% url "users:registration" %}" class="text-white">
-                        Регистрация
+<nav class="navbar navbar-expand-lg bg-white">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">КОЛОМНА</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" aria-controls="nav"
+                data-bs-target="#nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="nav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'core:index' %}">О городе</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'core:index' %}">Музеи</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Активности
                     </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'core:index' %}">Активность 1</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'core:index' %}">Активность 2</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'core:index' %}">Кафе</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'core:index' %}">Программы</a>
+                </li>
+            </ul>
+            <div class="d-flex" role="search">
+                <p class="glass"><i class="fa-solid fa-magnifying-glass"></i></p>
+                <button type="button" class="btn auth-btn" data-bs-toggle="modal" data-bs-target="#regModal">
+                    Регистрация
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+<main>
+    <!-- Modal -->
+    <div class="modal fade" id="regModal" tabindex="-1" aria-labelledby="regModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="regModalLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>
-    </nav>
-{% endwith %}
-<main>
+    </div>
     {% block content %}{% endblock %}
 </main>
 </body>
