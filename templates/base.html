@@ -1,0 +1,48 @@
+{% load static %}
+
+<html lang="ru">
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}</title>
+    <link href="{% static 'styles/bootstrap.css' %}" rel="stylesheet">
+    <script src="{% static 'scripts/bootstrap.bundle.js' %}"></script>
+    <link href="{% static 'styles/fa-all.css' %}" rel="stylesheet">
+    <script src="{% static 'scripts/fa-all.js' %}"></script>
+    <script src="{% static 'scripts/jquery-3.6.0.js' %}"></script>
+    <script src="{% static 'scripts/fullcalendar.js' %}"></script>
+    <link href="{% static 'styles/styles.css' %}" rel="stylesheet">
+    {% block head %}{% endblock %}
+</head>
+<body>
+{% with request.resolver_match.app_name as app_name %}
+    <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'images/logo.jpg' %}" alt="Bootstrap" width="50" height="50">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" aria-controls="nav"
+                    data-bs-target="#nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="nav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link {% if app_name == 'core' %}active{% endif %}" aria-current="page"
+                           href="{% url 'core:index' %}">Главная</a>
+                    </li>
+                </ul>
+                <div class="d-flex" role="search">
+                    <p class="text-white">
+                        Войти
+                    </p>
+                </div>
+            </div>
+        </div>
+    </nav>
+{% endwith %}
+<main>
+    {% block content %}{% endblock %}
+</main>
+</body>
+{% block scripts %}{% endblock %}
+</html>
