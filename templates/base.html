@@ -11,6 +11,7 @@
     <script src="{% static 'scripts/jquery-3.6.0.js' %}"></script>
     <script src="{% static 'scripts/fullcalendar.js' %}"></script>
     <link href="{% static 'styles/roboto.css' %}" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Prata' rel='stylesheet'>
     <link href="{% static 'styles/styles.css' %}" rel="stylesheet">
     {% block head %}{% endblock %}
 </head>
@@ -92,6 +93,44 @@
     </div>
     {% block content %}{% endblock %}
 </main>
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 footer-links">
+                <p><a href="#">Музеи</a></p>
+                <p><a href="#">Квесты</a></p>
+                <p><a href="#">Мастер-классы</a></p>
+                <p><a href="#">Все программы</a></p>
+            </div>
+            <div class="col-sm-4 footer-form text-center">
+                <span>Подпишитесь на уведомление новых программ, чтобы быть в курсе одним из первых</span>
+                <form>
+                    <input type="email" class="form-control mt-2" placeholder="Почта">
+                    <input type="submit" class="btn blue-btn mt-2" value="Подписаться">
+                </form>
+            </div>
+            <div class="col-sm-4 footer-contacts">
+                <a href="tel:+78003507908">
+                    <i class="fa-solid fa-phone"></i> 8 800 350 79 08<br>
+                </a>
+
+                <a href="https://wa.me/+79585585158">
+                    <i class="fa-brands fa-whatsapp"></i> 8 958 558 51 58<br>
+                </a>
+
+                <a href="mailto:info@kolomnaposad.ru">
+                    <i class="fa-regular fa-envelope"></i> info@kolomnaposad.ru
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <hr>
+                <a href="#">Пользовательское соглашение</a>
+            </div>
+        </div>
+    </div>
+</footer>
 </body>
 {% block scripts %}{% endblock %}
 </html>

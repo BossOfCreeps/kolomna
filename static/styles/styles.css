@@ -48,8 +48,256 @@ body {
     padding: 5px 20px;
 }
 
+.index-top {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.index-top-block {
+    width: 1920px;
+}
+
+.index-top-block-left {
+    position: absolute;
+    z-index: 2;
+    float: left;
+}
+
+.index-top-block-left div {
+    background-color: #F7EEDE;
+    width: 577px;
+    height: 568px;
+    border-radius: 120px 120px 12px 12px;
+    margin-top: 80px;
+    margin-left: 240px;
+    padding: 120px 50px;
+}
+
+.index-top-block-left div h1 {
+    font-family: 'Prata', serif;
+    font-size: 45px;
+    font-weight: 400;
+    line-height: 56px;
+    letter-spacing: 1px;
+    text-align: left;
+}
+
+.index-top-block-left div p {
+    font-family: Roboto, serif;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 50px;
+}
+
+.index-top-block-left div p a {
+    text-decoration: none;
+}
+
+.index-top-block-right {
+    float: right;
+}
+
+.blue-btn {
+    border: 1px solid #0B91DC;
+    padding: 10px 30px;
+}
+
+.index-top-block-right p {
+    width: 1000px;
+    font-family: Roboto, serif;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 50px;
+    text-align: left;
+}
+
+.event_schedule-card {
+    text-decoration: none;
+}
+
+.event_schedule-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.event_schedule-card p {
+    font-family: Roboto, serif;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 35px;
+}
+
+.in-one-line span:first-of-type {
+    float: left;
+}
+
+.in-one-line span:last-of-type {
+    float: right;
+}
+
+.event_schedule-card span {
+    font-family: Roboto, serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 20px;
+    text-align: left;
+}
+
+.index-subscribe-block {
+    background-color: #F7EEDE;
+    height: 370px;
+}
+
+.index-subscribe-block {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.index-subscribe-block div {
+    width: 1000px;
+}
+
+.index-subscribe-block div div {
+    width: 700px;
+    margin-left: 400px;
+    margin-top: 100px;
+}
+
+.index-subscribe-block div img {
+    float: left;
+}
+
+.index-subscribe-block div div p {
+    font-family: Roboto, serif;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 35px;
+    text-align: center;
+}
+
+.index-subscribe-block input[type=email] {
+    background: #D9D9D9;
+    width: 300px;
+    margin-left: 200px;
+}
+
+.index-subscribe-block input[type=submit] {
+    background: #0B91DC;
+    margin-top: 20px;
+    width: 300px;
+    margin-left: 200px;
+}
+
+.img-fluid {
+    height: 100%;
+    object-fit: cover;
+}
+
+.stars-rate {
+    color: #F0FF49;
+}
+
+footer {
+    background-color: #093D5A;
+    color: white;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+}
+
+footer .container {
+    padding-bottom: 20px;
+}
+
+.footer-links {
+    padding-top: 30px;
+}
+
+.footer-links a {
+    font-family: Roboto, serif;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 1px;
+    text-align: left;
+}
+
+.footer-form {
+    padding-top: 30px;
+}
+
+.footer-form span {
+    font-family: Roboto, serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.footer-form input {
+    background: #D9D9D9;
+}
+
+.footer-contacts {
+    padding-top: 40px;
+    padding-left: 150px;
+}
+
+.footer-contacts a {
+    font-family: Roboto, serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 35px;
+    text-align: left;
+}
+
+.hide-on-desktop {
+    display: none;
+}
+
+
 @media only screen and (max-width: 600px) {
     .navbar-brand {
         margin: 0
+    }
+
+    .hide-on-mobile {
+        display: none;
+    }
+
+    .footer-contacts {
+        padding-top: 40px;
+    }
+
+    .hide-on-desktop {
+        display: block;
+    }
+
+    .index-top img {
+        width: 100%;
+    }
+
+    .index-top div:first-of-type {
+        background-color: #F7EEDE;
+    }
+
+    .index-top div:first-of-type h1 {
+        font-family: Prata, serif;
+        font-size: 26px;
+        font-weight: 400;
+        line-height: 40px;
+        letter-spacing: 1px;
+        text-align: left;
+        margin-top: 20px;
+        margin-left: 20px;
+    }
+
+    .index-top div:last-of-type {
+
     }
 }

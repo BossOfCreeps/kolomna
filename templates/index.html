@@ -1,9 +1,137 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
+    <div class="index-top hide-on-mobile">
+        <div class="index-top-block">
+            <div class="index-top-block-left">
+                <div>
+                    <h1>Музеи и экскурсии в Коломне</h1>
+                    <p class="mt-4">Посети лучшие <a href="#">достопримечательности</a> города</p>
+                    <a class="btn blue-btn mt-4" href="#">Записаться на экскурсию</a>
+                </div>
+            </div>
+            <div class="index-top-block-right">
+                <img src="{% static 'images/index_big.webp' %}" alt="">
+                <p>
+                    Огромное количество экскурсий и квестов ждут вас в удивительном городе Коломна.
+                    Подключайтесь в мир путешествий и истории
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="in-one-line index-top mb-2">
+        <div class="col-6 hide-on-desktop">
+            <h1>Музеи и экскурсии в Коломне</h1>
+        </div>
+        <div class="col-6 hide-on-desktop">
+            <img src="{% static 'images/index_big.webp' %}" alt="">
+        </div>
+    </div>
+
+    <div class="container text-center hide-on-desktop">
+        <a class="btn blue-btn mb-4" href="#">Записаться на экскурсию</a>
+    </div>
+
+    <div class="container">
+        <div class="row mb-5">
+            <h2>Ближайшие события</h2>
+            {% for event_schedule in event_schedules %}
+                {% with event_schedule.event as event %}
+                    <div class="col-sm-4">
+                        <div class="card event_schedule-card">
+                            <img src="{{ event.images.all.0.file.url }}" alt="{{ event.name }}">
+                            <div class="card-body">
+                                <p class="card-text">{{ event.name }}</p>
+                                <div class="in-one-line">
+                                    <span>
+                                        <i class="fa-regular fa-calendar"></i> {{ event_schedule.start_at|date:'d/m в H:i' }}
+                                    </span>
+                                    <span>
+                                        <i class="fa-regular fa-clock"></i> {{ event.duration_as_str }}
+                                    </span>
+                                </div>
+                                <p class="card-text mt-5 text-center">
+                                    <a class="btn" href="#">Подробнее <i class="fa-solid fa-arrow-right"></i></a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endwith %}
+            {% endfor %}
+        </div>
+        <div class="row mb-5">
+            <h2>Музеи</h2>
+            {% for organization in organizations %}
+                <div class="col-sm-3">
+                    <div class="card event_schedule-card">
+                        <img src="{{ organization.file.url }}" alt="{{ organization.name }}">
+                        <div class="card-body">
+                            <p class="card-text">{{ organization.name }}</p>
+                            <span>{{ organization.description }}</span>
+                            <div class="in-one-line mt-3">
+                                    <span>
+                                        <a class="btn btn-primary" href="#">Посетить</a>
+                                    </span>
+                                <span>
+                                        <a class="btn" href="#">Подробнее <i class="fa-solid fa-arrow-right"></i></a>
+                                    </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="index-subscribe-block hide-on-mobile">
+        <div>
+            <img src="{% static 'images/index-subscribe-block.webp' %}" alt="">
+            <div>
+                <p>Подпишитесь на уведомление новых программ, чтобы быть в курсе одним из первых</p>
+                <form>
+                    <input type="email" class="form-control" placeholder="Почта">
+                    <input type="submit" class="btn btn-primary" value="Подписаться">
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="row">
-            <div class="col">
+            <div class="col-sm-6 mb-4">
+                <h2 class="mt-5 mb-3">Кафе</h2>
+
+                {% for cafe in cafes %}
+                    <div class="card mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img src="{{ cafe.file }}" class="img-fluid rounded-start" alt="{{ cafe.name }}">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ cafe.name }}</h5>
+                                    <p class="card-text stars-rate">
+                                        {% with ''|center:cafe.rate as range %}
+                                            {% for _ in range %}
+                                                <i class="fa-solid fa-star"></i>
+                                            {% endfor %}
+                                        {% endwith %}
+                                    </p>
+                                    <p class="card-text">
+                                        <a class="btn" href="#">Подробнее <i class="fa-solid fa-arrow-right"></i></a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="text-center">
+                    <a class="btn blue-btn mt-4" href="#">Смотреть все кафе</a>
+                </div>
+            </div>
+            <div class="col-sm-6 hide-on-mobile">
+                <img src="{% static 'images/index-cafes.webp' %}" alt="" style="width: 100%">
             </div>
         </div>
     </div>

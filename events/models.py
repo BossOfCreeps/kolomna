@@ -5,6 +5,7 @@ from helpers import add_product
 
 class Organization(models.Model):
     name = models.CharField("Название", max_length=1024)
+    description = models.TextField("Описание")
     file = models.ImageField(upload_to="media/organizations", null=True, blank=True)
 
     def __str__(self):
@@ -23,6 +24,10 @@ class Event(models.Model):
     duration = models.PositiveIntegerField("Длительность в минутах")
     max_visitors = models.PositiveIntegerField("Максимальное количество посетителей всего")
 
+    @property
+    def duration_as_str(self):
+        return f"{round(self.duration/60, 1)} часа"
+
     def __str__(self):
         return self.name
 
@@ -38,12 +43,11 @@ class EventImage(models.Model):
 
 class EventSchedule(models.Model):
     event = models.ForeignKey(Event, models.CASCADE, "schedules", verbose_name="Мероприятие")
-    date = models.DateField("Дата мероприятия", blank=True, null=True)
-    start_at = models.DateTimeField("Дата и время начало", blank=True, null=True)
-    end_at = models.DateTimeField("Дата и время конца", blank=True, null=True)
+    start_at = models.DateTimeField("Дата и время начало")
+    end_at = models.DateTimeField("Дата и время конца")
 
     def __str__(self):
-        return f"{self.event.name} старт в {self.start_at.isoformat() if self.start_at else self.date.isoformat()}"
+        return f"{self.event.name} старт в {self.start_at}"
 
 
 class PriceCategory(models.Model):
