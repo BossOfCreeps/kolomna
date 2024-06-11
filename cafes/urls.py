@@ -1,8 +1,9 @@
 from django.urls import path
 
+from cafes.views import CafeListView
 
 app_name = "cafes"
 
 urlpatterns = [
-    path('', EventListView.as_view(), name='event-list'),
+    path('', CafeListView.as_view(), name='cafe-list'),
 ]

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col text-center mt-5 mb-5">
+                <h1>Кафе и рестораны</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {% for cafe in object_list %}
+                    <div class="card mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img src="{{ cafe.file.url }}" class="img-fluid rounded-start" alt="{{ cafe.name }}">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ cafe.name }}</h5>
+                                    <p class="card-text stars-rate">
+                                        {% with ''|center:cafe.rate as range %}
+                                            {% for _ in range %}
+                                                <i class="fa-solid fa-star"></i>
+                                            {% endfor %}
+                                        {% endwith %}
+                                    </p>
+                                    <p class="card-text">
+                                        <a class="btn" href="#">Подробнее <i class="fa-solid fa-arrow-right"></i></a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

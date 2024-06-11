@@ -6,7 +6,6 @@ from events.models import Event, Organization
 
 class OrganizationListView(ListView):
     model = Organization
-    paginate_by = settings.PAGINATE_BY
 
 
 class OrganizationDetailView(DetailView):
