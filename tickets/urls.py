@@ -1,7 +1,10 @@
 from django.urls import path
 
+from tickets.views import BasketView, BuyBasketView
+
 app_name = "tickets"
 
 urlpatterns = [
-    # path('', Home.as_view(), name='home'),
+    path('', BasketView.as_view(), name='basket'),
+    path('buy/', BuyBasketView.as_view(), name='basket-buy'),
 ]

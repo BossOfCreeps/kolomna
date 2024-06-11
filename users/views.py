@@ -1,3 +1,4 @@
+from django.contrib.auth import login
 from django.views.generic import FormView
 
 from users.forms import RegistrationForm
@@ -10,10 +11,11 @@ class RegistrationView(FormView):
     success_url = "/"
 
     def form_valid(self, form):
-        CustomUser.objects.create_user(
+        user = CustomUser.objects.create_user(
             form.cleaned_data["email"],
             form.cleaned_data["password"],
             first_name=form.cleaned_data["first_name"],
             last_name=form.cleaned_data["last_name"],
         )
+        login(self.request, user)
         return super().form_valid(form)

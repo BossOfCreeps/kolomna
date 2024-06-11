@@ -1,5 +1,7 @@
 from django.db import models
 
+from helpers import add_product
+
 
 class Organization(models.Model):
     name = models.CharField("Название", max_length=1024)
@@ -39,6 +41,9 @@ class EventSchedule(models.Model):
     start_at = models.DateTimeField("Дата и время начало", blank=True, null=True)
     end_at = models.DateTimeField("Дата и время конца", blank=True, null=True)
 
+    def __str__(self):
+        return f"{self.event.name} старт в {self.start_at.isoformat() if self.start_at else self.date.isoformat()}"
+
 
 class PriceCategory(models.Model):
     code = models.CharField("Код категории", max_length=32, primary_key=True)
@@ -57,3 +62,16 @@ class EventPrice(models.Model):
     price = models.PositiveIntegerField("Цена")
     category = models.ForeignKey(PriceCategory, models.CASCADE, verbose_name="Категория покупателя")
     max_visitors = models.PositiveIntegerField("Максимальное количество посетителей категории")
+    bitrix_id = models.PositiveIntegerField("ID в Bitrix", blank=True, null=True)
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super().save(force_insert, force_update, using, update_fields)
+        self.bitrix_id = add_product(f'"{self.event.name}" для категории "{self.category.name}"', self.price)
+        super().save(force_insert, force_update, using, update_fields)
+
+    def __str__(self):
+        return f'{self.event.name} для категории  "{self.category.name}"'
+
+    class Meta:
+        verbose_name = "Вариант билета"
+        verbose_name_plural = "Варианты билета"

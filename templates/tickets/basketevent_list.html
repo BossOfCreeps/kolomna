@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                {% for object in object_list %}
+                    {{ object }}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <form class="form" method="post" action="{% url "tickets:basket-buy" %}">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-primary" value="Купить">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
