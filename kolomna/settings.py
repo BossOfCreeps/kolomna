@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     #
     #
     "events.apps.EventsConfig",
+    "tickets.apps.TicketsConfig",
 ]
 
 MIDDLEWARE = [
