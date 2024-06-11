@@ -126,3 +126,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "users.CustomUser"
 
 BITRIX_URL = getenv("BITRIX_URL")
+PAGINATE_BY = int(getenv("PAGINATE_BY", 5))

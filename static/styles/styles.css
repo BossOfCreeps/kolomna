@@ -260,6 +260,22 @@ footer .container {
     display: none;
 }
 
+html, body {
+    height: 100%;
+}
+
+#wrap {
+    min-height: 100%;
+}
+
+main {
+    padding-bottom: 260px;
+}
+
+footer {
+    margin-top: -260px;
+    height: 260px;
+}
 
 @media only screen and (max-width: 600px) {
     .navbar-brand {
@@ -271,7 +287,8 @@ footer .container {
     }
 
     .footer-contacts {
-        padding-top: 40px;
+        padding-top: 20px;
+        padding-left: 10px;
     }
 
     .hide-on-desktop {
@@ -300,4 +317,15 @@ footer .container {
     .index-top div:last-of-type {
 
     }
+
+    main {
+        padding-bottom: 600px;
+    }
+
+    footer {
+        margin-top: -600px;
+        height: 600px;
+    }
+
+
 }

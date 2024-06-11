@@ -16,88 +16,91 @@
     {% block head %}{% endblock %}
 </head>
 <body>
-<nav class="navbar navbar-expand-lg bg-white">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">КОЛОМНА</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" aria-controls="nav"
-                data-bs-target="#nav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="nav">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{% url 'core:index' %}">О городе</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{% url 'core:index' %}">Музеи</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Активности
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="{% url 'core:index' %}">Активность 1</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'core:index' %}">Активность 2</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{% url 'core:index' %}">Кафе</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{% url 'core:index' %}">Программы</a>
-                </li>
-            </ul>
-            <div class="d-flex" role="search">
-                <p class="glass"><i class="fa-solid fa-magnifying-glass"></i></p>
-                <button type="button" class="btn auth-btn" data-bs-toggle="modal" data-bs-target="#regModal">
-                    Войти
-                </button>
-            </div>
-        </div>
-    </div>
-</nav>
-<main>
-    <!-- Modal -->
-    <div class="modal fade" id="regModal" tabindex="-1" aria-labelledby="regModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form action="{% url 'users:login' %}?next={{ request.get_full_path }}" method="post" class="form">
-                    {% csrf_token %}
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="regModalLabel">Авторизация</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">Почта</label>
-                            <input type="email" class="form-control" id="exampleInputEmail1" name="email">
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">Пароль</label>
-                            <input type="password" class="form-control" id="exampleInputPassword1" name="password">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="submit" class="btn main-btn" value="Войти">
-                        <a href="{% url 'users:registration' %}" type="button" class="btn second-btn">
-                            Зарегистрироваться
+<div id="wrap">
+    <nav class="navbar navbar-expand-lg bg-white">
+        <div class="container-fluid">
+            <a class="navbar-brand">КОЛОМНА</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" aria-controls="nav"
+                    data-bs-target="#nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="nav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% url 'core:index' %}">О городе</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% url 'events:organisation-list' %}">Музеи</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Активности
                         </a>
-                    </div>
-                </form>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="#">Активность 1</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">Активность 2</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="#">Кафе</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="#">Программы</a>
+                    </li>
+                </ul>
+                <div class="d-flex" role="search">
+                    <p class="glass"><i class="fa-solid fa-magnifying-glass"></i></p>
+                    <button type="button" class="btn auth-btn" data-bs-toggle="modal" data-bs-target="#regModal">
+                        Войти
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
-    {% block content %}{% endblock %}
-</main>
+    </nav>
+    <main>
+        <!-- Modal -->
+        <div class="modal fade" id="regModal" tabindex="-1" aria-labelledby="regModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="{% url 'users:login' %}?next={{ request.get_full_path }}" method="post" class="form">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="regModalLabel">Авторизация</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Почта</label>
+                                <input type="email" class="form-control" id="exampleInputEmail1" name="email">
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputPassword1" class="form-label">Пароль</label>
+                                <input type="password" class="form-control" id="exampleInputPassword1" name="password">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" class="btn main-btn" value="Войти">
+                            <a href="{% url 'users:registration' %}" type="button" class="btn second-btn">
+                                Зарегистрироваться
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% block content %}{% endblock %}
+    </main>
+</div>
 <footer>
     <div class="container">
         <div class="row">
             <div class="col-sm-4 footer-links">
-                <p><a href="#">Музеи</a></p>
+                <p><a href="{% url "events:organisation-list" %}">Музеи</a></p>
                 <p><a href="#">Квесты</a></p>
                 <p><a href="#">Мастер-классы</a></p>
                 <p><a href="#">Все программы</a></p>

@@ -1,6 +1,11 @@
+from locale import setlocale, LC_TIME
+
 from django.db import models
+from pymorphy3 import MorphAnalyzer
 
 from helpers import add_product
+
+setlocale(LC_TIME, "ru-ru")
 
 
 class Organization(models.Model):
@@ -45,6 +50,11 @@ class EventSchedule(models.Model):
     event = models.ForeignKey(Event, models.CASCADE, "schedules", verbose_name="Мероприятие")
     start_at = models.DateTimeField("Дата и время начало")
     end_at = models.DateTimeField("Дата и время конца")
+
+    @property
+    def start_at_as_str(self):
+        month = MorphAnalyzer().parse(self.start_at.strftime("%B"))[0].inflect({'gent'}).word
+        return self.start_at.strftime(f"%d {month} в %H:%M")
 
     def __str__(self):
         return f"{self.event.name} старт в {self.start_at}"

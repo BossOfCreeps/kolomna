@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from django.conf import settings
+from django.views.generic import ListView
 
-# Create your views here.
+from cafes.models import Cafe
+
+
+class CafeListView(ListView):
+    model = Cafe
+    paginate_by = settings.PAGINATE_BY
