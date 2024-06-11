@@ -35,7 +35,9 @@ class EventImage(models.Model):
 
 class EventSchedule(models.Model):
     event = models.ForeignKey(Event, models.CASCADE, "schedules", verbose_name="Мероприятие")
-    data = models.JSONField()  # TODO: Описать в README
+    date = models.DateField("Дата мероприятия", blank=True, null=True)
+    start_at = models.DateTimeField("Дата и время начало", blank=True, null=True)
+    end_at = models.DateTimeField("Дата и время конца", blank=True, null=True)
 
 
 class PriceCategory(models.Model):
