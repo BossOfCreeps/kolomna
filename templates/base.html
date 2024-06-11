@@ -57,9 +57,22 @@
                 </ul>
                 <div class="d-flex" role="search">
                     <p class="glass"><i class="fa-solid fa-magnifying-glass"></i></p>
-                    <button type="button" class="btn auth-btn" data-bs-toggle="modal" data-bs-target="#regModal">
-                        Войти
-                    </button>
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'tickets:basket' %}" class="glass position-relative">
+                            <i class="fa-solid fa-basket-shopping"></i>
+                            {% with request.user.basket_events.count as count %}
+                                {% if count  > 0 %}
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        {{ count }}
+                                    </span>
+                                {% endif %}
+                            {% endwith %}
+                        </a>
+                    {% else %}
+                        <button type="button" class="btn auth-btn" data-bs-toggle="modal" data-bs-target="#regModal">
+                            Войти
+                        </button>
+                    {% endif %}
                 </div>
             </div>
         </div>

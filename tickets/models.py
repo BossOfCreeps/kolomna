@@ -8,6 +8,7 @@ class BasketEvent(models.Model):
     event_price = models.ForeignKey(EventPrice, models.CASCADE, "basket_events", verbose_name="Цена")
     event_schedule = models.ForeignKey(EventSchedule, models.CASCADE, "basket_events", verbose_name="Расписание")
     user = models.ForeignKey(CustomUser, models.CASCADE, "basket_events", verbose_name="Пользователь")
+    count = models.PositiveIntegerField(default=0, verbose_name="Количество")
 
     def __str__(self):
         return f"{self.event_price} | {self.event_schedule} | {self.user}"

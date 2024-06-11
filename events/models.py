@@ -1,6 +1,6 @@
 from django.db import models
 
-from helpers import add_product
+from helpers import add_product, datetime_to_str, date_to_str
 
 
 class Organization(models.Model):
@@ -60,21 +60,18 @@ class EventSchedule(models.Model):
 
     @property
     def start_at_as_str(self):
-        month_map = {
-            "01": "января",
-            "02": "февраля",
-            "03": "марта",
-            "04": "апреля",
-            "05": "мая",
-            "06": "июня",
-            "07": "июля",
-            "08": "августа",
-            "09": "сентября",
-            "10": "ноября",
-            "11": "октября",
-            "12": "декабря",
-        }
-        return self.start_at.strftime(f"%d {month_map[self.start_at.strftime("%m")]} в %H:%M")
+        return datetime_to_str(self.start_at)
+
+    @property
+    def end_at_as_str(self):
+        return datetime_to_str(self.end_at)
+
+    @property
+    def date_range(self):
+        if self.start_at.date() == self.end_at.date():
+            return f"{date_to_str(self.start_at.date())} {self.start_at.strftime('%H:%M')} - {self.end_at.strftime('%H:%M')}"
+
+        return f"{self.start_at_as_str} - {self.end_at_as_str}"
 
     def __str__(self):
         return f"{self.event.name} старт в {self.start_at}"

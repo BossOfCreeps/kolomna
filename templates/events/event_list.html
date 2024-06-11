@@ -31,7 +31,7 @@
                                value="{{ form_data.duration_lte }}">
                     </div>
                     <div class="col-3">
-                        <label>Доступно</label>
+                        <label>Доступно мест по категориям</label>
                         <input type="number" name="max_visitors_standard" class="form-control mt-1"
                                placeholder="Стандартный" value="{{ form_data.max_visitors_standard }}">
                         <input type="number" name="max_visitors_child" class="form-control mt-1"
@@ -40,6 +40,18 @@
                                placeholder="Студенческий" value="{{ form_data.max_visitors_student }}">
                         <input type="number" name="max_visitors_retiree" class="form-control mt-1"
                                placeholder="Пенсионный" value="{{ form_data.max_visitors_retiree }}">
+                    </div>
+                    <div class="col-3">
+                        <label>Дата мероприятия</label>
+                        <input type="date" name="date" class="form-control mt-1"
+                               value="{{ form_data.date|date:"Y-m-d" }}">
+                    </div>
+                    <div class="col-3">
+                        <label>Диапазон времени</label>
+                        <input type="time" name="time_gte" class="form-control mt-1" placeholder=" мероприятия"
+                               value="{{ form_data.time_gte }}">
+                        <input type="time" name="time_lte" class="form-control mt-1"
+                               value="{{ form_data.time_lte }}">
                     </div>
                     <input type="submit" value="Выбрать" class="btn btn-primary">
                 </form>
@@ -51,16 +63,22 @@
                 {% for event in object_list %}
                     <div class="card mb-3">
                         <div class="row g-0">
-                            <div class="col-md-3">
+                            <div class="col-sm-2">
                                 <img src="{{ event.images.all.0.file.url }}" class="img-fluid" alt="{{ event.name }}">
                             </div>
-                            <div class="col-md-9">
+                            <div class="col-sm-8">
                                 <div class="card-body">
                                     <h2 class="card-title mb-4">{{ event.name }}</h2>
-                                    <i class="fa-solid fa-coins"></i> {{ event.price_range }} руб/чел
+                                    <i class="fa-solid fa-coins"></i> {{ event.price_range }} ₽/чел
                                     <i class="fa-regular fa-clock"></i> {{ event.duration_as_str }}
-                                    <i class="fa-solid fa-people-group"></i> до {{ event.max_visitors }} человек
+                                    <i class="fa-solid fa-people-group"></i> до {{ event.max_visitors }} чел
                                 </div>
+                            </div>
+                            <div class="col-sm-2 text-center vertical-center">
+                                <button class="btn blue-btn" data-bs-toggle="modal" data-bs-target="#eventChoiseModal"
+                                        onclick="setEventId({{ event.pk }})">
+                                    Купить
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -74,10 +92,97 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="eventChoiseModal" tabindex="-1" aria-labelledby="eventChoiseModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form action="{% url 'tickets:event-buy' %}" method="post">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="eventChoiseModalLabel">
+                            Выберите удобное время и количество билетов
+                        </h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="event_id" id="event_id">
+
+                        <h3 class="mb-3">Дата и время</h3>
+                        <div class="mb-3 row">
+                            <div class="col-sm-12" id="schedule">
+                            </div>
+                        </div>
+
+                        <h3 class="mb-3">Категории билетов</h3>
+                        <div class="mb-3 row">
+                            <label for="visitor_standard" class="col-sm-3 col-form-label">Стандартный</label>
+                            <div class="col-sm-9">
+                                <input type="number" id="visitor_standard" name="visitor_standard"
+                                       class="form-control mt-1" value="0">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="visitor_child" class="col-sm-3 col-form-label">Детский</label>
+                            <div class="col-sm-9">
+                                <input type="number" id="visitor_child" name="visitor_child" class="form-control mt-1"
+                                       value="0">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="visitor_student" class="col-sm-3 col-form-label">Студенческий</label>
+                            <div class="col-sm-9">
+                                <input type="number" id="visitor_student" name="visitor_student"
+                                       class="form-control mt-1" value="0">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="visitor_retiree" class="col-sm-3 col-form-label">Пенсионный</label>
+                            <div class="col-sm-9">
+                                <input type="number" id="visitor_retiree" name="visitor_retiree"
+                                       class="form-control mt-1" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn full-blue-btn" value="Добавить">
+                        <input type="submit" class="btn blue-btn" value="Добавить и перейти в корзину">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
 {% endblock %}
 
 {% block scripts %}
     <script>
         $('select').selectpicker();
+    </script>
+    <script>
+        function setEventId(eventId) {
+            document.getElementById("event_id").value = eventId;
+
+            $.ajax({
+                type: "GET",
+                url: "{% url 'events:event_schedule-list' %}?event_id=" + eventId,
+                success: function (data) {
+                    let html = ""
+                    for (let i = 0; i < data.length; i++) {
+                        html += '<div class="form-check mb-2">' +
+                            '<input class="form-check-input" type="radio" required name="schedule" id="schedule' + data[i]["id"] + '" value="' + data[i]["id"] + '">' +
+                            '<label class="form-check-label" for="schedule' + data[i]["id"] + '">' +
+                            data[i]["date_range"] +
+                            '</label>' +
+                            '</div>'
+                    }
+                    document.getElementById("schedule").innerHTML = html;
+                },
+                error: function () {
+                    alert("Произошла ошибка");
+                }
+            });
+        }
     </script>
 {% endblock %}

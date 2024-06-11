@@ -26,6 +26,7 @@ body {
 .glass {
     font-size: 30px;
     margin: 10px 30px;
+    color: #2D1703;
 }
 
 .navbar-brand {
@@ -101,6 +102,11 @@ body {
 .blue-btn {
     border: 1px solid #0B91DC;
     padding: 10px 30px;
+}
+
+.blue-btn:hover {
+    background-color: #C9ECFF;
+    border: 1px solid #0B91DC;
 }
 
 .index-top-block-right p {
@@ -276,14 +282,9 @@ footer {
     height: 260px;
 }
 
-.event-list .card {
-    height: 200px;
-}
-
-
 .event-list .img-fluid {
     width: 100%;
-    height: 200px;
+    height: 140px;
     overflow: hidden;
 }
 
@@ -297,6 +298,23 @@ footer {
 
 .full-blue-btn {
     background: #0B91DC;
+    color: white;
+    padding: 10px 30px;
+}
+
+.full-blue-btn:hover {
+    background-color: #0070B0;
+    color: white;
+}
+
+.vertical-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.badge {
+    font-size: 12px
 }
 
 @media only screen and (max-width: 600px) {
