@@ -185,7 +185,6 @@ body {
 }
 
 .index-subscribe-block input[type=submit] {
-    background: #0B91DC;
     margin-top: 20px;
     width: 300px;
     margin-left: 200px;
@@ -275,6 +274,29 @@ main {
 footer {
     margin-top: -260px;
     height: 260px;
+}
+
+.event-list .card {
+    height: 200px;
+}
+
+
+.event-list .img-fluid {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.event-list svg {
+    padding-left: 40px;
+}
+
+.event-list svg:first-of-type {
+    padding-left: 0;
+}
+
+.full-blue-btn {
+    background: #0B91DC;
 }
 
 @media only screen and (max-width: 600px) {

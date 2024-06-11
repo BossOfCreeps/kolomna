@@ -1,11 +1,6 @@
-from locale import setlocale, LC_TIME
-
 from django.db import models
-from pymorphy3 import MorphAnalyzer
 
 from helpers import add_product
-
-setlocale(LC_TIME, "ru-ru")
 
 
 class Organization(models.Model):
@@ -33,6 +28,18 @@ class Event(models.Model):
     def duration_as_str(self):
         return f"{round(self.duration/60, 1)} часа"
 
+    @property
+    def price_range(self):
+        obj = EventPrice.objects.filter(event=self).order_by("price")
+        if not obj:
+            return "-"
+
+        max_price, min_price = obj.first().price, obj.last().price
+        if max_price == min_price:
+            return f"{max_price}"
+
+        return f"{min_price}-{max_price}"
+
     def __str__(self):
         return self.name
 
@@ -53,39 +60,47 @@ class EventSchedule(models.Model):
 
     @property
     def start_at_as_str(self):
-        month = MorphAnalyzer().parse(self.start_at.strftime("%B"))[0].inflect({'gent'}).word
-        return self.start_at.strftime(f"%d {month} в %H:%M")
+        month_map = {
+            "01": "января",
+            "02": "февраля",
+            "03": "марта",
+            "04": "апреля",
+            "05": "мая",
+            "06": "июня",
+            "07": "июля",
+            "08": "августа",
+            "09": "сентября",
+            "10": "ноября",
+            "11": "октября",
+            "12": "декабря",
+        }
+        return self.start_at.strftime(f"%d {month_map[self.start_at.strftime("%m")]} в %H:%M")
 
     def __str__(self):
         return f"{self.event.name} старт в {self.start_at}"
 
 
-class PriceCategory(models.Model):
-    code = models.CharField("Код категории", max_length=32, primary_key=True)
-    name = models.CharField("Название", max_length=1024)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = "Категория покупателя"
-        verbose_name_plural = "Категория покупателя"
+class EventPriceCategory(models.TextChoices):
+    STANDARD = "STANDARD"
+    CHILD = "CHILD"
+    STUDENT = "STUDENT"
+    RETIREE = "RETIREE"
 
 
 class EventPrice(models.Model):
     event = models.ForeignKey(Event, models.CASCADE, "prices", verbose_name="Мероприятие")
     price = models.PositiveIntegerField("Цена")
-    category = models.ForeignKey(PriceCategory, models.CASCADE, verbose_name="Категория покупателя")
+    category = models.CharField("Категория покупателя", max_length=255, choices=EventPriceCategory.choices)
     max_visitors = models.PositiveIntegerField("Максимальное количество посетителей категории")
     bitrix_id = models.PositiveIntegerField("ID в Bitrix", blank=True, null=True)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         super().save(force_insert, force_update, using, update_fields)
-        self.bitrix_id = add_product(f'"{self.event.name}" для категории "{self.category.name}"', self.price)
+        self.bitrix_id = add_product(f'"{self.event.name}" для категории "{self.category}"', self.price)
         super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
-        return f'{self.event.name} для категории  "{self.category.name}"'
+        return f'{self.event.name} для категории  "{self.category}"'
 
     class Meta:
         verbose_name = "Вариант билета"

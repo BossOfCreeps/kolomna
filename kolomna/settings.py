@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     #
     "django_bootstrap5",
+    "django_filters",
     #
     "events.apps.EventsConfig",
     "tickets.apps.TicketsConfig",

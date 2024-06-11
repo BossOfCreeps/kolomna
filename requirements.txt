@@ -3,5 +3,5 @@ python-dotenv==1.0.1
 pillow==10.3.0
 django-bootstrap5==24.2
 asgiref==3.8.1
-pymorphy3==2.0.1
 fast_bitrix24==1.7.3
+django-filter==24.2
