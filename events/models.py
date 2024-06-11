@@ -5,6 +5,7 @@ from helpers import add_product
 
 class Organization(models.Model):
     name = models.CharField("Название", max_length=1024)
+    file = models.ImageField(upload_to="media/organizations", null=True, blank=True)
 
     def __str__(self):
         return self.name

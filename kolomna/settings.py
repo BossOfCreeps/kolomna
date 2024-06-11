@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "tickets.apps.TicketsConfig",
     "core.apps.CoreConfig",
     "users.apps.UsersConfig",
+    "cafes.apps.CafesConfig",
 ]
 
 MIDDLEWARE = [
