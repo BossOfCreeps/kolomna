@@ -25,10 +25,10 @@ def date_to_str(value: date):
 
 
 category_map = {
-    "STANDARD": "стандартный",
-    "CHILD": "детский",
-    "STUDENT": "студенческий",
-    "RETIREE": "пенсионный",
+    "STANDARD": "станд",
+    "CHILD": "детcк",
+    "STUDENT": "студ",
+    "RETIREE": "пенс",
 }
 
 

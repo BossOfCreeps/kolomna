@@ -333,17 +333,14 @@ footer {
 }
 
 .purchase-background {
-    position: absolute;
-    z-index: -1;
-    width: 50%;
-    margin-left: 50%;
-    height: calc(100% - 260px);
-    background-size: cover
+    background-size: cover;
+    background-position: center center;
+    padding: 10px 0 30px 0;
 }
 
 .purchase-ticket {
     padding: 20px;
-    margin-top: 50px;
+    margin-top: 20px;
     margin-left: calc(50% - 300px);
     width: 600px;
     border-radius: 8px;
@@ -351,9 +348,6 @@ footer {
     background-color: white;
 }
 
-.purchase-ticket .top {
-
-}
 
 .purchase-ticket h2 {
     font-family: Roboto, serif;
@@ -363,24 +357,8 @@ footer {
     text-align: center;
 }
 
-.purchase-ticket .qrcode {
-    width: calc(50% - 5px);
-    display: inline-block;
-    padding: 10px;
-}
-
-.purchase-ticket .qrcode img {
-    width: 100%;
-}
-
-.purchase-ticket .map {
-    width: calc(50% - 5px);
-    display: inline-block;
-    padding: 10px;
-}
-
-.purchase-ticket .map img {
-    width: 100%;
+.purchase-ticket img {
+    width: 300px;
 }
 
 .basket small {
@@ -398,12 +376,28 @@ footer {
     padding-top: 15px;
 }
 
-
 .blue-div {
     border: 1px solid #0B91DC;
     padding: 10px 30px;
     border-radius: 10px;
     display: inline-block;
+}
+
+.purchase-ticket div a {
+    text-decoration: none;
+}
+
+.purchase-ticket p span {
+    font-family: Roboto, serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 20px;
+    text-align: left;
+    color: #848484;
+}
+
+#map {
+    height: 400px;
 }
 
 @media only screen and (max-width: 600px) {

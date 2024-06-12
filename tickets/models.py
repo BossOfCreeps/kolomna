@@ -1,6 +1,6 @@
 from django.db import models
 
-from events.models import EventPrice, EventSchedule, Event, EventPriceCategory
+from events.models import EventPrice, EventSchedule, Event, EventPriceCategory, Organization
 from users.models import CustomUser
 
 
@@ -21,6 +21,10 @@ class BasketEvent(models.Model):
 class Purchase(models.Model):
     user = models.ForeignKey(CustomUser, models.CASCADE, "purchases", verbose_name="Пользователь")
     created_at = models.DateTimeField("Дата и время покупки", auto_now_add=True)
+
+    @property
+    def organizations(self):
+        return Organization.objects.filter(pk__in=self.events.values_list("event__organization", flat=True))
 
     def __str__(self):
         return f"{self.user} | {self.created_at.isoformat()}"

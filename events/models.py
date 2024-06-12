@@ -8,6 +8,8 @@ class Organization(models.Model):
     description = models.TextField("Описание")
     file = models.ImageField(upload_to="media/organizations", null=True, blank=True)
     address = models.TextField("Адрес")
+    latitude = models.FloatField("Широта")
+    longitude = models.FloatField("Долгота")
 
     def __str__(self):
         return self.name
