@@ -1,9 +1,11 @@
 from collections import defaultdict
 
+from django.core.files.base import ContentFile
 from django.db import transaction
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, View, DetailView
+from qrcode.main import make
 
 from events.models import EventPrice
 from tickets.forms import BuyForm
@@ -54,6 +56,10 @@ class BuyBasketView(View):
                     )
                     for obj in qs
                 ]
+            )
+            purchase.qr_code.save(f"{purchase.pk}.jpg", ContentFile(""), save=True)
+            make(f'{self.request.get_host()}{reverse("tickets:purchase-detail", args=[purchase.pk])}').save(
+                purchase.qr_code.path
             )
 
             # TODO: add_deal(

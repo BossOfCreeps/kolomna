@@ -21,6 +21,7 @@ class BasketEvent(models.Model):
 class Purchase(models.Model):
     user = models.ForeignKey(CustomUser, models.CASCADE, "purchases", verbose_name="Пользователь")
     created_at = models.DateTimeField("Дата и время покупки", auto_now_add=True)
+    qr_code = models.ImageField(upload_to="media/purchases/qr_code", verbose_name="QR-код", null=True, blank=True)
 
     @property
     def organizations(self):
