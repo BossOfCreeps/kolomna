@@ -26,15 +26,19 @@
                             {% endfor %}
                         </div>
                         <div class="col-sm-1 text-center">
-                            {% count_price basket_events %} ₽
+                            <p>
+                                {% count_price basket_events %} ₽
+                            </p>
                         </div>
                         <div class="col-sm-1 text-center">
                             <a href="#" hidden>
                                 <i class="fa-solid fa-pen"></i>
                             </a>
-                            <a href="{% url 'tickets:event-delete' event_schedule.id %}">
-                                <i class="fa-solid fa-trash"></i>
-                            </a>
+                            <p>
+                                <a href="{% url 'tickets:event-delete' event_schedule.id %}">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </p>
                         </div>
                     </div>
                 {% endfor %}

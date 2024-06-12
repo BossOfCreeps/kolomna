@@ -328,10 +328,6 @@ footer {
     color: #2D1703;
 }
 
-.basket-buy-block {
-    float: right;
-}
-
 .purchase-background {
     background-size: cover;
     background-position: center center;
@@ -459,4 +455,28 @@ footer {
         margin-bottom: 20px;
     }
 
+    .index-subscribe-block {
+        height: 250px
+    }
+
+    .index-subscribe-block p {
+        padding-top: 10px;
+        font-family: Roboto, serif;
+        font-size: 20px;
+        font-weight: 500;
+        line-height: 30px;
+        text-align: center;
+    }
+
+    .index-subscribe-block input[type=email] {
+        margin-top: 20px;
+        width: 300px;
+        margin-left: 50px;
+    }
+
+    .index-subscribe-block input[type=submit] {
+        margin-top: 20px;
+        width: 300px;
+        margin-left: 50px;
+    }
 }

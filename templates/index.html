@@ -157,6 +157,13 @@
         </div>
     </div>
 
+    <div class="index-subscribe-block hide-on-desktop">
+        <p>Подпишитесь на уведомление новых программ, чтобы быть в курсе одним из первых</p>
+        <form>
+            <input type="email" class="form-control" placeholder="Почта">
+            <input type="submit" class="btn btn-primary full-blue-btn" value="Подписаться">
+        </form>
+    </div>
     <div class="container">
         <div class="row hide-on-mobile">
             <div class="col-sm-6 mb-4">
@@ -197,7 +204,7 @@
         <div class="row hide-on-desktop">
             <div class="col">
                 <h2 class="mt-5 mb-3">Кафе</h2>
-                <div id="carouselCafes" class="carousel carousel-dark slide hide-on-desktop" >
+                <div id="carouselCafes" class="carousel carousel-dark slide hide-on-desktop">
                     <div class="carousel-inner">
                         {% for cafe in cafes %}
                             <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}">
