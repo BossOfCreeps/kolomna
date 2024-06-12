@@ -72,9 +72,30 @@ class EventSchedule(models.Model):
     @property
     def date_range(self):
         if self.start_at.date() == self.end_at.date():
-            return f"{date_to_str(self.start_at.date())} {self.start_at.strftime('%H:%M')} - {self.end_at.strftime('%H:%M')}"
+            return (
+                f"{date_to_str(self.start_at.date())} "
+                f"{self.start_at.strftime('%H:%M')} - {self.end_at.strftime('%H:%M')}"
+            )
 
         return f"{self.start_at_as_str} - {self.end_at_as_str}"
+
+    @property
+    def lefts_visitors(self):
+        result = {}
+        for cat in EventPriceCategory.values:
+            started = EventPrice.objects.filter(category=cat, event=self.event).first()
+            if not started:
+                result[cat] = 0
+                continue
+
+            purchased = self.event.purchase_events.filter(category=cat, start_at=self.start_at, end_at=self.end_at)
+            if not purchased:
+                result[cat] = started.max_visitors
+                continue
+
+            result[cat] = started.max_visitors - purchased.aggregate(models.Sum("count"))["count__sum"]
+
+        return result
 
     def __str__(self):
         return f"{self.event.name} старт в {self.start_at}"
@@ -92,7 +113,6 @@ class EventPrice(models.Model):
     price = models.PositiveIntegerField("Цена")
     category = models.CharField("Категория покупателя", max_length=255, choices=EventPriceCategory.choices)
     max_visitors = models.PositiveIntegerField("Максимальное количество посетителей категории")
-    left_visitors = models.PositiveIntegerField("Осталось мест")
     bitrix_id = models.PositiveIntegerField("ID в Bitrix", blank=True, null=True)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):

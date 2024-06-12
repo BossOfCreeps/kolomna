@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, View
@@ -35,7 +34,6 @@ class EventListView(ListView):
 
 class EventScheduleAPIView(View):
     def get(self, request, *args, **kwargs):
-        # TODO: добавить проверки на остаток
         return JsonResponse(
             [
                 {"id": s.id, "date_range": s.date_range}
@@ -45,3 +43,8 @@ class EventScheduleAPIView(View):
             ],
             safe=False,
         )
+
+
+class EventScheduleLeftsVisitorsView(View):
+    def get(self, request, *args, **kwargs):
+        return JsonResponse(EventSchedule.objects.get(pk=self.request.GET["event_schedule_id"]).lefts_visitors)

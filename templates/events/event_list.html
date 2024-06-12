@@ -86,7 +86,8 @@
                                 </div>
                             </div>
                             <div class="col-sm-2 text-center vertical-center">
-                                <button class="btn blue-btn mb-3" data-bs-toggle="modal" data-bs-target="#eventChoiseModal"
+                                <button class="btn blue-btn mb-3" data-bs-toggle="modal"
+                                        data-bs-target="#eventChoiseModal"
                                         onclick="setEventId({{ event.pk }})">
                                     Купить
                                 </button>
@@ -123,31 +124,35 @@
                         <h3 class="mb-3">Категории билетов</h3>
                         <div class="mb-3 row">
                             <label for="visitor_standard" class="col-sm-3 col-form-label">Стандартный</label>
-                            <div class="col-sm-9">
+                            <div class="col-sm-6">
                                 <input type="number" id="visitor_standard" name="visitor_standard"
                                        class="form-control mt-1" value="0">
                             </div>
+                            <p class="col-sm-3 col-form-label" id="lefts_visitors_standard"></p>
                         </div>
                         <div class="mb-3 row">
                             <label for="visitor_child" class="col-sm-3 col-form-label">Детский</label>
-                            <div class="col-sm-9">
+                            <div class="col-sm-6">
                                 <input type="number" id="visitor_child" name="visitor_child" class="form-control mt-1"
                                        value="0">
                             </div>
+                            <p class="col-sm-3 col-form-label" id="lefts_visitors_child"></p>
                         </div>
                         <div class="mb-3 row">
                             <label for="visitor_student" class="col-sm-3 col-form-label">Студенческий</label>
-                            <div class="col-sm-9">
+                            <div class="col-sm-6">
                                 <input type="number" id="visitor_student" name="visitor_student"
                                        class="form-control mt-1" value="0">
                             </div>
+                            <p class="col-sm-3 col-form-label" id="lefts_visitors_student"></p>
                         </div>
                         <div class="mb-3 row">
                             <label for="visitor_retiree" class="col-sm-3 col-form-label">Пенсионный</label>
-                            <div class="col-sm-9">
+                            <div class="col-sm-6">
                                 <input type="number" id="visitor_retiree" name="visitor_retiree"
                                        class="form-control mt-1" value="0">
                             </div>
+                            <p class="col-sm-3 col-form-label" id="lefts_visitors_retiree"></p>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -170,7 +175,11 @@
     <script>
         function setEventId(eventId) {
             document.getElementById("event_id").value = eventId;
-
+            document.getElementById("lefts_visitors_standard").innerHTML = "";
+            document.getElementById("lefts_visitors_child").innerHTML = "";
+            document.getElementById("lefts_visitors_student").innerHTML = "";
+            document.getElementById("lefts_visitors_retiree").innerHTML = "";
+                
             $.ajax({
                 type: "GET",
                 url: "{% url 'events:event_schedule-list' %}?event_id=" + eventId,
@@ -178,13 +187,29 @@
                     let html = ""
                     for (let i = 0; i < data.length; i++) {
                         html += '<div class="form-check mb-2">' +
-                            '<input class="form-check-input" type="radio" required name="schedule" id="schedule' + data[i]["id"] + '" value="' + data[i]["id"] + '">' +
+                            '<input class="form-check-input" onclick="getLeftVisitors(' + data[i]["id"] + ');" type="radio" required name="schedule" id="schedule' + data[i]["id"] + '" value="' + data[i]["id"] + '">' +
                             '<label class="form-check-label" for="schedule' + data[i]["id"] + '">' +
                             data[i]["date_range"] +
                             '</label>' +
                             '</div>'
                     }
                     document.getElementById("schedule").innerHTML = html;
+                },
+                error: function () {
+                    alert("Произошла ошибка");
+                }
+            });
+        }
+
+        function getLeftVisitors(eventScheduleId) {
+            $.ajax({
+                type: "GET",
+                url: "{% url 'events:event_schedule-left_visitors' %}?event_schedule_id=" + eventScheduleId,
+                success: function (data) {
+                    document.getElementById("lefts_visitors_standard").innerHTML = "Осталось: " + data["STANDARD"];
+                    document.getElementById("lefts_visitors_child").innerHTML = "Осталось: " + data["CHILD"];
+                    document.getElementById("lefts_visitors_student").innerHTML = "Осталось: " + data["STUDENT"];
+                    document.getElementById("lefts_visitors_retiree").innerHTML = "Осталось: " + data["RETIREE"];
                 },
                 error: function () {
                     alert("Произошла ошибка");
