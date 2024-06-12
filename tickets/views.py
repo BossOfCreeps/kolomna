@@ -1,15 +1,13 @@
 from collections import defaultdict
-from datetime import datetime
 
-from django.db.models import QuerySet
+from django.db import transaction
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, View
 
 from events.models import EventPrice
-from helpers import add_deal
 from tickets.forms import BuyForm
-from tickets.models import BasketEvent, EventSchedule, Event
+from tickets.models import BasketEvent, EventSchedule, Purchase, PurchaseEvent
 
 
 class BasketView(TemplateView):
@@ -36,23 +34,41 @@ class BasketView(TemplateView):
 
 class BuyBasketView(View):
     def post(self, request, *args, **kwargs):
-        event_prices = EventPrice.objects.filter(
-            pk__in=self.request.user.basket_events.values_list("event_price", flat=True)
-        )
-        event_schedules = EventSchedule.objects.filter(
-            pk__in=self.request.user.basket_events.values_list("event_schedule", flat=True)
-        )
+        qs = BasketEvent.objects.filter(user=self.request.user)
 
-        # add_deal(
-        #    "Заказ",
-        #    request.user.bitrix_id,
-        #    100,
-        #    datetime(2024, 6, 11),
-        #    datetime(2024, 6, 12),
-        #    event_prices,
-        # )
+        event_prices = EventPrice.objects.filter(pk__in=qs.values_list("event_price", flat=True))
+        event_schedules = EventSchedule.objects.filter(pk__in=qs.values_list("event_schedule", flat=True))
 
-        
+        with transaction.atomic():
+            purchase = Purchase.objects.create(user=request.user)
+            PurchaseEvent.objects.bulk_create(
+                [
+                    PurchaseEvent(
+                        purchase=purchase,
+                        event=obj.event_schedule.event,
+                        count=obj.count,
+                        category=obj.event_price.category,
+                        price=obj.event_price.price,
+                        start_at=obj.event_schedule.start_at,
+                        end_at=obj.event_schedule.end_at,
+                    )
+                    for obj in qs
+                ]
+            )
+
+            # TODO: add_deal(
+            #    "Заказ",
+            #    request.user.bitrix_id,
+            #    100,
+            #    datetime(2024, 6, 11),
+            #    datetime(2024, 6, 12),
+            #    event_prices,
+            # )
+
+            qs.delete()
+
+        return redirect(reverse("tickets:basket"))
+
 
 class EventBuyView(View):
     def post(self, request, *args, **kwargs):
