@@ -37,7 +37,7 @@ class Event(models.Model):
         if not obj:
             return "-"
 
-        max_price, min_price = obj.first().price, obj.last().price
+        max_price, min_price = obj.last().price, obj.first().price
         if max_price == min_price:
             return f"{max_price}"
 

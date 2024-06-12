@@ -11,7 +11,7 @@
         <div class="row mb-5">
             <div class="col">
                 <form class="row g-3">
-                    <div class="col-3">
+                    <div class="col-sm-2">
                         <label>Музей</label>
                         <select class="form-control selectpicker mt-1" multiple data-live-search="true"
                                 name="organization">
@@ -23,15 +23,15 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="col-3">
+                    <div class="col-sm-2">
                         <label>Длительность (в мин.)</label>
                         <input type="number" name="duration_gte" class="form-control mt-1" placeholder="От"
                                value="{{ form_data.duration_gte }}">
                         <input type="number" name="duration_lte" class="form-control mt-1" placeholder="До"
                                value="{{ form_data.duration_lte }}">
                     </div>
-                    <div class="col-3">
-                        <label>Доступно мест по категориям</label>
+                    <div class="col-sm-2">
+                        <label>Доступно мест</label>
                         <input type="number" name="max_visitors_standard" class="form-control mt-1"
                                placeholder="Стандартный" value="{{ form_data.max_visitors_standard }}">
                         <input type="number" name="max_visitors_child" class="form-control mt-1"
@@ -41,19 +41,30 @@
                         <input type="number" name="max_visitors_retiree" class="form-control mt-1"
                                placeholder="Пенсионный" value="{{ form_data.max_visitors_retiree }}">
                     </div>
-                    <div class="col-3">
+                    <div class="col-sm-2">
+                        <label>Цена до</label>
+                        <input type="number" name="max_price_standard" class="form-control mt-1"
+                               placeholder="Стандартный" value="{{ form_data.max_price_standard }}">
+                        <input type="number" name="max_price_child" class="form-control mt-1"
+                               placeholder="Детский" value="{{ form_data.max_price_child }}">
+                        <input type="number" name="max_price_student" class="form-control mt-1"
+                               placeholder="Студенческий" value="{{ form_data.max_price_student }}">
+                        <input type="number" name="max_price_retiree" class="form-control mt-1"
+                               placeholder="Пенсионный" value="{{ form_data.max_price_retiree }}">
+                    </div>
+                    <div class="col-sm-2">
                         <label>Дата мероприятия</label>
                         <input type="date" name="date" class="form-control mt-1"
                                value="{{ form_data.date|date:"Y-m-d" }}">
                     </div>
-                    <div class="col-3">
+                    <div class="col-sm-2">
                         <label>Диапазон времени</label>
-                        <input type="time" name="time_gte" class="form-control mt-1" placeholder=" мероприятия"
-                               value="{{ form_data.time_gte }}">
+                        <input type="time" name="time_gte" class="form-control mt-1"
+                               value="{{ form_data.time_gte|date:"H:i" }}">
                         <input type="time" name="time_lte" class="form-control mt-1"
-                               value="{{ form_data.time_lte }}">
+                               value="{{ form_data.time_lte|date:"H:i" }}">
                     </div>
-                    <input type="submit" value="Выбрать" class="btn btn-primary">
+                    <input type="submit" value="Выбрать" class="btn full-blue-btn">
                 </form>
             </div>
         </div>
@@ -83,12 +94,6 @@
                         </div>
                     </div>
                 {% endfor %}
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col">
-                Пагинация
             </div>
         </div>
     </div>

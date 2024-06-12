@@ -17,7 +17,6 @@ class OrganizationDetailView(DetailView):
 
 class EventListView(ListView):
     model = Event
-    paginate_by = settings.PAGINATE_BY
 
     def get_queryset(self):
         return EventFilter(self.request.GET, Event.objects.all()).qs
