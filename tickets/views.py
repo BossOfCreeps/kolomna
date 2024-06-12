@@ -7,9 +7,9 @@ from django.urls import reverse
 from django.views.generic import TemplateView, View, DetailView
 from qrcode.main import make
 
-from events.models import EventPrice
+from events.models import EventSchedulePrice
 from tickets.forms import BuyForm
-from tickets.models import BasketEvent, EventSchedule, Purchase, PurchaseEvent
+from tickets.models import BasketEvent, EventSchedule, Purchase, PurchaseEvent, EventPriceCategory
 
 
 class BasketView(TemplateView):
@@ -20,8 +20,8 @@ class BasketView(TemplateView):
 
         all_price = 0
         data = defaultdict(lambda: defaultdict(list))
-        for obj in self.request.user.basket_events.order_by("event_schedule__start_at").all():
-            data[obj.event_schedule.start_at.date()][obj.event_schedule].append(obj)
+        for obj in self.request.user.basket_events.order_by("event_price__event_schedule__start_at").all():
+            data[obj.event_price.event_schedule.start_at.date()][obj.event_price.event_schedule].append(obj)
             all_price += obj.count * obj.event_price.price
 
         data_copy = {}
@@ -38,21 +38,18 @@ class BuyBasketView(View):
     def post(self, request, *args, **kwargs):
         qs = BasketEvent.objects.filter(user=self.request.user)
 
-        event_prices = EventPrice.objects.filter(pk__in=qs.values_list("event_price", flat=True))
-        event_schedules = EventSchedule.objects.filter(pk__in=qs.values_list("event_schedule", flat=True))
-
         with transaction.atomic():
             purchase = Purchase.objects.create(user=request.user)
             PurchaseEvent.objects.bulk_create(
                 [
                     PurchaseEvent(
                         purchase=purchase,
-                        event=obj.event_schedule.event,
+                        event=obj.event_price.event_schedule.event,
                         count=obj.count,
                         category=obj.event_price.category,
                         price=obj.event_price.price,
-                        start_at=obj.event_schedule.start_at,
-                        end_at=obj.event_schedule.end_at,
+                        start_at=obj.event_price.event_schedule.start_at,
+                        end_at=obj.event_price.event_schedule.end_at,
                     )
                     for obj in qs
                 ]
@@ -73,26 +70,26 @@ class BuyBasketView(View):
 
             qs.delete()
 
-        return redirect(reverse("tickets:basket"))
+        return redirect(reverse("tickets:purchase-detail", args=[purchase.pk]))
 
 
 class EventBuyView(View):
     def post(self, request, *args, **kwargs):
         form = BuyForm(self.request.POST)
         form.is_valid()
-        event_id = form.cleaned_data["event_id"]
         schedule = form.cleaned_data["schedule"]
 
         BasketEvent.objects.bulk_create(
             [
                 BasketEvent(
-                    event_price=EventPrice.objects.get(event_id=event_id, category=key.split("_")[-1].upper()),
-                    event_schedule_id=schedule,
+                    event_price=EventSchedulePrice.objects.get(
+                        event_schedule=schedule, category=key.split("_")[-1].upper()
+                    ),
                     user=request.user,
-                    count=form.cleaned_data[key],
+                    count=form.cleaned_data[f"visitor_{key.lower()}"],
                 )
-                for key in ["visitor_standard", "visitor_child", "visitor_student", "visitor_retiree"]
-                if key in form.cleaned_data and form.cleaned_data[key] > 0
+                for key in EventPriceCategory.values
+                if form.cleaned_data.get(f"visitor_{key.lower()}")
             ]
         )
 

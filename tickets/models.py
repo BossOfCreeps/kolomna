@@ -1,17 +1,16 @@
 from django.db import models
 
-from events.models import EventPrice, EventSchedule, Event, EventPriceCategory, Organization
+from events.models import EventSchedulePrice, EventSchedule, Event, EventPriceCategory, Organization
 from users.models import CustomUser
 
 
 class BasketEvent(models.Model):
-    event_price = models.ForeignKey(EventPrice, models.CASCADE, "basket_events", verbose_name="Цена")
-    event_schedule = models.ForeignKey(EventSchedule, models.CASCADE, "basket_events", verbose_name="Расписание")
+    event_price = models.ForeignKey(EventSchedulePrice, models.CASCADE, "basket_events", verbose_name="Цена")
     user = models.ForeignKey(CustomUser, models.CASCADE, "basket_events", verbose_name="Пользователь")
     count = models.PositiveIntegerField(default=0, verbose_name="Количество")
 
     def __str__(self):
-        return f"{self.event_price} | {self.event_schedule} | {self.user}"
+        return f"{self.event_price} | {self.user}"
 
     class Meta:
         verbose_name = "Мероприятие в корзине"

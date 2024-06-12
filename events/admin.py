@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from events.models import Event, EventImage, Organization, EventSchedule, EventPrice
+from events.models import Event, EventImage, Organization, EventSchedule, EventSchedulePrice
 
 
 @admin.register(Event)
@@ -8,13 +8,16 @@ class EventAdmin(admin.ModelAdmin):
     class EventImageInline(admin.TabularInline):
         model = EventImage
 
-    class EventScheduleInline(admin.TabularInline):
-        model = EventSchedule
+    inlines = [EventImageInline]
 
-    class EventPriceInline(admin.TabularInline):
-        model = EventPrice
 
-    inlines = [EventImageInline, EventScheduleInline, EventPriceInline]
+@admin.register(EventSchedule)
+class EventScheduleAdmin(admin.ModelAdmin):
+    class EventSchedulePriceInline(admin.TabularInline):
+        model = EventSchedulePrice
+
+    model = EventSchedule
+    inlines = [EventSchedulePriceInline]
 
 
 @admin.register(Organization)

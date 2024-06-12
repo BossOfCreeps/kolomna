@@ -33,7 +33,7 @@ class Event(models.Model):
 
     @property
     def price_range(self):
-        obj = EventPrice.objects.filter(event=self).order_by("price")
+        obj = EventSchedulePrice.objects.filter(event_schedule__event=self).order_by("price")
         if not obj:
             return "-"
 
@@ -83,7 +83,7 @@ class EventSchedule(models.Model):
     def lefts_visitors(self):
         result = {}
         for cat in EventPriceCategory.values:
-            started = EventPrice.objects.filter(category=cat, event=self.event).first()
+            started = self.prices.filter(category=cat).first()
             if not started:
                 result[cat] = 0
                 continue
@@ -100,6 +100,10 @@ class EventSchedule(models.Model):
     def __str__(self):
         return f"{self.event.name} старт в {self.start_at}"
 
+    class Meta:
+        verbose_name = "Расписание мероприятия"
+        verbose_name_plural = "Расписания мероприятий"
+
 
 class EventPriceCategory(models.TextChoices):
     STANDARD = "STANDARD"
@@ -108,8 +112,8 @@ class EventPriceCategory(models.TextChoices):
     RETIREE = "RETIREE"
 
 
-class EventPrice(models.Model):
-    event = models.ForeignKey(Event, models.CASCADE, "prices", verbose_name="Мероприятие")
+class EventSchedulePrice(models.Model):
+    event_schedule = models.ForeignKey(EventSchedule, models.CASCADE, "prices", verbose_name="Время мероприятия")
     price = models.PositiveIntegerField("Цена")
     category = models.CharField("Категория покупателя", max_length=255, choices=EventPriceCategory.choices)
     max_visitors = models.PositiveIntegerField("Максимальное количество посетителей категории")
@@ -118,11 +122,13 @@ class EventPrice(models.Model):
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         super().save(force_insert, force_update, using, update_fields)
         if self.bitrix_id is None:
-            self.bitrix_id = add_product(f'"{self.event.name}" для категории "{self.category}"', self.price)
+            self.bitrix_id = add_product(
+                f'"{self.event_schedule.event.name}" для категории "{self.category}"', self.price
+            )
             super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
-        return f'{self.event.name} для категории  "{self.category}"'
+        return f'{self.event_schedule} для категории  "{self.category}"'
 
     class Meta:
         verbose_name = "Вариант билета"
