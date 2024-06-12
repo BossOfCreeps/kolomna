@@ -7,6 +7,7 @@ class Organization(models.Model):
     name = models.CharField("Название", max_length=1024)
     description = models.TextField("Описание")
     file = models.ImageField(upload_to="media/organizations", null=True, blank=True)
+    address = models.TextField("Адрес")
 
     def __str__(self):
         return self.name
@@ -89,6 +90,7 @@ class EventPrice(models.Model):
     price = models.PositiveIntegerField("Цена")
     category = models.CharField("Категория покупателя", max_length=255, choices=EventPriceCategory.choices)
     max_visitors = models.PositiveIntegerField("Максимальное количество посетителей категории")
+    left_visitors = models.PositiveIntegerField("Осталось мест")
     bitrix_id = models.PositiveIntegerField("ID в Bitrix", blank=True, null=True)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):

@@ -7,7 +7,7 @@
         <form class="form" method="post" action="{% url "tickets:basket-buy" %}">
             {% csrf_token %}
             {% for date, event_schedule_dict in data.items %}
-                <p class="btn blue-btn mt-5">{% date_to_str_tag date %}</p>
+                <p class="blue-div mt-5">{% date_to_str_tag date %}</p>
                 {% for event_schedule, basket_events in event_schedule_dict.items %}
                     <div class="row basket">
                         <div class="col-sm-1 text-center">
@@ -29,10 +29,10 @@
                             {% count_price basket_events %} ₽
                         </div>
                         <div class="col-sm-1 text-center">
-                            <a href="#">
+                            <a href="#" hidden>
                                 <i class="fa-solid fa-pen"></i>
                             </a>
-                            <a href="#">
+                            <a href="{% url 'tickets:event-delete' event_schedule.id %}">
                                 <i class="fa-solid fa-trash"></i>
                             </a>
                         </div>

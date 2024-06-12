@@ -1,5 +1,5 @@
 from django.contrib.auth import login
-from django.views.generic import FormView
+from django.views.generic import FormView, TemplateView
 
 from users.forms import RegistrationForm, LoginForm
 from users.models import CustomUser
@@ -31,3 +31,7 @@ class LoginView(FormView):
         user = CustomUser.objects.get(email=form.cleaned_data["email"])
         login(self.request, user)
         return super().form_valid(form)
+
+
+class ProfileView(TemplateView):
+    template_name = "users/profile.html"

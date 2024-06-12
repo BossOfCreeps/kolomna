@@ -19,7 +19,7 @@ class BasketEvent(models.Model):
 
 
 class Purchase(models.Model):
-    user = models.ForeignKey(CustomUser, models.CASCADE, "purchase_events", verbose_name="Пользователь")
+    user = models.ForeignKey(CustomUser, models.CASCADE, "purchases", verbose_name="Пользователь")
     created_at = models.DateTimeField("Дата и время покупки", auto_now_add=True)
 
     def __str__(self):
@@ -47,3 +47,4 @@ class PurchaseEvent(models.Model):
     class Meta:
         verbose_name = "Купленное мероприятие"
         verbose_name_plural = "Купленное мероприятие"
+        ordering = ["start_at"]

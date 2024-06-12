@@ -3,7 +3,7 @@ from collections import defaultdict
 from django.db import transaction
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import TemplateView, View
+from django.views.generic import TemplateView, View, DetailView
 
 from events.models import EventPrice
 from tickets.forms import BuyForm
@@ -86,7 +86,7 @@ class EventBuyView(View):
                     count=form.cleaned_data[key],
                 )
                 for key in ["visitor_standard", "visitor_child", "visitor_student", "visitor_retiree"]
-                if form.cleaned_data[key] > 0
+                if key in form.cleaned_data and form.cleaned_data[key] > 0
             ]
         )
 
@@ -94,3 +94,27 @@ class EventBuyView(View):
             return redirect(reverse("tickets:basket"))
 
         return redirect(form.cleaned_data["next"])
+
+
+class EventDeleteView(View):
+    def get(self, request, *args, **kwargs):
+        EventSchedule.objects.filter(pk=self.kwargs["pk"]).delete()
+        return redirect(reverse("tickets:basket"))
+
+
+class PurchaseDetailView(DetailView):
+    model = Purchase
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        data = defaultdict(lambda: defaultdict(list))
+        for purchase_event in self.object.events.order_by("start_at").all():
+            data[purchase_event.start_at.date()][purchase_event.start_at].append(purchase_event)
+
+        data_copy = {}
+        for k, v in data.items():
+            data_copy[k] = dict(v)
+
+        context["data"] = data_copy
+        return context

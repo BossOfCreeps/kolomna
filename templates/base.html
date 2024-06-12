@@ -68,6 +68,9 @@
                                 {% endif %}
                             {% endwith %}
                         </a>
+                        <a href="{% url 'users:profile' %}" class="glass position-relative">
+                            <i class="fa-regular fa-user"></i>
+                        </a>
                     {% else %}
                         <button type="button" class="btn auth-btn" data-bs-toggle="modal" data-bs-target="#regModal">
                             Войти

@@ -1,0 +1,1 @@
+`python manage.py dumpdata --exclude admin.logentry --exclude auth.permission --exclude contenttypes.contenttype --exclude sessions.session`

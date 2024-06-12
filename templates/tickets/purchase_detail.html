@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+{% load prettifiers %}
+
+{% block content %}
+    <h1 class="text-center mt-5 mb-3">Заказ от {{ object.created_at }}</h1>
+    <div class="purchase-background" style="background-image: url({% static 'images/ticket-bg.webp' %})"></div>
+
+    <div class="purchase-ticket">
+        <h2>Единый билет</h2>
+        <div class="top">
+
+            <div class="qrcode">
+                <img src="https://s3-alpha-sig.figma.com/img/cd25/f697/a53c99cdf8c3ac3bfc0a23ece4f80d37?Expires=1719187200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=ZURqNCcXISl9ttI5dwi8tKWdW0BhaJY-fhVtNOupKHGFwueKejg19s00--Sbr3qxb~vhpeWZBATUDLI~hriDOKnvLwpiKmSVT1eO3nBEo7r5ZT7pLEq9tsA2SonNzt0Ap4D~~3~tIBdhcnWe8JgCqfSTZ4OLkS6h7Wk-MTsV6XZeR~cp4ncwgBa4CGr80ZFpKgbH8adCkyszMy2-uLlqFvZ3ocZWSv0R2rkfMkVHd1DqfBZ4ALZ9osT2Y8rI30hGKE1zAbDyfoM4iTcBGwrws6ouG1y5qJ9ttbmJHtu8N9lCPiKkDWL00HRqeHBXRK6eL~1CVR0iHZLcbN3sEqgoAw__">
+            </div>
+            <div class="map">
+                <img src="https://s3-alpha-sig.figma.com/img/2847/f1a8/004aa8a591813d9b43b13a09731f381d?Expires=1719187200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=gAndAbetzYJddS99ITPVeBBgNTI97sksKOTcmSj-CuiKwyzIA~J55BImsbWPgc5qN1GG9DxbLW1ehOSo-NEhra1DQEY~D7cNq75DT4xIn08wKfyPD1wZqWG1Ie7l1jgic0vp-dLy308nGyrgcmW8G-ghmz6n4AsSQro7RDFCGRH2rEpHxa9aJ956stYiot6CS~In4GVD2BxFZuT5TQe97WZ05ses3NkWEAQ6dAh3Rec71mYUJpYEFcmQqX6iiyU5BAIDv7yewuPad4Z18XzEEU-c2QzlQyIhLb~cUbrMa92jdL2g3PzGQqYr6elBcJR7XMeCv9v9XUk1HmnI18h-iw__">
+            </div>
+        </div>
+        <p class="text-center mt-3">Вы успешно записаны на экскурсии и мастер-классы:</p>
+    
+
+        {% for date, purchase_event_data in data.items %}
+            <div class="basket">
+                <p class="blue-div mt-3">{% date_to_str_tag date %}</p>
+                {% for _, purchase_events in purchase_event_data.items %}
+                    <div class="row">
+                        <div class="col-sm-2 text-center">
+                            <p>{{ purchase_events.0.start_at|date:"H:i" }}</p>
+                        </div>
+                        <div class="col-sm-5">
+                            <p>{{ purchase_events.0.event.name }}</p>
+                        </div>
+                        <div class="col-sm-3">
+                            {% for purchase_event in purchase_events %}
+                                <small>
+                                    <p>
+                                        {{ purchase_event.count }}
+                                        {% category_to_str_tag purchase_event.category %}
+                                    </p>
+                                </small>
+                            {% endfor %}
+                        </div>
+                        <div class="col-sm-2 text-center">
+                            <p>{{ purchase_events.0.price }} ₽</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+
+    </div>
+
+{% endblock %}
