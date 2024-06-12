@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.utils import timezone
-from django.views.generic import ListView, DetailView, View
+from django.views.generic import ListView, DetailView, View, TemplateView
 
 from events.filters import EventFilter
 from events.models import Event, Organization, EventPriceCategory, EventSchedule
@@ -32,6 +32,10 @@ class EventListView(ListView):
         return context
 
 
+class EventDetailView(DetailView):
+    model = Event
+
+
 class EventScheduleAPIView(View):
     def get(self, request, *args, **kwargs):
         return JsonResponse(
@@ -48,3 +52,12 @@ class EventScheduleAPIView(View):
 class EventScheduleLeftsVisitorsView(View):
     def get(self, request, *args, **kwargs):
         return JsonResponse(EventSchedule.objects.get(pk=self.request.GET["event_schedule_id"]).lefts_visitors)
+
+
+class CalendarView(TemplateView):
+    template_name = "events/calendar.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["event_schedules"] = EventSchedule.objects.all()
+        return context

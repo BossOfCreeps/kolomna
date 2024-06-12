@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-5 mb-5">
+        <div class="row">
+            <div class=col">
+                <div id='calendar'></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let calendarEl = document.getElementById('calendar');
+
+            let calendar = new FullCalendar.Calendar(calendarEl, {
+                buttonText: {
+                    today: "Сегодня",
+                    month: "Месяц",
+                    week: "Неделя",
+                    day: "День"
+                },
+                locale: 'ru-ru',
+                themeSystem: 'bootstrap5',
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: [
+                    {% for event_schedule in event_schedules %}
+                        {
+                            groupId: '{{event_schedule.event.id}}',
+                            title: '{{event_schedule.event.name}}',
+                            start: '{{event_schedule.start_at|date:"c"}}',
+                            end: '{{event_schedule.end_at|date:"c"}}',
+                            url: '{% url 'events:event-detail' event_schedule.event.id %}',
+                            backgroundColor: "red",
+                            borderColor: "blue",
+                            textColor: "gray",
+                        },
+                    {% endfor %}
+                ]
+            }
+            );
+
+            calendar.render();
+        });
+    </script>
+{% endblock %}
