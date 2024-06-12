@@ -126,7 +126,7 @@
                             <label for="visitor_standard" class="col-sm-3 col-form-label">Стандартный</label>
                             <div class="col-sm-6">
                                 <input type="number" id="visitor_standard" name="visitor_standard"
-                                       class="form-control mt-1" value="0">
+                                       class="form-control mt-1" disabled value="0">
                             </div>
                             <p class="col-sm-3 col-form-label" id="lefts_visitors_standard"></p>
                         </div>
@@ -134,7 +134,7 @@
                             <label for="visitor_child" class="col-sm-3 col-form-label">Детский</label>
                             <div class="col-sm-6">
                                 <input type="number" id="visitor_child" name="visitor_child" class="form-control mt-1"
-                                       value="0">
+                                       disabled value="0">
                             </div>
                             <p class="col-sm-3 col-form-label" id="lefts_visitors_child"></p>
                         </div>
@@ -142,7 +142,7 @@
                             <label for="visitor_student" class="col-sm-3 col-form-label">Студенческий</label>
                             <div class="col-sm-6">
                                 <input type="number" id="visitor_student" name="visitor_student"
-                                       class="form-control mt-1" value="0">
+                                       class="form-control mt-1" disabled value="0">
                             </div>
                             <p class="col-sm-3 col-form-label" id="lefts_visitors_student"></p>
                         </div>
@@ -150,7 +150,7 @@
                             <label for="visitor_retiree" class="col-sm-3 col-form-label">Пенсионный</label>
                             <div class="col-sm-6">
                                 <input type="number" id="visitor_retiree" name="visitor_retiree"
-                                       class="form-control mt-1" value="0">
+                                       class="form-control mt-1" disabled value="0">
                             </div>
                             <p class="col-sm-3 col-form-label" id="lefts_visitors_retiree"></p>
                         </div>
@@ -179,7 +179,12 @@
             document.getElementById("lefts_visitors_child").innerHTML = "";
             document.getElementById("lefts_visitors_student").innerHTML = "";
             document.getElementById("lefts_visitors_retiree").innerHTML = "";
-                
+
+            document.getElementById("visitor_standard").disabled = true;
+            document.getElementById("visitor_child").disabled = true;
+            document.getElementById("visitor_student").disabled = true;
+            document.getElementById("visitor_retiree").disabled = true;
+
             $.ajax({
                 type: "GET",
                 url: "{% url 'events:event_schedule-list' %}?event_id=" + eventId,
@@ -206,6 +211,16 @@
                 type: "GET",
                 url: "{% url 'events:event_schedule-left_visitors' %}?event_schedule_id=" + eventScheduleId,
                 success: function (data) {
+                    document.getElementById("visitor_standard").max = data["STANDARD"];
+                    document.getElementById("visitor_child").max = data["CHILD"];
+                    document.getElementById("visitor_student").max = data["STUDENT"];
+                    document.getElementById("visitor_retiree").max = data["RETIREE"];
+
+                    document.getElementById("visitor_standard").disabled = false;
+                    document.getElementById("visitor_child").disabled = false;
+                    document.getElementById("visitor_student").disabled = false;
+                    document.getElementById("visitor_retiree").disabled = false;
+
                     document.getElementById("lefts_visitors_standard").innerHTML = "Осталось: " + data["STANDARD"];
                     document.getElementById("lefts_visitors_child").innerHTML = "Осталось: " + data["CHILD"];
                     document.getElementById("lefts_visitors_student").innerHTML = "Осталось: " + data["STUDENT"];
