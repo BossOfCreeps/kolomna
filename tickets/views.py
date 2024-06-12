@@ -1,17 +1,37 @@
+from collections import defaultdict
 from datetime import datetime
 
+from django.db.models import QuerySet
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import ListView, View
+from django.views.generic import TemplateView, View
 
 from events.models import EventPrice
 from helpers import add_deal
 from tickets.forms import BuyForm
-from tickets.models import BasketEvent, EventSchedule
+from tickets.models import BasketEvent, EventSchedule, Event
 
 
-class BasketView(ListView):
-    model = BasketEvent
+class BasketView(TemplateView):
+    template_name = "tickets/basket.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        all_price = 0
+        data = defaultdict(lambda: defaultdict(list))
+        for obj in self.request.user.basket_events.order_by("event_schedule__start_at").all():
+            data[obj.event_schedule.start_at.date()][obj.event_schedule].append(obj)
+            all_price += obj.count * obj.event_price.price
+
+        data_copy = {}
+        for k, v in data.items():
+            data_copy[k] = dict(v)
+
+        context["data"] = data_copy
+        context["all_price"] = all_price
+
+        return context
 
 
 class BuyBasketView(View):
@@ -23,18 +43,16 @@ class BuyBasketView(View):
             pk__in=self.request.user.basket_events.values_list("event_schedule", flat=True)
         )
 
-        print(event_prices)
-        print(request.POST)
+        # add_deal(
+        #    "Заказ",
+        #    request.user.bitrix_id,
+        #    100,
+        #    datetime(2024, 6, 11),
+        #    datetime(2024, 6, 12),
+        #    event_prices,
+        # )
 
-        add_deal(
-            "Заказ",
-            request.user.bitrix_id,
-            100,
-            datetime(2024, 6, 11),
-            datetime(2024, 6, 12),
-            event_prices,
-        )
-
+        
 
 class EventBuyView(View):
     def post(self, request, *args, **kwargs):
@@ -55,4 +73,8 @@ class EventBuyView(View):
                 if form.cleaned_data[key] > 0
             ]
         )
-        return redirect(reverse("core:index"))  # TODO
+
+        if "next_basket" in request.POST:
+            return redirect(reverse("tickets:basket"))
+
+        return redirect(form.cleaned_data["next"])

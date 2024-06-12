@@ -107,6 +107,7 @@
                     </div>
                     <div class="modal-body">
                         <input type="hidden" name="event_id" id="event_id">
+                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
 
                         <h3 class="mb-3">Дата и время</h3>
                         <div class="mb-3 row">
@@ -146,7 +147,8 @@
                     </div>
                     <div class="modal-footer">
                         <input type="submit" class="btn full-blue-btn" value="Добавить">
-                        <input type="submit" class="btn blue-btn" value="Добавить и перейти в корзину">
+                        <input type="submit" name="next_basket" class="btn blue-btn"
+                               value="Добавить и перейти в корзину">
                     </div>
                 </form>
             </div>

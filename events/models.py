@@ -93,8 +93,9 @@ class EventPrice(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         super().save(force_insert, force_update, using, update_fields)
-        self.bitrix_id = add_product(f'"{self.event.name}" для категории "{self.category}"', self.price)
-        super().save(force_insert, force_update, using, update_fields)
+        if self.bitrix_id is None:
+            self.bitrix_id = add_product(f'"{self.event.name}" для категории "{self.category}"', self.price)
+            super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
         return f'{self.event.name} для категории  "{self.category}"'

@@ -33,5 +33,9 @@ class CustomUser(AbstractUser):
 
     objects = CustomUserManager()
 
+    @property
+    def basket_events_count(self):
+        return sum(self.basket_events.values_list("count", flat=True))
+
     def __str__(self):
         return self.username

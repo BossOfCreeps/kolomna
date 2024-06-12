@@ -8,3 +8,4 @@ class BuyForm(forms.Form):
     visitor_child = forms.IntegerField()
     visitor_student = forms.IntegerField()
     visitor_retiree = forms.IntegerField()
+    next = forms.CharField()

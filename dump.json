@@ -1,0 +1,240 @@
+[
+  {
+    "model": "events.organization",
+    "pk": 1,
+    "fields": {
+      "name": "Музей «Коломенская пастила»",
+      "description": "Музей истории со вкусом — уникальный музей России и мира, музейным  предметом которого является утраченный и возрожденный вкус средневековой...",
+      "file": "media/organizations/3zHKnY86Td.jpg"
+    }
+  },
+  {
+    "model": "events.organization",
+    "pk": 2,
+    "fields": {
+      "name": "Музей-резиденция «Арткоммуналка. Ерофеев и Другие»",
+      "description": "«Арткоммуналка» — музей, рассказывающий о советской Коломне 1960-х годов, доносящий до нас черты коммунального быта, диссидентский дух эпохи хрущевской оттепели.",
+      "file": "media/organizations/BEu9yY1m4J.jpg"
+    }
+  },
+  {
+    "model": "events.organization",
+    "pk": 3,
+    "fields": {
+      "name": "Музей «Калачная»",
+      "description": "Калачная — необычный музей. Он живой. Его музейным предметом является не предмет, а процесс выпекания коломенского калача по старинной методе.",
+      "file": "media/organizations/tPPU1G9ix5.jpg"
+    }
+  },
+  {
+    "model": "events.organization",
+    "pk": 4,
+    "fields": {
+      "name": "Музей-лаборатория «Шёлковая фабрика»",
+      "description": "Музея-лаборатория “Шелковая фабрика” – это современное пространство в историческом корпусе бывшей шелковой фабрики купцов Бабаевых.",
+      "file": "media/organizations/logo-2.jpg"
+    }
+  },
+  {
+    "model": "events.event",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "name": "Выставка",
+      "html_description": "Выставка",
+      "duration": 10,
+      "max_visitors": 10
+    }
+  },
+  {
+    "model": "events.event",
+    "pk": 2,
+    "fields": {
+      "organization": 2,
+      "name": "2d3121",
+      "html_description": "323",
+      "duration": 2312,
+      "max_visitors": 321312
+    }
+  },
+  {
+    "model": "events.eventimage",
+    "pk": 1,
+    "fields": {
+      "event": 2,
+      "file": "media/events/Снимок_экрана_2024-06-10_221530.png"
+    }
+  },
+  {
+    "model": "events.eventimage",
+    "pk": 2,
+    "fields": {
+      "event": 1,
+      "file": "media/events/Снимок_экрана_2024-06-10_195713.png"
+    }
+  },
+  {
+    "model": "events.eventschedule",
+    "pk": 2,
+    "fields": {
+      "event": 2,
+      "start_at": "2024-06-11T08:20:12Z",
+      "end_at": "2024-08-11T08:10:22Z"
+    }
+  },
+  {
+    "model": "events.eventschedule",
+    "pk": 3,
+    "fields": {
+      "event": 2,
+      "start_at": "2024-07-11T08:21:15Z",
+      "end_at": "2024-06-11T08:21:19Z"
+    }
+  },
+  {
+    "model": "events.eventschedule",
+    "pk": 4,
+    "fields": {
+      "event": 1,
+      "start_at": "2024-07-11T12:04:40Z",
+      "end_at": "2025-06-11T12:03:44Z"
+    }
+  },
+  {
+    "model": "events.eventschedule",
+    "pk": 5,
+    "fields": {
+      "event": 1,
+      "start_at": "2024-08-11T12:05:23Z",
+      "end_at": "2024-08-11T12:05:24Z"
+    }
+  },
+  {
+    "model": "events.eventschedule",
+    "pk": 6,
+    "fields": {
+      "event": 2,
+      "start_at": "2024-06-11T23:02:43Z",
+      "end_at": "2024-06-11T23:02:44Z"
+    }
+  },
+  {
+    "model": "events.eventprice",
+    "pk": 1,
+    "fields": {
+      "event": 1,
+      "price": 100,
+      "category": "STANDARD",
+      "max_visitors": 101,
+      "bitrix_id": 213
+    }
+  },
+  {
+    "model": "events.eventprice",
+    "pk": 2,
+    "fields": {
+      "event": 1,
+      "price": 500,
+      "category": "CHILD",
+      "max_visitors": 1000,
+      "bitrix_id": 215
+    }
+  },
+  {
+    "model": "events.eventprice",
+    "pk": 3,
+    "fields": {
+      "event": 2,
+      "price": 1,
+      "category": "STANDARD",
+      "max_visitors": 1,
+      "bitrix_id": 211
+    }
+  },
+  {
+    "model": "tickets.basketevent",
+    "pk": 3,
+    "fields": {
+      "event_price": 1,
+      "event_schedule": 4,
+      "user": 1,
+      "count": 10
+    }
+  },
+  {
+    "model": "tickets.basketevent",
+    "pk": 4,
+    "fields": {
+      "event_price": 3,
+      "event_schedule": 4,
+      "user": 1,
+      "count": 1
+    }
+  },
+  {
+    "model": "tickets.basketevent",
+    "pk": 5,
+    "fields": {
+      "event_price": 1,
+      "event_schedule": 5,
+      "user": 1,
+      "count": 12
+    }
+  },
+  {
+    "model": "tickets.purchase",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "created_at": "2024-06-11T12:36:15.655Z"
+    }
+  },
+  {
+    "model": "tickets.purchaseevent",
+    "pk": 1,
+    "fields": {
+      "purchase": 1,
+      "event": 1,
+      "count": 10,
+      "category": "1",
+      "price": 51,
+      "start_at": "2024-06-11T12:36:13Z",
+      "end_at": "2024-06-11T12:36:14Z"
+    }
+  },
+  {
+    "model": "users.customuser",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$720000$ymNwpnUaiXAAzOHOGnJWnE$E2JyEDZqmuTIGYajuDuMf6S/rfDlTbpYuRB8Cn6eyvM=",
+      "last_login": "2024-06-11T09:51:22.922Z",
+      "is_superuser": true,
+      "username": "admin",
+      "first_name": "",
+      "last_name": "",
+      "email": "admin@x5.ru",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2024-06-11T04:18:57.179Z",
+      "bitrix_id": 15,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "cafes.cafe",
+    "pk": 1,
+    "fields": {
+      "name": "Литературное сafé «Лажечников»",
+      "file": "media/cafes/6AwyjR8G1Z_eHBnSCT.jpg"
+    }
+  },
+  {
+    "model": "cafes.cafe",
+    "pk": 2,
+    "fields": {
+      "name": "Садовое кафе «1890»",
+      "file": "media/cafes/XXXL.webp"
+    }
+  }
+]

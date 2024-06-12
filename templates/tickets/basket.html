@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load prettifiers %}
+
+{% block content %}
+    <div class="container basket">
+        <h1 class="text-center mt-5">Корзина</h1>
+        <form class="form" method="post" action="{% url "tickets:basket-buy" %}">
+            {% csrf_token %}
+            {% for date, event_schedule_dict in data.items %}
+                <p class="btn blue-btn mt-5">{% date_to_str_tag date %}</p>
+                {% for event_schedule, basket_events in event_schedule_dict.items %}
+                    <div class="row basket">
+                        <div class="col-sm-1 text-center">
+                            <p>{{ event_schedule.start_at|date:"H:i" }}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p>{{ event_schedule.event.name }}</p>
+                        </div>
+                        <div class="col-sm-3">
+                            {% for basket_event in basket_events %}
+                                <p>
+                                    {{ basket_event.count }}
+                                    {% category_to_str_tag basket_event.event_price.category %}
+                                    ({{ basket_event.event_price.price }}₽)
+                                </p>
+                            {% endfor %}
+                        </div>
+                        <div class="col-sm-1 text-center">
+                            {% count_price basket_events %} ₽
+                        </div>
+                        <div class="col-sm-1 text-center">
+                            <a href="#">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                            <a href="#">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            <div class="basket-buy-block mt-5">
+                <p>
+                    Итого: {{ all_price }} ₽
+                </p>
+                <p>
+                    <input type="submit" class="btn full-blue-btn" value="Купить">
+                </p>
+
+            </div>
+        </form>
+    </div>
+{% endblock %}

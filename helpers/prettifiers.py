@@ -22,3 +22,15 @@ def datetime_to_str(value: datetime):
 
 def date_to_str(value: date):
     return value.strftime(f"%d {month_map[value.strftime("%m")]}")
+
+
+category_map = {
+    "STANDARD": "стандартный",
+    "CHILD": "детский",
+    "STUDENT": "студенческий",
+    "RETIREE": "пенсионный",
+}
+
+
+def category_to_str(value: str):
+    return category_map[value]
