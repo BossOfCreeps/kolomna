@@ -30,6 +30,7 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractUser):
     bitrix_id = models.PositiveIntegerField("ID в Bitrix", blank=True, null=True)
+    is_tic_employee = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 

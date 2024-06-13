@@ -61,6 +61,13 @@
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="{% url "events:event-list" %}">Программы</a>
                     </li>
+
+                    {% if request.user.is_tic_employee %}
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="{% url 'events:calendar' %}">Календарь</a>
+                        </li>
+                    {% endif %}
+
                 </ul>
                 <div class="d-flex" role="search">
                     <p class="glass"><i class="fa-solid fa-magnifying-glass"></i></p>

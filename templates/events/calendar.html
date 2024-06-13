@@ -16,51 +16,51 @@
     <script>
         $(document).ready(function () {
             $('#calendar').fullCalendar({
-                buttonText: {
-                    today: "Сегодня",
-                    month: "Месяц",
-                    week: "Неделя",
-                    day: "День"
-                },
-                lang: 'ru',
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'multiColAgendaDay,multiColAgendaWeek'
-                },
-                views: {
-                    multiColAgendaDay: {
-                        type: 'multiColAgenda',
-                        duration: {days: 1},
-                        numColumns: 2,
-                        columnHeaders: ['First Column', 'Second Column']
+                    buttonText: {
+                        today: "Сегодня",
+                        month: "Месяц",
+                        week: "Неделя",
+                        day: "День"
                     },
-                    multiColAgendaWeek: {
-                        type: 'multiColAgenda',
-                        duration: {weeks: 1},
-                        numColumns: 2,
-                        columnHeaders: ['First', 'Second']
-                    }
-                },
-                allDaySlot: false,
-                defaultView: 'multiColAgendaDay',
-                defaultDate: '2015-02-12',
-                editable: true,
-                events: [
-                    {
-                        title: 'Meeting 1',
-                        start: '2015-02-12T10:30:00',
-                        end: '2015-02-12T12:30:00',
-                        column: 0
+                    lang: 'ru',
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'multiColAgendaDay,multiColAgendaWeek'
                     },
-                    {
-                        title: 'Meeting 2',
-                        start: '2015-02-12T10:30:00',
-                        end: '2015-02-12T12:30:00',
-                        column: 1
-                    }
-                ]
-            }
+                    views: {
+                        multiColAgendaDay: {
+                            type: 'multiColAgenda',
+                            duration: {days: 1},
+                            numColumns: 2,
+                            columnHeaders: ['First Column', 'Second Column']
+                        },
+                        multiColAgendaWeek: {
+                            type: 'multiColAgenda',
+                            duration: {weeks: 1},
+                            numColumns: 2,
+                            columnHeaders: ['First', 'Second']
+                        }
+                    },
+                    allDaySlot: false,
+                    defaultView: 'multiColAgendaDay',
+                    defaultDate: '2015-02-12',
+                    editable: true,
+                    events: [
+                        {
+                            title: 'Meeting 1',
+                            start: '2015-02-12T10:30:00',
+                            end: '2015-02-12T12:30:00',
+                            column: 0
+                        },
+                        {
+                            title: 'Meeting 2',
+                            start: '2015-02-12T10:30:00',
+                            end: '2015-02-12T12:30:00',
+                            column: 1
+                        }
+                    ]
+                }
             );
         });
     </script>
