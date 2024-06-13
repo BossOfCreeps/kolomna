@@ -74,8 +74,31 @@ class CalendarView(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["organizations"] = Organization.objects.all()
+        context["organizations"] = context["all_organizations"] = Organization.objects.all()
         context["event_schedules"] = EventSchedule.objects.all()
+
+        organizations_ids = self.request.GET.getlist("organization")
+        if organizations_ids:
+            context["organizations"] = Organization.objects.filter(pk__in=organizations_ids)
+            context["event_schedules"] = context["event_schedules"].filter(event__organization_id__in=organizations_ids)
+
+        fullness = self.request.GET.getlist("fullness")
+        if fullness:
+            context["fullness"] = fullness
+
+            ids = []
+            for event_schedule in context["event_schedules"]:
+                f = event_schedule.all_purchased / event_schedule.event.max_visitors * 100
+                if (
+                    ("1" in fullness and f < 25)
+                    or ("2" in fullness and 25 <= f < 50)
+                    or ("3" in fullness and 50 <= f < 75)
+                    or ("4" in fullness and 75 <= f)
+                ):
+                    ids.append(event_schedule.id)
+
+            context["event_schedules"] = context["event_schedules"].filter(id__in=ids)
+
         return context
 
 

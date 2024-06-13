@@ -456,6 +456,18 @@ nav .badge {
     font-size: 12px;
 }
 
+.calendar-filter .input-group-text {
+    width: 150px;
+}
+
+.calendar-filter  .input-group  {
+    height: 46px;
+}
+
+.calendar-filter  button{
+    height: 46px;
+}
+
 @media only screen and (max-width: 600px) {
     .navbar-brand {
         margin: 0

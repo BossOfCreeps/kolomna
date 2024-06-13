@@ -20,7 +20,10 @@
                     {% for _, purchase_events in purchase_event_data.items %}
                         <div class="row">
                             <div class="col-sm-2 text-center">
-                                <p>{{ purchase_events.0.start_at|date:"H:i" }}</p>
+                                <p>
+                                    {{ purchase_events.0.start_at|date:"H:i" }}<br>
+                                    {{ purchase_events.0.end_at|date:"H:i" }}
+                                </p>
                             </div>
                             <div class="col-sm-6">
                                 <p>{{ purchase_events.0.event.name }}</p>

@@ -1,9 +1,7 @@
-import uuid
-
 from django.db import models
 from django.urls import reverse
 
-from helpers import add_product, datetime_to_str, date_to_str
+from helpers import datetime_to_str, date_to_str
 
 
 class Organization(models.Model):
@@ -13,6 +11,10 @@ class Organization(models.Model):
     address = models.TextField("Адрес")
     latitude = models.FloatField("Широта")
     longitude = models.FloatField("Долгота")
+
+    color = models.CharField("Цвет", max_length=64)
+    short_name = models.CharField("Короткое название", max_length=1024)
+    abbreviation = models.CharField("Аббревиатура", max_length=1024)
 
     def __str__(self):
         return self.name
@@ -30,6 +32,8 @@ class Event(models.Model):
     html_description = models.TextField("HTML описание")
     duration = models.PositiveIntegerField("Длительность в минутах")
     max_visitors = models.PositiveIntegerField("Максимальное количество посетителей всего")
+
+    abbreviation = models.CharField("Аббревиатура", max_length=1024)
 
     @property
     def duration_as_str(self):
@@ -88,12 +92,13 @@ class EventSchedule(models.Model):
         return f"{self.start_at_as_str} - {self.end_at_as_str}"
 
     @property
+    def all_purchased(self):
+        data = self.event.purchase_events.filter(start_at=self.start_at, end_at=self.end_at)
+        return data.aggregate(models.Sum("count"))["count__sum"] if data else 0
+
+    @property
     def lefts_visitors_sum(self):
-        result = self.event.max_visitors
-        all_purchased = self.event.purchase_events.filter(start_at=self.start_at, end_at=self.end_at)
-        if all_purchased:
-            result -= all_purchased.aggregate(models.Sum("count"))["count__sum"]
-        return result
+        return self.event.max_visitors - self.all_purchased
 
     @property
     def lefts_visitors_by_cat(self):

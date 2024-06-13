@@ -1,15 +1,52 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col  mt-3 mb-3" style="text-align: right">
-                <a class="btn blue-btn" href="{% url 'events:event-create' %}">Добавить мероприятие</a>
+    <div class="container mt-3">
+        <div class="row mb-5">
+            <div class="col" style="text-align: right">
+                <a class="btn blue-btn" href="{% url 'events:event-create' %}">Новое мероприятие</a>
                 <a class="btn blue-btn" href="{% url 'events:event_schedule-create' %}">Добавить расписание</a>
             </div>
         </div>
+        <form class="form">
+            <div class="row mb-5 calendar-filter">
+                <div class="col-5">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Музеи</span>
+                        <select class="form-control selectpicker" multiple data-live-search="true" name="organization"
+                                data-actions-box="true">
+                            {% for organization in all_organizations %}
+                                <option value="{{ organization.id }}"
+                                        {% if organization in organizations %}selected{% endif %}>
+                                    {{ organization.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Заполненость</span>
+                        <select class="form-control selectpicker" multiple data-live-search="true" name="fullness"
+                                data-actions-box="true">
+                            <option value="1" {% if '1' in fullness %}selected{% endif %}>до 25 %</option>
+                            <option value="2" {% if '2' in fullness %}selected{% endif %}>25-50 %</option>
+                            <option value="3" {% if '3' in fullness %}selected{% endif %}>50-75 %</option>
+                            <option value="4" {% if '4' in fullness %}selected{% endif %}>от 75 %</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <input class="btn full-blue-btn" type="submit" value="Отфильтровать">
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col">
+                <div id='calendar' class="mb-5"></div>
+            </div>
+        </div>
     </div>
-
     <div id="calendar-event-info">
         <button type="button" class="btn-close" aria-label="Close" onclick="closeEventInfo()"></button>
 
@@ -54,7 +91,6 @@
             </div>
         </div>
     </div>
-    <div id='calendar' class="mb-5"></div>
 {% endblock %}
 
 {% block scripts %}
@@ -69,6 +105,7 @@
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
+                firstDay: 1,
                 locale: 'ru-ru',
                 themeSystem: 'bootstrap5',
                 datesAboveResources: true,
@@ -76,23 +113,26 @@
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'resourceTimeGridDay,resourceTimeGridWeek'
+                    right: 'resourceTimeGridDay,timeGridWeek'
                 },
                 views: {resourceTimeGridWeek: {type: 'resourceTimeGrid', duration: {days: 7}, buttonText: 'Неделя'}},
                 initialView: 'resourceTimeGridDay',
                 resources: [
                     {% for organization in organizations %}
-                        {id: '{{ organization.pk }}', title: '{{ organization.name }}'},
+                        {id: '{{ organization.pk }}', title: '{{ organization.short_name  }}'},
                     {% endfor %}
                 ],
                 events: [
                     {% for event_schedule in event_schedules %}
                         {
                             id: '{{ event_schedule.pk  }}',
-                            title: '{{ event_schedule.event.name }}\nОсталось: {{ event_schedule.lefts_visitors_sum }}',
+                            title: '{{ event_schedule.all_purchased }}/{{ event_schedule.event.max_visitors }} | ' +
+                                '{{ event_schedule.event.organization.abbreviation }} | ' +
+                                '{{ event_schedule.event.abbreviation }}',
                             resourceId: '{{ event_schedule.event.organization.pk }}',
                             start: '{{ event_schedule.start_at|date:"c" }}',
                             end: '{{ event_schedule.end_at|date:"c"  }}',
+                            color: '{{ event_schedule.event.organization.color  }}',
                             // extra
                             event_id: {{ event_schedule.event.id  }},
                             event_name: '{{ event_schedule.event.name  }}',
@@ -132,8 +172,8 @@
                     document.getElementById('calendar-event-info-price_student').innerHTML = extendedProps.event_price_student;
                     document.getElementById('calendar-event-info-price_retiree').innerHTML = extendedProps.event_price_retiree;
 
-                    document.getElementById('update_link').href = '/events/event_schedule/'+ info.event.id +'/update'
-                    document.getElementById('delete_link').href = '/events/event_schedule/'+ info.event.id +'/delete'
+                    document.getElementById('update_link').href = '/events/event_schedule/' + info.event.id + '/update'
+                    document.getElementById('delete_link').href = '/events/event_schedule/' + info.event.id + '/delete'
 
                     sleep(100).then(() => {
                         event_block_viewed = true;
