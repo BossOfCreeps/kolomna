@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, View, TemplateView
@@ -34,6 +35,11 @@ class EventListView(ListView):
 
 class EventDetailView(DetailView):
     model = Event
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["other_events"] = Event.objects.filter(~Q(id=self.kwargs["pk"]))
+        return context
 
 
 class EventScheduleAPIView(View):

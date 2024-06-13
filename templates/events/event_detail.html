@@ -16,7 +16,7 @@
 
         <div class="row mt-4">
             <div class="col">
-                <h1>{{ object.name }}</h1>
+                <h1>{{ object.name }} <span class="badge badge-age-limit">{{ object.age_limit }}</span></h1>
             </div>
         </div>
 
@@ -35,12 +35,106 @@
 
         <div class="row mt-5">
             <div class="col">
-                <button class="btn blue-btn mb-3" data-bs-toggle="modal"
-                        data-bs-target="#eventChooseModal"
+                <h3 class="mb-3">Информация</h3>
+                <p>
+                    <i class="fa-regular fa-clock"></i> Продолжительность: {{ event.duration_as_str }}
+                </p>
+                <p>
+                    <i class="fa-solid fa-coins"></i> Цена: {{ event.price_range }} ₽/чел
+                </p>
+                <p>
+                    <i class="fa-solid fa-people-group"></i> Число посетителей: до {{ event.max_visitors }} чел
+                </p>
+                <p>
+                    <i class="fa-solid fa-location-dot"></i> Адрес: {{ event.organization.address }}
+                </p>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col">
+                <div id="map"></div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col">
+                <button class="btn blue-btn mb-3" data-bs-toggle="modal" data-bs-target="#eventChooseModal"
                         onclick="setEventId({{ event.pk }})">
                     Купить
                 </button>
             </div>
         </div>
+
+        <div class="row mt-5 mb-5">
+            <h3 class="mb-3">Посмотреть другие экскурсии</h3>
+            {% for event in other_events %}
+                <div class="col-sm-3 hide-on-mobile">
+                    <div class="card event_schedule-card">
+                        <img src="{{ event.images.all.0.file.url }}" alt="{{ event.name }}">
+                        <div class="card-body">
+                            <p class="card-text">{{ event.name }}</p>
+                            <p class="card-text mt-3 text-center">
+                                <a class="btn" href="{% url 'events:event-detail' event.pk %}">
+                                    Подробнее <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            <div id="carouselEvents" class="carousel carousel-dark slide hide-on-desktop">
+                <div class="carousel-inner">
+                    {% for event in other_events %}
+                        <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}">
+                            <div class="card event_schedule-card">
+                                <img src="{{ event.images.all.0.file.url }}" alt="{{ event.name }}">
+                                <div class="card-body">
+                                    <p class="card-text">{{ event.name }}</p>
+                                    <p class="card-text mt-3 text-center">
+                                        <a class="btn" href="{% url 'events:event-detail' event.pk %}">
+                                            Подробнее <i class="fa-solid fa-arrow-right"></i>
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselEvents"
+                        data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselEvents"
+                        data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        // https://codd-wd.ru/shpargalka-yandeks-karty-yandex-maps-api/
+        ymaps.ready(init);
+
+        function init() {
+            let myMap = new ymaps.Map("map", {
+                center: ["55.093816", "38.768806"],
+                zoom: 13,
+                controls: ['zoomControl', 'rulerControl', 'fullscreenControl']
+            });
+
+            myMap.geoObjects.add(new ymaps.Placemark([
+                    {{event.organization.latitude|stringformat:".10f" }},
+                    {{event.organization.longitude|stringformat:".10f"}}
+                ], {
+                    hintContent: '{{ event.organization.name }}',
+                })
+            );
+        }
+    </script>
 {% endblock %}

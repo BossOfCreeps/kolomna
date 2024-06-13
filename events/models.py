@@ -25,6 +25,7 @@ class Event(models.Model):
     organization = models.ForeignKey(Organization, models.CASCADE, "events", verbose_name="Организация")
 
     name = models.CharField("Название", max_length=1024)
+    age_limit = models.CharField("Возрастной ценз", max_length=1024)
     html_description = models.TextField("HTML описание")
     duration = models.PositiveIntegerField("Длительность в минутах")
     max_visitors = models.PositiveIntegerField("Максимальное количество посетителей всего")
