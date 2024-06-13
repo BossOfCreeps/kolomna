@@ -6,3 +6,5 @@ asgiref==3.8.1
 fast_bitrix24==1.7.3
 django-filter==24.2
 qrcode==7.4.2
+yookassa==3.1.0
+django-sslserver==0.22

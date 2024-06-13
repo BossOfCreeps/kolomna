@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     #
     "django_bootstrap5",
     "django_filters",
+    "sslserver",
     #
     "events.apps.EventsConfig",
     "tickets.apps.TicketsConfig",
@@ -54,7 +55,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    # "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -126,5 +127,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.CustomUser"
 
+#
+
 BITRIX_URL = getenv("BITRIX_URL")
+
+YOOKASSA_ID = getenv("YOOKASSA_ID")
+YOOKASSA_KEY = getenv("YOOKASSA_KEY")
+
+#
+
 PAGINATE_BY = int(getenv("PAGINATE_BY", 5))

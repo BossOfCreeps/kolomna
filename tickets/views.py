@@ -1,15 +1,18 @@
+import json
 from collections import defaultdict
 
 from django.core.files.base import ContentFile
 from django.db import transaction
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, View, DetailView
 from qrcode.main import make
 
 from events.models import EventSchedulePrice
+from helpers import create_yookassa_url
 from tickets.forms import BuyForm
-from tickets.models import BasketEvent, EventSchedule, Purchase, PurchaseEvent, EventPriceCategory
+from tickets.models import BasketEvent, EventSchedule, Purchase, PurchaseEvent, EventPriceCategory, PurchaseStatus
 
 
 class BasketView(TemplateView):
@@ -39,9 +42,12 @@ class BuyBasketView(View):
         qs = BasketEvent.objects.filter(user=self.request.user)
 
         with transaction.atomic():
-            purchase = Purchase.objects.create(user=request.user)
-            PurchaseEvent.objects.bulk_create(
-                [
+            purchase = Purchase.objects.create(user=request.user, total_price=0)
+
+            total_price, objs = 0, []
+            for obj in qs:
+                total_price += obj.count * obj.event_price.price
+                objs.append(
                     PurchaseEvent(
                         purchase=purchase,
                         event=obj.event_price.event_schedule.event,
@@ -51,13 +57,22 @@ class BuyBasketView(View):
                         start_at=obj.event_price.event_schedule.start_at,
                         end_at=obj.event_price.event_schedule.end_at,
                     )
-                    for obj in qs
-                ]
-            )
+                )
+            PurchaseEvent.objects.bulk_create(objs)
+
             purchase.qr_code.save(f"{purchase.pk}.jpg", ContentFile(""), save=True)
             make(f'{self.request.get_host()}{reverse("tickets:purchase-detail", args=[purchase.pk])}').save(
                 purchase.qr_code.path
             )
+
+            purchase.yookassa_url = create_yookassa_url(
+                total_price,
+                purchase.id,
+                request.user,
+                f'{self.request.scheme}://{self.request.get_host()}{reverse("users:profile")}',
+            )
+            purchase.total_price = total_price
+            purchase.save()
 
             # TODO: add_deal(
             #    "Заказ",
@@ -70,7 +85,7 @@ class BuyBasketView(View):
 
             qs.delete()
 
-        return redirect(reverse("tickets:purchase-detail", args=[purchase.pk]))
+        return redirect(purchase.yookassa_url)
 
 
 class EventBuyView(View):
@@ -121,3 +136,19 @@ class PurchaseDetailView(DetailView):
 
         context["data"] = data_copy
         return context
+
+
+class PurchaseApproveView(View):
+    def post(self, request, *args, **kwargs):
+        data = json.loads(self.request.body.decode("utf-8"))
+
+        print(data)
+
+        qs = Purchase.objects.filter(yookassa_url__endswith=data["object"]["id"])
+
+        if data["event"] == "payment.succeeded":
+            qs.update(status=PurchaseStatus.SUCCESS.value)
+        elif data["event"] == "payment.canceled":
+            qs.update(status=PurchaseStatus.CLOSED.value)
+
+        return HttpResponse()

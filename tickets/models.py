@@ -17,10 +17,19 @@ class BasketEvent(models.Model):
         verbose_name_plural = "Мероприятия в корзине"
 
 
+class PurchaseStatus(models.TextChoices):
+    NEW = "NEW"
+    SUCCESS = "SUCCESS"
+    CLOSED = "CLOSED"
+
+
 class Purchase(models.Model):
     user = models.ForeignKey(CustomUser, models.CASCADE, "purchases", verbose_name="Пользователь")
     created_at = models.DateTimeField("Дата и время покупки", auto_now_add=True)
     qr_code = models.ImageField(upload_to="media/purchases/qr_code", verbose_name="QR-код", null=True, blank=True)
+    status = models.CharField("Статус", max_length=255, choices=PurchaseStatus.choices, default=PurchaseStatus.NEW)
+    yookassa_url = models.URLField("Ссылка", null=True, blank=True)
+    total_price = models.PositiveIntegerField("Стоимость")
 
     @property
     def organizations(self):
