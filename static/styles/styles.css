@@ -460,12 +460,19 @@ nav .badge {
     width: 150px;
 }
 
-.calendar-filter  .input-group  {
+.calendar-filter .input-group {
     height: 46px;
 }
 
-.calendar-filter  button{
+.calendar-filter button {
     height: 46px;
+}
+
+.legend {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    border: 1px solid gray;
 }
 
 @media only screen and (max-width: 600px) {

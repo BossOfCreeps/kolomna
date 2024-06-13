@@ -2,48 +2,74 @@
 
 {% block content %}
     <div class="container mt-3">
-        <div class="row mb-5">
-            <div class="col" style="text-align: right">
-                <a class="btn blue-btn" href="{% url 'events:event-create' %}">Новое мероприятие</a>
-                <a class="btn blue-btn" href="{% url 'events:event_schedule-create' %}">Добавить расписание</a>
+        <div class="row mb-1">
+            <div class="col">
+                <p class="btn blue-btn" id="calendar-show_hide-filter" onclick="showHideFilter()">Скрыть фильтр</p>
             </div>
         </div>
-        <form class="form">
-            <div class="row mb-5 calendar-filter">
-                <div class="col-5">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Музеи</span>
-                        <select class="form-control selectpicker" multiple data-live-search="true" name="organization"
-                                data-actions-box="true">
-                            {% for organization in all_organizations %}
-                                <option value="{{ organization.id }}"
-                                        {% if organization in organizations %}selected{% endif %}>
-                                    {{ organization.name }}
-                                </option>
-                            {% endfor %}
-                        </select>
+        <form class="form" id="calendar-form-filter">
+            <div class="row mb-3 calendar-filter">
+                <div class="col-sm-6">
+                    <h3>Организации</h3>
+                    {% for organization in all_organizations %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="{{ organization.id }}"
+                                   id="organization{{ organization.id }}" name="organization"
+                                   {% if organization in organizations %}checked{% endif %}>
+                            <label class="form-check-label" for="organization{{ organization.id }}">
+                                <div class="legend" style="background-color: {{ organization.color }}"></div>
+                                {{ organization.name }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="col-sm-6">
+                    <h3>Заполненность</h3>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="1" id="fullness1" name="fullness"
+                               {% if '1' in fullness %}checked{% endif %}>
+                        <label class="form-check-label" for="fullness1">
+                            до 25 %
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="2" id="fullness1" name="fullness"
+                               {% if '2' in fullness %}checked{% endif %}>
+                        <label class="form-check-label" for="fullness2">
+                            25-50 %
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="3" id="fullness1" name="fullness"
+                               {% if '3' in fullness %}checked{% endif %}>
+                        <label class="form-check-label" for="fullness3">
+                            50-75 %
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="4" id="fullness1" name="fullness"
+                               {% if '4' in fullness %}checked{% endif %}>
+                        <label class="form-check-label" for="fullness4">
+                            от 75 %
+                        </label>
                     </div>
                 </div>
-                <div class="col-5">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Заполненость</span>
-                        <select class="form-control selectpicker" multiple data-live-search="true" name="fullness"
-                                data-actions-box="true">
-                            <option value="1" {% if '1' in fullness %}selected{% endif %}>до 25 %</option>
-                            <option value="2" {% if '2' in fullness %}selected{% endif %}>25-50 %</option>
-                            <option value="3" {% if '3' in fullness %}selected{% endif %}>50-75 %</option>
-                            <option value="4" {% if '4' in fullness %}selected{% endif %}>от 75 %</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-2">
+            </div>
+            <div class="row mb-5 mt-4">
+                <div class="col">
                     <input class="btn full-blue-btn" type="submit" value="Отфильтровать">
                 </div>
             </div>
         </form>
-        <div class="row">
+        <div class="row mb-3" style="text-align: right">
             <div class="col">
-                <div id='calendar' class="mb-5"></div>
+                <a class="btn blue-btn" href="{% url 'events:event-create' %}">Новое мероприятие</a>
+                <a class="btn blue-btn" href="{% url 'events:event_schedule-create' %}">Добавить расписание</a>
+            </div>
+        </div>
+        <div class="row mb-5">
+            <div class="col">
+                <div id='calendar'></div>
             </div>
         </div>
     </div>
@@ -94,6 +120,20 @@
 {% endblock %}
 
 {% block scripts %}
+    <script>
+        let showed = true;
+
+        function showHideFilter() {
+            if (showed) {
+                document.getElementById('calendar-form-filter').style.display = 'none';
+                document.getElementById('calendar-show_hide-filter').innerText = "Показать фильтр"
+            } else {
+                document.getElementById('calendar-form-filter').style.display = 'block';
+                document.getElementById('calendar-show_hide-filter').innerText = "Скрыть фильтр"
+            }
+            showed = !showed;
+        }
+    </script>
     <script>
         let event_block_viewed = false;
 
