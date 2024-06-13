@@ -84,11 +84,16 @@ class EventSchedule(models.Model):
         return f"{self.start_at_as_str} - {self.end_at_as_str}"
 
     @property
-    def lefts_visitors(self):
-        max_lefts_visitors = self.event.max_visitors
+    def lefts_visitors_sum(self):
+        result = self.event.max_visitors
         all_purchased = self.event.purchase_events.filter(start_at=self.start_at, end_at=self.end_at)
         if all_purchased:
-            max_lefts_visitors -= all_purchased.aggregate(models.Sum("count"))["count__sum"]
+            result -= all_purchased.aggregate(models.Sum("count"))["count__sum"]
+        return result
+
+    @property
+    def lefts_visitors_by_cat(self):
+        max_lefts_visitors = self.lefts_visitors_sum
 
         result = {}
         for cat in EventPriceCategory.values:
@@ -108,6 +113,27 @@ class EventSchedule(models.Model):
                 continue
 
             result[cat] = category_lefts_visitors
+
+        return result
+
+    @property
+    def prices_info(self):
+        result = {}
+        for cat in EventPriceCategory.values:
+            event_price = self.prices.filter(category=cat).first()
+            if not event_price:
+                result[f"purchase_{cat.lower()}"] = "-"
+                result[f"price_{cat.lower()}"] = "-"
+                continue
+
+            result[f"price_{cat.lower()}"] = event_price.price
+
+            purchases = self.event.purchase_events.filter(category=cat, start_at=self.start_at, end_at=self.end_at)
+            result[f"purchase_{cat.lower()}"] = (
+                f"{purchases.aggregate(models.Sum("count"))["count__sum"] if purchases else 0}"
+                f"/"
+                f"{event_price.max_visitors}"
+            )
 
         return result
 

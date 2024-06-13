@@ -4,34 +4,38 @@
     <div id="calendar-event-info">
         <button type="button" class="btn-close" aria-label="Close" onclick="closeEventInfo()"></button>
 
-        <h3 id="calendar-event-info-title" class="ms-3 me-3 mt-3 mb-4">
+        <h3 id="calendar-event-info-name" class="ms-3 me-3 mt-3 mb-4">
             Экскурсия в музей истории со вкусом «Коломенская пастила»
         </h3>
         <div class="row ms-1 me-1 mb-3">
             <div class="col">
                 <p class="mb-4">
-                    <i class="fa-regular fa-calendar"></i> 31 мая, 2022
+                    <i class="fa-regular fa-calendar"></i> <span id="calendar-event-info-date"></span>
                 </p>
                 <p class="mb-4">
-                    <i class="fa-solid fa-people-group"></i> 3312 человек
+                    <i class="fa-solid fa-people-group"></i> <span id="calendar-event-info-visitors"></span> ост
                 </p>
                 <p class="mb-4">
-                    <i class="fa-regular fa-clock"></i> 2 часа
+                    <i class="fa-regular fa-clock"></i> <span id="calendar-event-info-duration"></span> часа
                 </p>
             </div>
             <div class="col">
                 <div>
                     <p class="mb-1">
-                        10 стандартных (500 ₽)
+                        <span id="calendar-event-info-purchase_standard"></span> стандартных
+                        (<span id="calendar-event-info-price_standard"></span> ₽)
                     </p>
                     <p class="mb-1">
-                        10 детских (500 ₽)
+                        <span id="calendar-event-info-purchase_child"></span> детских
+                        (<span id="calendar-event-info-price_child"></span> ₽)
                     </p>
                     <p class="mb-1">
-                        10 студенческих (500 ₽)
+                        <span id="calendar-event-info-purchase_student"></span> студенческих
+                        (<span id="calendar-event-info-price_student"></span> ₽)
                     </p>
                     <p class="mb-1">
-                        10 пенсионных (500 ₽)
+                        <span id="calendar-event-info-purchase_retiree"></span> пенсионных
+                        (<span id="calendar-event-info-price_retiree"></span> ₽)
                     </p>
                 </div>
                 <div class="mt-3">
@@ -76,9 +80,19 @@
                     {% for event_schedule in event_schedules %}
                         {
                             id: '{{ event_schedule.pk  }}',
-                            title: '{{ event_schedule.event.name }}\n1',
+                            title: '{{ event_schedule.event.name }}\nОсталось: {{ event_schedule.lefts_visitors_sum }}',
                             resourceId: '{{ event_schedule.event.organization.pk }}',
                             start: '{{ event_schedule.start_at|date:"c" }}',
+                            end: '{{ event_schedule.end_at|date:"c"  }}',
+                            // extra
+                            event_name: '{{ event_schedule.event.name  }}',
+                            event_date: '{{ event_schedule.start_at_as_str  }}',
+                            event_lefts_visitors_sum: {{ event_schedule.lefts_visitors_sum  }},
+                            event_max_visitors: {{ event_schedule.event.max_visitors  }},
+                            event_duration: '{{ event_schedule.event.duration_as_str  }}',
+                            {% for k,v in event_schedule.prices_info.items %}
+                                event_{{ k }}: '{{ v }}',
+                            {% endfor %}
                         },
                     {% endfor %}
                 ],
@@ -92,7 +106,24 @@
                     div.style.top = info.jsEvent.pageY + "px";
                     div.style.left = info.jsEvent.pageX + "px";
 
-                    console.log(info.jsEvent);
+                    const extendedProps = eventObj.extendedProps;
+                    console.log(extendedProps);
+
+                    document.getElementById('calendar-event-info-name').innerHTML = extendedProps.event_name;
+                    document.getElementById('calendar-event-info-date').innerHTML = extendedProps.event_date;
+                    document.getElementById('calendar-event-info-visitors').innerHTML = extendedProps.event_lefts_visitors_sum + "/" + extendedProps.event_max_visitors;
+                    document.getElementById('calendar-event-info-duration').innerHTML = extendedProps.event_duration;
+
+                    document.getElementById('calendar-event-info-purchase_standard').innerHTML = extendedProps.event_purchase_standard;
+                    document.getElementById('calendar-event-info-purchase_child').innerHTML = extendedProps.event_purchase_child;
+                    document.getElementById('calendar-event-info-purchase_student').innerHTML = extendedProps.event_purchase_student;
+                    document.getElementById('calendar-event-info-purchase_retiree').innerHTML = extendedProps.event_purchase_retiree;
+
+                    document.getElementById('calendar-event-info-price_standard').innerHTML = extendedProps.event_price_standard;
+                    document.getElementById('calendar-event-info-price_child').innerHTML = extendedProps.event_price_child;
+                    document.getElementById('calendar-event-info-price_student').innerHTML = extendedProps.event_price_student;
+                    document.getElementById('calendar-event-info-price_retiree').innerHTML = extendedProps.event_price_retiree;
+
 
                     sleep(100).then(() => {
                         event_block_viewed = true;

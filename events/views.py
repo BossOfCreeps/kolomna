@@ -57,7 +57,7 @@ class EventScheduleAPIView(View):
 
 class EventScheduleLeftsVisitorsView(View):
     def get(self, request, *args, **kwargs):
-        return JsonResponse(EventSchedule.objects.get(pk=self.request.GET["event_schedule_id"]).lefts_visitors)
+        return JsonResponse(EventSchedule.objects.get(pk=self.request.GET["event_schedule_id"]).lefts_visitors_by_cat)
 
 
 class CalendarView(TemplateView):
