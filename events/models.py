@@ -84,6 +84,11 @@ class EventSchedule(models.Model):
 
     @property
     def lefts_visitors(self):
+        max_lefts_visitors = self.event.max_visitors
+        all_purchased = self.event.purchase_events.filter(start_at=self.start_at, end_at=self.end_at)
+        if all_purchased:
+            max_lefts_visitors -= all_purchased.aggregate(models.Sum("count"))["count__sum"]
+
         result = {}
         for cat in EventPriceCategory.values:
             started = self.prices.filter(category=cat).first()
@@ -96,7 +101,12 @@ class EventSchedule(models.Model):
                 result[cat] = started.max_visitors
                 continue
 
-            result[cat] = started.max_visitors - purchased.aggregate(models.Sum("count"))["count__sum"]
+            category_lefts_visitors = started.max_visitors - purchased.aggregate(models.Sum("count"))["count__sum"]
+            if category_lefts_visitors > max_lefts_visitors:
+                result[cat] = max_lefts_visitors
+                continue
+
+            result[cat] = category_lefts_visitors
 
         return result
 

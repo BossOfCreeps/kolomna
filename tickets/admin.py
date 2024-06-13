@@ -14,3 +14,8 @@ class PurchaseAdmin(admin.ModelAdmin):
         model = PurchaseEvent
 
     inlines = [PurchaseEventInline]
+
+
+@admin.register(PurchaseEvent)
+class PurchaseEventAdmin(admin.ModelAdmin):
+    pass

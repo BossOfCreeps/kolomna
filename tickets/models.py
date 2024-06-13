@@ -46,7 +46,7 @@ class PurchaseEvent(models.Model):
     end_at = models.DateTimeField("Дата и время конца")
 
     def __str__(self):
-        return f"{self.event} | {self.purchase} | {self.category}"
+        return f"{self.event} | {self.start_at} | {self.category}"
 
     class Meta:
         verbose_name = "Купленное мероприятие"
