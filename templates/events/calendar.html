@@ -1,6 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col  mt-3 mb-3" style="text-align: right">
+                <a class="btn blue-btn" href="{% url 'events:event-create' %}">Добавить мероприятие</a>
+                <a class="btn blue-btn" href="{% url 'events:event_schedule-create' %}">Добавить расписание</a>
+            </div>
+        </div>
+    </div>
+
     <div id="calendar-event-info">
         <button type="button" class="btn-close" aria-label="Close" onclick="closeEventInfo()"></button>
 
@@ -39,13 +48,13 @@
                     </p>
                 </div>
                 <div class="mt-3">
-                    <a href="#"><i class="fa-solid fa-pen me-3"></i></a>
-                    <a href="#"><i class="fa-solid fa-trash me-3"></i></a>
+                    <a href="#" id="update_link"><i class="fa-solid fa-pen me-3"></i></a>
+                    <a href="#" id="delete_link"><i class="fa-solid fa-trash me-3"></i></a>
                 </div>
             </div>
         </div>
     </div>
-    <div id='calendar'></div>
+    <div id='calendar' class="mb-5"></div>
 {% endblock %}
 
 {% block scripts %}
@@ -85,6 +94,7 @@
                             start: '{{ event_schedule.start_at|date:"c" }}',
                             end: '{{ event_schedule.end_at|date:"c"  }}',
                             // extra
+                            event_id: {{ event_schedule.event.id  }},
                             event_name: '{{ event_schedule.event.name  }}',
                             event_date: '{{ event_schedule.start_at_as_str  }}',
                             event_lefts_visitors_sum: {{ event_schedule.lefts_visitors_sum  }},
@@ -98,15 +108,13 @@
                 ],
                 eventClick: function (info) {
                     // https://fullcalendar.io/docs/eventClick-demo
-                    const eventObj = info.event;
-
                     let div = document.getElementById('calendar-event-info');
                     div.style.display = 'block';
                     div.style.position = 'absolute';
                     div.style.top = info.jsEvent.pageY + "px";
                     div.style.left = info.jsEvent.pageX + "px";
 
-                    const extendedProps = eventObj.extendedProps;
+                    const extendedProps = info.event.extendedProps;
                     console.log(extendedProps);
 
                     document.getElementById('calendar-event-info-name').innerHTML = extendedProps.event_name;
@@ -124,6 +132,8 @@
                     document.getElementById('calendar-event-info-price_student').innerHTML = extendedProps.event_price_student;
                     document.getElementById('calendar-event-info-price_retiree').innerHTML = extendedProps.event_price_retiree;
 
+                    document.getElementById('update_link').href = '/events/event_schedule/'+ info.event.id +'/update'
+                    document.getElementById('delete_link').href = '/events/event_schedule/'+ info.event.id +'/delete'
 
                     sleep(100).then(() => {
                         event_block_viewed = true;
@@ -132,7 +142,6 @@
             });
             calendar.render();
         });
-
 
         function closeEventInfo() {
             document.getElementById('calendar-event-info').style.display = 'none';
@@ -144,6 +153,5 @@
                 closeEventInfo();
             }
         });
-
     </script>
 {% endblock %}

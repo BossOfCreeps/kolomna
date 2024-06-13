@@ -14,7 +14,7 @@
                     <div class="col-sm-2">
                         <label>Музей</label>
                         <select class="form-control selectpicker mt-1" multiple data-live-search="true"
-                                name="organization">
+                                name="organization" data-actions-box="true">
                             {% for organization in organizations %}
                                 <option value="{{ organization.id }}"
                                         {% if organization in form_data.organization %}selected{% endif %}>

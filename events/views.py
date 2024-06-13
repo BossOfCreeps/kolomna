@@ -1,10 +1,19 @@
+import uuid
+from datetime import datetime
+from pprint import pprint
+
+from django.db import transaction
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import ListView, DetailView, View, TemplateView
+from django.views.generic import ListView, DetailView, View, TemplateView, CreateView, UpdateView, FormView, DeleteView
 
 from events.filters import EventFilter
-from events.models import Event, Organization, EventPriceCategory, EventSchedule
+from events.forms import EventForm, EventScheduleCreateForm, EventScheduleUpdateForm
+from events.models import Event, Organization, EventPriceCategory, EventSchedule, EventSchedulePrice
+from helpers import add_product
 
 
 class OrganizationListView(ListView):
@@ -72,3 +81,102 @@ class CalendarView(TemplateView):
 
 class EventScheduleDetailView(DetailView):
     model = EventSchedule
+
+
+class EventCreateView(CreateView):
+    model = Event
+    form_class = EventForm
+
+
+class EventUpdateView(UpdateView):
+    model = Event
+    form_class = EventForm
+
+
+class EventDeleteView(DeleteView):
+    pass
+
+
+class EventScheduleCreateView(FormView):
+    form_class = EventScheduleCreateForm
+    template_name = "events/eventschedule_create.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["events"] = Event.objects.all()
+        return context
+
+    @transaction.atomic()
+    def form_valid(self, form):
+        pprint(form.cleaned_data)
+
+        group_id = uuid.uuid4()
+
+        event = Event.objects.get(pk=form.cleaned_data["event_id"])
+
+        if form.cleaned_data["period"] == "single":
+            event_schedule = EventSchedule.objects.create(
+                event=event,
+                group_id=group_id,
+                start_at=form.cleaned_data["datetime_start"],
+                end_at=form.cleaned_data["datetime_end"],
+            )
+            for cat in EventPriceCategory.values:
+                EventSchedulePrice.objects.create(
+                    event_schedule=event_schedule,
+                    price=form.cleaned_data[f"price_{cat.lower()}"],
+                    category=cat,
+                    max_visitors=form.cleaned_data[f"visitors_{cat.lower()}"],
+                    bitrix_id=add_product(
+                        f'"{event.name}" для категории "{cat}"', form.cleaned_data[f"price_{cat.lower()}"]
+                    ),
+                )
+
+        elif form.cleaned_data["period"] == "periodical":
+            cur_date = form.cleaned_data["date_start"]
+            for _ in range((form.cleaned_data["date_end"] - form.cleaned_data["date_start"]).days + 1):
+                if form.cleaned_data["weekday"] and str(cur_date.weekday()) not in form.cleaned_data["weekday"]:
+                    continue
+
+                event_schedule = EventSchedule.objects.create(
+                    event=event,
+                    group_id=group_id,
+                    start_at=datetime.combine(cur_date, form.cleaned_data["time_start"]),
+                    end_at=datetime.combine(cur_date, form.cleaned_data["time_end"]),
+                )
+                for cat in EventPriceCategory.values:
+                    EventSchedulePrice.objects.create(
+                        event_schedule=event_schedule,
+                        price=form.cleaned_data[f"price_{cat.lower()}"],
+                        category=cat,
+                        max_visitors=form.cleaned_data[f"visitors_{cat.lower()}"],
+                        bitrix_id=add_product(
+                            f'"{event.name}" для категории "{cat}"', form.cleaned_data[f"price_{cat.lower()}"]
+                        ),
+                    )
+
+                cur_date += timezone.timedelta(days=1)
+
+        return redirect(reverse("events:calendar"))
+
+    def form_invalid(self, form):
+        raise Exception(form.errors)
+
+
+class EventScheduleUpdateView(UpdateView):
+    model = EventSchedule
+    form_class = EventScheduleUpdateForm
+
+    def form_valid(self, form):
+        if "group_update" in self.request.POST:
+            qs = EventSchedule.objects.filter(group_id=form.instance.group_id)
+        else:
+            qs = EventSchedule.objects.filter(pk=form.instance.pk)
+
+        qs.update(**form.cleaned_data, group_id=uuid.uuid4())
+
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class EventScheduleDeleteView(FormView):
+    pass

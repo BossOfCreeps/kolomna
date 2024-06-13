@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.urls import reverse
 
 from helpers import add_product, datetime_to_str, date_to_str
 
@@ -48,6 +49,9 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse("events:event-detail", args=[self.id])
 
     class Meta:
         verbose_name = "Мероприятие"
@@ -140,6 +144,9 @@ class EventSchedule(models.Model):
     def __str__(self):
         return f"{self.event.name} старт в {self.start_at}"
 
+    def get_absolute_url(self):
+        return reverse("events:event-detail", args=[self.event_id])
+
     class Meta:
         verbose_name = "Расписание мероприятия"
         verbose_name_plural = "Расписания мероприятий"
@@ -158,14 +165,6 @@ class EventSchedulePrice(models.Model):
     category = models.CharField("Категория покупателя", max_length=255, choices=EventPriceCategory.choices)
     max_visitors = models.PositiveIntegerField("Максимальное количество посетителей категории")
     bitrix_id = models.PositiveIntegerField("ID в Bitrix", blank=True, null=True)
-
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        super().save(force_insert, force_update, using, update_fields)
-        if self.bitrix_id is None:
-            self.bitrix_id = add_product(
-                f'"{self.event_schedule.event.name}" для категории "{self.category}"', self.price
-            )
-            super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
         return f'{self.event_schedule} для категории  "{self.category}"'

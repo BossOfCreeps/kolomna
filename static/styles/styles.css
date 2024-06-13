@@ -409,7 +409,7 @@ nav .badge {
 
 #calendar {
     height: 1400px;
-    margin: 50px 20px;
+    margin: 0 20px;
 }
 
 .fc-event-title-container .fc-event-title {
@@ -423,7 +423,7 @@ nav .badge {
     width: 550px;
     z-index: 20;
     background-color: white;
-    border: 1px solid #D9D9D94D;
+    border: 1px solid #b6b6b6;
     color: black;
     padding: 10px 10px;
 }
@@ -442,6 +442,18 @@ nav .badge {
 
 #calendar-event-info a {
     color: black;
+}
+
+#prices .input-group-text {
+    width: 200px;
+}
+
+#periodical_period .input-group-text {
+    width: 300px;
+}
+
+#periodical_period .help {
+    font-size: 12px;
 }
 
 @media only screen and (max-width: 600px) {
