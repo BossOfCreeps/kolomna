@@ -417,6 +417,33 @@ nav .badge {
     font-size: 12px;
 }
 
+#calendar-event-info {
+    display: none;
+    position: absolute;
+    width: 550px;
+    z-index: 20;
+    background-color: white;
+    border: 1px solid #D9D9D94D;
+    color: black;
+    padding: 10px 10px;
+}
+
+#calendar-event-info .btn-close {
+    float: right;
+}
+
+#calendar-event-info h3 {
+    font-family: Roboto, serif;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 20px;
+    text-align: left;
+}
+
+#calendar-event-info a {
+    color: black;
+}
+
 @media only screen and (max-width: 600px) {
     .navbar-brand {
         margin: 0
