@@ -1,13 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="container mt-5 mb-5">
-        <div class="row">
-            <div class=col">
-                <div id='calendar' style="width:100%;height:1000px"></div>
-            </div>
-        </div>
-    </div>
+    <div id='calendar'></div>
 {% endblock %}
 
 {% block scripts %}
@@ -28,19 +22,36 @@
                 views: {resourceTimeGridWeek: {type: 'resourceTimeGrid', duration: {days: 7}, buttonText: 'Неделя'}},
                 initialView: 'resourceTimeGridDay',
                 resources: [
-                    {id: 'a', title: 'Room A'},
-                    {id: 'b', title: 'Room B'},
-                    {id: 'c', title: 'Room C'},
-                    {id: 'd', title: 'Room D'},
+                    {% for organization in organizations %}
+                        {id: '{{ organization.pk }}', title: '{{ organization.name }}'},
+                    {% endfor %}
                 ],
                 events: [
-                    {
-                        id: 'a',
-                        title: 'my event',
-                        resourceId: 'a',
-                        start: '2024-06-13'
+                    {% for event_schedule in event_schedules %}
+                        {
+                            id: '{{ event_schedule.pk  }}',
+                            title: '{{ event_schedule.event.name }}\n1',
+                            resourceId: '{{ event_schedule.event.organization.pk }}',
+                            start: '{{ event_schedule.start_at|date:"c" }}',
+                        },
+                    {% endfor %}
+                ],
+                eventClick: function (info) {
+                    // https://fullcalendar.io/docs/eventClick-demo
+                    const eventObj = info.event;
+                    
+                    
+                    
+                    if (eventObj.url) {
+                        alert(
+                            'Clicked ' + eventObj.title + '.\n' +
+                            'Will open ' + eventObj.url + ' in a new tab'
+                        );
+                        info.jsEvent.preventDefault();
+                    } else {
+                        alert('Clicked ' + eventObj.title);
                     }
-                ]
+                },
             });
             calendar.render();
         });

@@ -65,5 +65,10 @@ class CalendarView(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["organizations"] = Organization.objects.all()
         context["event_schedules"] = EventSchedule.objects.all()
         return context
+
+
+class EventScheduleDetailView(DetailView):
+    model = EventSchedule

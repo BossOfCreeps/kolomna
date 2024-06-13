@@ -8,6 +8,7 @@ from events.views import (
     EventScheduleLeftsVisitorsView,
     CalendarView,
     EventDetailView,
+    EventScheduleDetailView,
 )
 
 app_name = "events"
@@ -24,4 +25,5 @@ urlpatterns = [
         name="event_schedule-left_visitors",
     ),
     path("calendar", CalendarView.as_view(), name="calendar"),
+    path("event_schedule/<int:pk>", EventScheduleDetailView.as_view(), name="event_schedule-detail"),
 ]
