@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col mt-4">
+                <nav style="--bs-breadcrumb-divider: '→';" aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'core:index' %}">Главная</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'events:event-list' %}">Программы</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ object.name }}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col">
+                <h1>{{ object.name }}</h1>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-sm-8">
+                {{ object.html_description|safe }}
+            </div>
+            <div class="col-sm-4">
+                {% for image in object.images.all %}
+                    <a href="{{ image.file.url }}" target="_blank">
+                        <img src="{{ image.file.url }}" class="mb-3" width="100%">
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col">
+                <button class="btn blue-btn mb-3" data-bs-toggle="modal"
+                        data-bs-target="#eventChooseModal"
+                        onclick="setEventId({{ event.pk }})">
+                    Купить
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

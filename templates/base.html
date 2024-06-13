@@ -118,6 +118,71 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="eventChooseModal" tabindex="-1" aria-labelledby="eventChooseModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form action="{% url 'tickets:event-buy' %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="eventChooseModalLabel">
+                                Выберите удобное время и количество билетов
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+                            <h3 class="mb-3">Дата и время</h3>
+                            <div class="mb-3 row">
+                                <div class="col-sm-12" id="schedule">
+                                </div>
+                            </div>
+
+                            <h3 class="mb-3">Категории билетов</h3>
+                            <div class="mb-3 row">
+                                <label for="visitor_standard" class="col-sm-3 col-form-label">Стандартный</label>
+                                <div class="col-sm-6">
+                                    <input type="number" id="visitor_standard" name="visitor_standard"
+                                           class="form-control mt-1" disabled value="0">
+                                </div>
+                                <p class="col-sm-3 col-form-label" id="lefts_visitors_standard"></p>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="visitor_child" class="col-sm-3 col-form-label">Детский</label>
+                                <div class="col-sm-6">
+                                    <input type="number" id="visitor_child" name="visitor_child"
+                                           class="form-control mt-1"
+                                           disabled value="0">
+                                </div>
+                                <p class="col-sm-3 col-form-label" id="lefts_visitors_child"></p>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="visitor_student" class="col-sm-3 col-form-label">Студенческий</label>
+                                <div class="col-sm-6">
+                                    <input type="number" id="visitor_student" name="visitor_student"
+                                           class="form-control mt-1" disabled value="0">
+                                </div>
+                                <p class="col-sm-3 col-form-label" id="lefts_visitors_student"></p>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="visitor_retiree" class="col-sm-3 col-form-label">Пенсионный</label>
+                                <div class="col-sm-6">
+                                    <input type="number" id="visitor_retiree" name="visitor_retiree"
+                                           class="form-control mt-1" disabled value="0">
+                                </div>
+                                <p class="col-sm-3 col-form-label" id="lefts_visitors_retiree"></p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" class="btn full-blue-btn" value="Добавить">
+                            <input type="submit" name="next_basket" class="btn blue-btn"
+                                   value="Добавить и перейти в корзину">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         {% block content %}{% endblock %}
     </main>
 </div>
@@ -161,4 +226,74 @@
 </footer>
 </body>
 {% block scripts %}{% endblock %}
+<script>
+    function setEventId(eventId) {
+        try {
+            document.getElementById("event_id").value = eventId;
+            document.getElementById("lefts_visitors_standard").innerHTML = "";
+            document.getElementById("lefts_visitors_child").innerHTML = "";
+            document.getElementById("lefts_visitors_student").innerHTML = "";
+            document.getElementById("lefts_visitors_retiree").innerHTML = "";
+
+            document.getElementById("visitor_standard").disabled = true;
+            document.getElementById("visitor_child").disabled = true;
+            document.getElementById("visitor_student").disabled = true;
+            document.getElementById("visitor_retiree").disabled = true;
+        } catch (e) {
+        }
+
+        $.ajax({
+            type: "GET",
+            url: "{% url 'events:event_schedule-list' %}?event_id=" + eventId,
+            success: function (data) {
+                let html = ""
+                for (let i = 0; i < data.length; i++) {
+                    html += '<div class="form-check mb-2">' +
+                        '<input class="form-check-input" onclick="getLeftVisitors(' + data[i]["id"] + ');" type="radio" required name="schedule" id="schedule' + data[i]["id"] + '" value="' + data[i]["id"] + '">' +
+                        '<label class="form-check-label" for="schedule' + data[i]["id"] + '">' +
+                        data[i]["date_range"] +
+                        '</label>' +
+                        '</div>'
+                }
+                document.getElementById("schedule").innerHTML = html;
+            },
+            error: function () {
+                alert("Произошла ошибка");
+            }
+        });
+    }
+
+    function getLeftVisitors(eventScheduleId) {
+        $.ajax({
+            type: "GET",
+            url: "{% url 'events:event_schedule-left_visitors' %}?event_schedule_id=" + eventScheduleId,
+            success: function (data) {
+                document.getElementById("visitor_standard").max = data["STANDARD"];
+                document.getElementById("visitor_child").max = data["CHILD"];
+                document.getElementById("visitor_student").max = data["STUDENT"];
+                document.getElementById("visitor_retiree").max = data["RETIREE"];
+
+                if (data["STANDARD"] !== 0) {
+                    document.getElementById("visitor_standard").disabled = false;
+                }
+                if (data["CHILD"] !== 0) {
+                    document.getElementById("visitor_child").disabled = false;
+                }
+                if (data["STUDENT"] !== 0) {
+                    document.getElementById("visitor_student").disabled = false;
+                }
+                if (data["RETIREE"] !== 0) {
+                    document.getElementById("visitor_retiree").disabled = false;
+                }
+                document.getElementById("lefts_visitors_standard").innerHTML = "Осталось: " + data["STANDARD"];
+                document.getElementById("lefts_visitors_child").innerHTML = "Осталось: " + data["CHILD"];
+                document.getElementById("lefts_visitors_student").innerHTML = "Осталось: " + data["STUDENT"];
+                document.getElementById("lefts_visitors_retiree").innerHTML = "Осталось: " + data["RETIREE"];
+            },
+            error: function () {
+                alert("Произошла ошибка");
+            }
+        });
+    }
+</script>
 </html>

@@ -3,11 +3,13 @@ from datetime import datetime
 import django_filters
 from django.db.models import Q
 
-from events.models import Event, Organization, EventSchedulePrice, EventSchedule
+from events.models import Event, Organization, EventSchedulePrice
 
 
 class EventFilter(django_filters.FilterSet):
+    id = django_filters.NumberFilter()
     organization = django_filters.ModelMultipleChoiceFilter(queryset=Organization.objects.all())
+
     duration_gte = django_filters.NumberFilter(field_name="duration", lookup_expr="gte")
     duration_lte = django_filters.NumberFilter(field_name="duration", lookup_expr="lte")
 
@@ -68,4 +70,4 @@ class EventFilter(django_filters.FilterSet):
 
     class Meta:
         model = Event
-        fields = ["organization"]
+        fields = ["id", "organization"]

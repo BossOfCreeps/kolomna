@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 
 from helpers import add_product, datetime_to_str, date_to_str
@@ -58,6 +60,7 @@ class EventImage(models.Model):
 
 class EventSchedule(models.Model):
     event = models.ForeignKey(Event, models.CASCADE, "schedules", verbose_name="Мероприятие")
+    group_id = models.UUIDField("Группа", default=uuid.uuid4)
     start_at = models.DateTimeField("Дата и время начало")
     end_at = models.DateTimeField("Дата и время конца")
 
