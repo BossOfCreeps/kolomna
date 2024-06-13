@@ -65,7 +65,7 @@ class EventImage(models.Model):
 
 class EventSchedule(models.Model):
     event = models.ForeignKey(Event, models.CASCADE, "schedules", verbose_name="Мероприятие")
-    group_id = models.UUIDField("Группа", default=uuid.uuid4)
+    group_id = models.UUIDField("Группа", null=True, blank=True)
     start_at = models.DateTimeField("Дата и время начало")
     end_at = models.DateTimeField("Дата и время конца")
 
@@ -126,11 +126,13 @@ class EventSchedule(models.Model):
         for cat in EventPriceCategory.values:
             event_price = self.prices.filter(category=cat).first()
             if not event_price:
+                result[f"max_visitors_{cat.lower()}"] = "-"
                 result[f"purchase_{cat.lower()}"] = "-"
                 result[f"price_{cat.lower()}"] = "-"
                 continue
 
             result[f"price_{cat.lower()}"] = event_price.price
+            result[f"max_visitors_{cat.lower()}"] = event_price.max_visitors
 
             purchases = self.event.purchase_events.filter(category=cat, start_at=self.start_at, end_at=self.end_at)
             result[f"purchase_{cat.lower()}"] = (

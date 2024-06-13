@@ -79,13 +79,12 @@ class CalendarView(TemplateView):
         return context
 
 
-class EventScheduleDetailView(DetailView):
-    model = EventSchedule
-
-
 class EventCreateView(CreateView):
     model = Event
     form_class = EventForm
+
+    def get_success_url(self):
+        return reverse("events:event_schedule-create") + f"?event_id={self.object.id}"
 
 
 class EventUpdateView(UpdateView):
@@ -103,21 +102,21 @@ class EventScheduleCreateView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["events"] = Event.objects.all()
+        context["events"] = (
+            Event.objects.filter(pk=self.request.GET["event_id"])
+            if self.request.GET.get("event_id")
+            else Event.objects.all()
+        )
         return context
 
     @transaction.atomic()
     def form_valid(self, form):
-        pprint(form.cleaned_data)
-
-        group_id = uuid.uuid4()
-
         event = Event.objects.get(pk=form.cleaned_data["event_id"])
 
         if form.cleaned_data["period"] == "single":
             event_schedule = EventSchedule.objects.create(
                 event=event,
-                group_id=group_id,
+                group_id=None,
                 start_at=form.cleaned_data["datetime_start"],
                 end_at=form.cleaned_data["datetime_end"],
             )
@@ -133,8 +132,12 @@ class EventScheduleCreateView(FormView):
                 )
 
         elif form.cleaned_data["period"] == "periodical":
-            cur_date = form.cleaned_data["date_start"]
+            group_id = uuid.uuid4()
+            cur_date = form.cleaned_data["date_start"] - timezone.timedelta(days=1)
+
             for _ in range((form.cleaned_data["date_end"] - form.cleaned_data["date_start"]).days + 1):
+                cur_date += timezone.timedelta(days=1)
+
                 if form.cleaned_data["weekday"] and str(cur_date.weekday()) not in form.cleaned_data["weekday"]:
                     continue
 
@@ -155,19 +158,24 @@ class EventScheduleCreateView(FormView):
                         ),
                     )
 
-                cur_date += timezone.timedelta(days=1)
-
         return redirect(reverse("events:calendar"))
 
     def form_invalid(self, form):
         raise Exception(form.errors)
 
 
-class EventScheduleUpdateView(UpdateView):
-    model = EventSchedule
+class EventScheduleUpdateView(FormView):
     form_class = EventScheduleUpdateForm
+    template_name = "events/eventschedule_update.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["object"] = EventSchedule.objects.get(pk=self.kwargs["pk"])
+        return context
 
     def form_valid(self, form):
+
+        return
         if "group_update" in self.request.POST:
             qs = EventSchedule.objects.filter(group_id=form.instance.group_id)
         else:

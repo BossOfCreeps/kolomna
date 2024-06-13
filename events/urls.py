@@ -8,7 +8,6 @@ from events.views import (
     EventScheduleLeftsVisitorsView,
     CalendarView,
     EventDetailView,
-    EventScheduleDetailView,
     EventCreateView,
     EventUpdateView,
     EventDeleteView,
@@ -38,7 +37,6 @@ urlpatterns = [
     #
     path("calendar", CalendarView.as_view(), name="calendar"),
     #
-    path("event_schedule/<int:pk>", EventScheduleDetailView.as_view(), name="event_schedule-detail"),
     path("event_schedule/create", EventScheduleCreateView.as_view(), name="event_schedule-create"),
     path("event_schedule/<int:pk>/update", EventScheduleUpdateView.as_view(), name="event_schedule-update"),
     path("event_schedule/<int:pk>/delete", EventScheduleDeleteView.as_view(), name="event_schedule-delete"),

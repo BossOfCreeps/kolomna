@@ -5,22 +5,41 @@
     <div class="container mb-5">
         <div class="row">
             <div class="col">
-                <h1 class="text-center mt-5 mb-5">Создать расписание</h1>
+                <h1 class="text-center mt-5 mb-5">Изменить расписание</h1>
                 <form class="form" method="post" enctype='multipart/form-data'>
                     {% csrf_token %}
-                    <div class="mb-5">
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Мероприятие</span>
-                            <select class="form-select" required name="event_id">
-                                {% for event in events %}
-                                    <option value="{{ event.id }}">{{ event.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
 
-                    <div id="choose_period" class="mb-5">
-                        <h3>Периодичность</h3>
+                    {% if object.group_id == null %}
+                        <div class="input-group mb-5">
+                            <label class="input-group-text">Даты/время начала и конца</label>
+                            <input class="form-control" type="datetime-local" name="datetime_start" id="datetime_start"
+                                   value="{{ object.start_at|date:"Y-m-d" }}T{{ object.start_at|date:"H:i" }}">
+                            <input class="form-control" type="datetime-local" name="datetime_end" id="datetime_end"
+                                   value="{{ object.end_at|date:"Y-m-d" }}T{{ object.end_at|date:"H:i" }}">
+                        </div>
+
+                    {% else %}
+
+                        <div class="mb-5">
+                            <h3>Изменить единичное или группу</h3>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="period" value="single" id="single"
+                                       onclick="choose_period('single')" required>
+                                <label class="form-check-label" for="single">Одиночное</label>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="period" value="periodical"
+                                       id="periodical" onclick="choose_period('periodical')" required>
+                                <label class="form-check-label" for="everyday">Периодическое</label>
+                            </div>
+                        </div>
+
+                    {% endif %}
+                    <!--
+                    <div class="mb-5">
+                        <h3>Изменить единичное или группу</h3>
 
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="period" value="single" id="single"
@@ -90,45 +109,44 @@
                         <p class="mt-2 help">Если не выбран ни один день недели, то расписание создаётся на каждый
                             день</p>
                     </div>
-
+-->
                     <div id="prices" class="mb-5">
                         <h3>Цены и кол-во мест на билеты</h3>
 
                         <div class="input-group mb-3">
                             <label class="input-group-text">Стандартный</label>
                             <input class="form-control" type="number" min="0" name="price_standard" required
-                                   placeholder="Цена">
+                                   placeholder="Цена" value="{{ object.prices_info.price_standard }}">
                             <input class="form-control" type="number" min="0" name="visitors_standard" required
-                                   placeholder="Кол-во мест">
+                                   placeholder="Кол-во мест" value="{{ object.prices_info.max_visitors_standard }}">
                         </div>
 
                         <div class="input-group mb-3">
                             <label class="input-group-text" for="price_student">Студенческий</label>
                             <input class="form-control" type="number" min="0" name="price_student" required
-                                   placeholder="Цена">
+                                   placeholder="Цена" value="{{ object.prices_info.price_student }}">
                             <input class="form-control" type="number" min="0" name="visitors_student" required
-                                   placeholder="Кол-во мест">
+                                   placeholder="Кол-во мест" value="{{ object.prices_info.max_visitors_student }}">
                         </div>
 
                         <div class="input-group mb-3">
                             <label class="input-group-text" for="price_child">Детский</label>
                             <input class="form-control" type="number" min="0" name="price_child" required
-                                   placeholder="Цена">
+                                   placeholder="Цена" value="{{ object.prices_info.price_child }}">
                             <input class="form-control" type="number" min="0" name="visitors_child" required
-                                   placeholder="Кол-во мест">
+                                   placeholder="Кол-во мест" value="{{ object.prices_info.max_visitors_child }}">
                         </div>
 
                         <div class="input-group mb-3">
                             <label class="input-group-text" for="price_retiree">Льготный</label>
                             <input class="form-control" type="number" min="0" name="price_retiree" required
-                                   placeholder="Цена">
+                                   placeholder="Цена" value="{{ object.prices_info.price_retiree }}">
                             <input class="form-control" type="number" min="0" name="visitors_retiree" required
-                                   placeholder="Кол-во мест">
+                                   placeholder="Кол-во мест" value="{{ object.prices_info.max_visitors_retiree }}">
                         </div>
-
                     </div>
 
-                    <input type="submit" class="btn full-blue-btn" value="Создать">
+                    <input type="submit" class="btn full-blue-btn" value="Изменить">
                 </form>
             </div>
         </div>
