@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime
 
 from django.conf import settings
 from fast_bitrix24 import Bitrix
@@ -23,45 +22,58 @@ def add_contact(first_name: str, last_name: str, email: str, phone: str):
             }
         },
     )
-    logger.debug(response)
     return response["order0000000000"]
 
 
 def add_product(name: str):
     list_response = bx.call("crm.product.list", {"filter": {"NAME": name}})
     if list_response:
-        logger.debug(list_response)
         return list_response["ID"]
 
     add_response = bx.call("crm.product.add", {"fields": {"NAME": name}})
-    logger.debug(add_response)
     return add_response["order0000000000"]
 
 
-def add_deal(title: str, bitrix_id: int, price: int, start_at: datetime, end_at: datetime, event_prices: list):
+def add_deal(title, user_bitrix_id, price, basket_events, is_set: bool):
     add_response = bx.call(
         "crm.deal.add",
         {
             "fields": {
+                "ID": "11",
                 "TITLE": title,
-                "CONTACT_ID": bitrix_id,
+                "CONTACT_ID": user_bitrix_id,
                 "CURRENCY_ID": "RUB",
                 "OPPORTUNITY": price,
-                "BEGINDATE": start_at.isoformat(),
-                "CLOSEDATE": end_at.isoformat(),
+                "IS_NEW": "Y",
+                "STAGE_ID": "NEW",  # EXECUTING
+                "OPENED": "Y",
+                "CLOSED": "N",
             }
         },
     )
     pk = add_response["order0000000000"]
-    logger.debug(add_response)
 
-    set_response = bx.call(
+    price_if_set = None
+    if is_set:
+        price_if_set = price / len(basket_events)
+
+    bx.call(
         "crm.deal.productrows.set",
         {
             "id": pk,
-            "rows": [{"PRODUCT_ID": event_price.bitrix_id, "PRICE": event_price.price} for event_price in event_prices],
+            "rows": [
+                {
+                    "PRODUCT_ID": be.event_price.bitrix_id,
+                    "QUANTITY": be.count,
+                    "PRICE": be.event_price.price if price_if_set is None else price_if_set,
+                }
+                for be in basket_events
+            ],
         },
     )
-    logger.debug(set_response)
 
     return pk
+
+
+def update_deal_stage(bitrix_id, stage: str = "EXECUTING"):
+    bx.call("crm.deal.add", {"id": bitrix_id, "fields": {"STAGE_ID": stage}})

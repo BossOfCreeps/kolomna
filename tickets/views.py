@@ -1,4 +1,5 @@
 import json
+import logging
 from collections import defaultdict
 from datetime import timedelta
 
@@ -11,10 +12,12 @@ from django.views.generic import TemplateView, View, DetailView, CreateView
 from qrcode.main import make
 
 from events.models import EventSchedulePrice, EventSet
-from helpers import create_yookassa_url
+from helpers import create_yookassa_url, add_deal, update_deal_stage
 from tickets.forms import BuyForm, ReviewForm
 from tickets.models import BasketEvent, Purchase, PurchaseEvent, EventPriceCategory, PurchaseStatus
 from users.models import CustomUser
+
+logger = logging.getLogger(__name__)
 
 
 class BasketView(TemplateView):
@@ -97,16 +100,16 @@ class BuyBasketView(View):
 
         qs = BasketEvent.objects.filter(user=request.user)
 
-        singles = []
-        set_map = defaultdict(list)
+        singles_basket_events = []
+        sets_basket_events = defaultdict(list)
         for obj in qs:
             if obj.set_id is None:
-                singles.append([obj])
+                singles_basket_events.append([obj])
             else:
-                set_map[obj.set_id].append(obj)
+                sets_basket_events[obj.set_id].append(obj)
 
         purchase_ids, mega_total_price = [], 0
-        for basket_events in singles + list(set_map.values()):
+        for basket_events in singles_basket_events + list(sets_basket_events.values()):
             purchase = Purchase.objects.create(user_id=user_id, total_price=0)
 
             total_price, objs, set_id = 0, [], None
@@ -143,20 +146,17 @@ class BuyBasketView(View):
             purchase_ids.append(purchase.id)
 
             mega_total_price += total_price
-            purchase_ids.bitrix_id = 9999
-            # TODO: add_deal(
-            #    "Заказ",
-            #    request.user.bitrix_id,
-            #    100,
-            #    datetime(2024, 6, 11),
-            #    datetime(2024, 6, 12),
-            #    event_prices,
-            # )
+
+            purchase.bitrix_id = add_deal(
+                purchase.title, purchase.user.bitrix_id, total_price, basket_events, is_set=set_id is not None
+            )
 
             purchase.save()
             BasketEvent.objects.filter(user=request.user).delete()
 
         if by_tic_employee:
+            for bitrix_id in Purchase.objects.filter(id__in=purchase_ids).values_list("bitrix_id", flat=True):
+                update_deal_stage(bitrix_id)
             return redirect(reverse("tickets:basket"))
 
         yookassa_url = create_yookassa_url(
@@ -225,13 +225,14 @@ class PurchaseApproveView(View):
     def post(self, request, *args, **kwargs):
         data = json.loads(self.request.body.decode("utf-8"))
 
-        print(data)
+        logging.debug(data)
 
         qs = Purchase.objects.filter(yookassa_url__endswith=data["object"]["id"])
 
         if data["event"] == "payment.succeeded":
             for purchase in qs:
                 purchase.status = PurchaseStatus.SUCCESS.value
+                update_deal_stage(purchase.bitrix_id)
                 purchase.save()
 
         elif data["event"] == "payment.canceled":
