@@ -123,8 +123,8 @@
 
         function init() {
             let myMap = new ymaps.Map("map", {
-                center: ["55.093816", "38.768806"],
-                zoom: 13,
+                center: [{{event.organization.latitude|stringformat:".10f" }}, {{event.organization.longitude|stringformat:".10f"}}],
+                zoom: 14,
                 controls: ['zoomControl', 'rulerControl', 'fullscreenControl']
             });
 
