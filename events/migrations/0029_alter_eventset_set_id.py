@@ -13,8 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="eventset",
             name="set_id",
-            field=models.UUIDField(
-                default="0", editable=False, verbose_name="ID единого билета"
-            ),
+            field=models.UUIDField(default="0", editable=False, verbose_name="ID единого билета"),
         ),
     ]

@@ -12,7 +12,7 @@ from django.views.generic import TemplateView, View, DetailView, CreateView
 from qrcode.main import make
 
 from events.models import EventSchedulePrice, EventSet
-from helpers import create_yookassa_url, add_deal, update_deal_stage
+from helpers import create_yookassa_url, add_deal, update_deal_stage, add_task
 from tickets.forms import BuyForm, ReviewForm
 from tickets.models import BasketEvent, Purchase, PurchaseEvent, EventPriceCategory, PurchaseStatus
 from users.models import CustomUser
@@ -233,6 +233,7 @@ class PurchaseApproveView(View):
             for purchase in qs:
                 purchase.status = PurchaseStatus.SUCCESS.value
                 update_deal_stage(purchase.bitrix_id)
+                add_task(f"Позвонить по: {purchase.title}", purchase.bitrix_id)
                 purchase.save()
 
         elif data["event"] == "payment.canceled":

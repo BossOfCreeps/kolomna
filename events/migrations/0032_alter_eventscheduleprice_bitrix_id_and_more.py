@@ -13,15 +13,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="eventscheduleprice",
             name="bitrix_id",
-            field=models.PositiveIntegerField(
-                blank=True, null=True, verbose_name="ID в Bitrix"
-            ),
+            field=models.PositiveIntegerField(blank=True, null=True, verbose_name="ID в Bitrix"),
         ),
         migrations.AlterField(
             model_name="eventset",
             name="bitrix_id",
-            field=models.PositiveIntegerField(
-                blank=True, editable=False, null=True, verbose_name="ID в Bitrix"
-            ),
+            field=models.PositiveIntegerField(blank=True, editable=False, null=True, verbose_name="ID в Bitrix"),
         ),
     ]

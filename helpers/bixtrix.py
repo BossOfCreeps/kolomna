@@ -77,3 +77,17 @@ def add_deal(title, user_bitrix_id, price, basket_events, is_set: bool):
 
 def update_deal_stage(bitrix_id, stage: str = "EXECUTING"):
     bx.call("crm.deal.add", {"id": bitrix_id, "fields": {"STAGE_ID": stage}})
+
+
+def add_task(title, deal_bitrix_id):
+    bx.call(
+        "tasks.task.add",
+        {
+            "fields": {
+                "TITLE": title,
+                "UF_CRM_TASK": [f"D_{deal_bitrix_id}"],
+                "CREATED_BY": 1,
+                "RESPONSIBLE_ID": settings.CALL_CENTER_BITRIX_USER_ID,
+            }
+        },
+    )
