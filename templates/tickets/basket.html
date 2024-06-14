@@ -43,15 +43,34 @@
                     </div>
                 {% endfor %}
             {% endfor %}
-            <div class="basket-buy-block mt-5">
-                <p>
-                    Итого: {{ all_price }} ₽
-                </p>
-                <p>
-                    <input type="submit" class="btn full-blue-btn" value="Купить">
-                </p>
-
-            </div>
+            {% if data %}
+                <div class="basket-buy-block mt-5">
+                    {% if request.user.is_tic_employee %}
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Пользователь, которому купить:</span>
+                            <select class="form-control selectpicker" data-live-search="true" name="user">
+                                {% for user in users %}
+                                    <option value="{{ user.id }}">{{ user.get_full_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endif %}
+                    <p>
+                        Итого: {{ all_price }} ₽
+                    </p>
+                    <p>
+                        <input type="submit" class="btn full-blue-btn" value="Купить">
+                    </p>
+                </div>
+            {% else %}
+                Корзина пустая
+            {% endif %}
         </form>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $('select').selectpicker();
+    </script>
 {% endblock %}

@@ -13,6 +13,7 @@ from events.models import EventSchedulePrice
 from helpers import create_yookassa_url
 from tickets.forms import BuyForm
 from tickets.models import BasketEvent, EventSchedule, Purchase, PurchaseEvent, EventPriceCategory, PurchaseStatus
+from users.models import CustomUser
 
 
 class BasketView(TemplateView):
@@ -33,16 +34,20 @@ class BasketView(TemplateView):
 
         context["data"] = data_copy
         context["all_price"] = all_price
+        context["users"] = CustomUser.objects.filter(is_tic_employee=False)
 
         return context
 
 
 class BuyBasketView(View):
     def post(self, request, *args, **kwargs):
-        qs = BasketEvent.objects.filter(user=self.request.user)
+        by_tic_employee = "user" in self.request.POST
+        user_id = self.request.POST.get("user") if by_tic_employee else request.user.id
+
+        qs = BasketEvent.objects.filter(user=request.user)
 
         with transaction.atomic():
-            purchase = Purchase.objects.create(user=request.user, total_price=0)
+            purchase = Purchase.objects.create(user_id=user_id, total_price=0)
 
             total_price, objs = 0, []
             for obj in qs:
@@ -65,12 +70,15 @@ class BuyBasketView(View):
                 purchase.qr_code.path
             )
 
-            purchase.yookassa_url = create_yookassa_url(
-                total_price,
-                purchase.id,
-                request.user,
-                f'{self.request.scheme}://{self.request.get_host()}{reverse("users:profile")}',
-            )
+            if by_tic_employee:
+                purchase.status = PurchaseStatus.SUCCESS.value
+            else:
+                purchase.yookassa_url = create_yookassa_url(
+                    total_price,
+                    purchase.id,
+                    request.user,
+                    f'{self.request.scheme}://{self.request.get_host()}{reverse("users:profile")}',
+                )
             purchase.total_price = total_price
             purchase.save()
 
@@ -85,7 +93,10 @@ class BuyBasketView(View):
 
             qs.delete()
 
-        return redirect(purchase.yookassa_url)
+        if by_tic_employee:
+            return redirect(reverse("core:index"))
+        else:
+            return redirect(purchase.yookassa_url)
 
 
 class EventBuyView(View):

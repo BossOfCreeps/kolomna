@@ -22,7 +22,7 @@ def parse_users_by_purchase_events(start_date, end_date, events, no_events):
 
     result = []
     for user in CustomUser.objects.filter(is_tic_employee=False):
-        user_events = users_data.get(user)
+        user_events = users_data.get(user, {})
 
         if not (
             (good_events and not user_events)
