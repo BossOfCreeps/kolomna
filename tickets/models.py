@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 
 from events.models import EventSchedulePrice, EventSchedule, Event, EventPriceCategory, Organization, EventSet
 from helpers import date_to_str, datetime_to_str, send_email
@@ -108,3 +109,21 @@ class PurchaseEvent(models.Model):
         verbose_name = "Купленное мероприятие"
         verbose_name_plural = "Купленное мероприятие"
         ordering = ["start_at"]
+
+
+class Review(models.Model):
+    purchase = models.ForeignKey(Purchase, models.CASCADE, "reviews", verbose_name="Покупка")
+    text = models.TextField("Текст")
+
+    @staticmethod
+    def get_absolute_url():
+        return reverse("users:profile")
+
+    class Meta:
+        verbose_name = "Отзыв"
+        verbose_name_plural = "Отзывы"
+
+
+class ReviewImage(models.Model):
+    review = models.ForeignKey(Review, models.CASCADE, "images", verbose_name="Отзыв")
+    file = models.ImageField(upload_to="media/reviews", verbose_name="Изображение")

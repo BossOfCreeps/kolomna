@@ -54,6 +54,9 @@
             <div class="mt-3">
                 <a href="#" class=""><i class="fa-solid fa-file-pdf"></i> Скачать в pdf </a>
             </div>
+            <div class="mt-3">
+                <a href="{% url 'tickets:purchase-review' %}?id={{ object.id }}" class="btn blue-btn">Написать отзыв</a>
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -7,12 +7,12 @@ from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import TemplateView, View, DetailView
+from django.views.generic import TemplateView, View, DetailView, FormView, CreateView
 from qrcode.main import make
 
 from events.models import EventSchedulePrice, EventSet
 from helpers import create_yookassa_url
-from tickets.forms import BuyForm
+from tickets.forms import BuyForm, ReviewForm
 from tickets.models import BasketEvent, Purchase, PurchaseEvent, EventPriceCategory, PurchaseStatus
 from users.models import CustomUser
 
@@ -216,3 +216,15 @@ class PurchaseApproveView(View):
             qs.update(status=PurchaseStatus.CLOSED.value)
 
         return HttpResponse()
+
+
+class PurchaseReviewView(CreateView):
+    form_class = ReviewForm
+    template_name = "tickets/purchase_review.html"
+
+    def get_form_kwargs(self):
+        kwargs = super(PurchaseReviewView, self).get_form_kwargs()
+        kwargs["purchases"] = (
+            Purchase.objects.filter(pk=self.request.GET["id"]) if self.request.GET.get("id") else Purchase.objects.all()
+        )
+        return kwargs

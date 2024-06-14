@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from tickets.models import BasketEvent, Purchase, PurchaseEvent
+from tickets.models import BasketEvent, Purchase, PurchaseEvent, Review, ReviewImage
 
 
 @admin.register(BasketEvent)
@@ -19,3 +19,11 @@ class PurchaseAdmin(admin.ModelAdmin):
 @admin.register(PurchaseEvent)
 class PurchaseEventAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    class ReviewImageInline(admin.TabularInline):
+        model = ReviewImage
+
+    inlines = [ReviewImageInline]
