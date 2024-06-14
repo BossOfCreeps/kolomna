@@ -31,9 +31,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "max_visitors",
-                    models.PositiveIntegerField(
-                        verbose_name="Максимальное количество посетителей всего"
-                    ),
+                    models.PositiveIntegerField(verbose_name="Максимальное количество посетителей всего"),
                 ),
             ],
             options={
@@ -117,21 +115,15 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "date",
-                    models.DateField(
-                        blank=True, null=True, verbose_name="Дата мероприятия"
-                    ),
+                    models.DateField(blank=True, null=True, verbose_name="Дата мероприятия"),
                 ),
                 (
                     "start_at",
-                    models.DateTimeField(
-                        blank=True, null=True, verbose_name="Дата и время начало"
-                    ),
+                    models.DateTimeField(blank=True, null=True, verbose_name="Дата и время начало"),
                 ),
                 (
                     "end_at",
-                    models.DateTimeField(
-                        blank=True, null=True, verbose_name="Дата и время конца"
-                    ),
+                    models.DateTimeField(blank=True, null=True, verbose_name="Дата и время конца"),
                 ),
                 (
                     "event",
@@ -169,9 +161,7 @@ class Migration(migrations.Migration):
                 ("price", models.PositiveIntegerField(verbose_name="Цена")),
                 (
                     "max_visitors",
-                    models.PositiveIntegerField(
-                        verbose_name="Максимальное количество посетителей категории"
-                    ),
+                    models.PositiveIntegerField(verbose_name="Максимальное количество посетителей категории"),
                 ),
                 (
                     "event",

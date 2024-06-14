@@ -12,8 +12,9 @@ from django.views.generic import ListView, DetailView, View, TemplateView, Creat
 
 from events.filters import EventFilter
 from events.forms import EventForm, EventScheduleCreateForm, EventScheduleUpdateForm
-from events.models import Event, Organization, EventPriceCategory, EventSchedule, EventSchedulePrice
+from events.models import Event, Organization, EventPriceCategory, EventSchedule, EventSchedulePrice, EventSet
 from helpers import add_product
+from tickets.models import BasketEvent
 
 
 class OrganizationListView(ListView):
@@ -211,3 +212,51 @@ class EventScheduleUpdateView(FormView):
 
 class EventScheduleDeleteView(FormView):
     pass
+
+
+class EventSetListView(ListView):
+    model = EventSet
+
+
+class EventSetDetailView(DetailView):
+    model = EventSet
+
+
+class EventSetCreateView(CreateView):
+    model = EventSet
+    fields = "__all__"
+
+
+class EventSetUpdateView(UpdateView):
+    model = EventSet
+    fields = "__all__"
+
+
+class EventSetDeleteView(DeleteView):
+    model = EventSet
+
+
+class EventSetBuyView(View):
+    def post(self, request, *args, **kwargs):
+        set_id = EventSet.objects.get(pk=self.kwargs["pk"]).set_id
+
+        BasketEvent.objects.bulk_create(
+            [
+                BasketEvent(
+                    event_price=EventSchedulePrice.objects.get(
+                        event_schedule_id=v, category=EventPriceCategory.STANDARD.value
+                    ),
+                    user=request.user,
+                    count=1,
+                    set_id=set_id,
+                )
+                for v in self.request.POST.values()
+            ]
+        )
+        return redirect(reverse("tickets:basket"))
+
+
+class EventSetDeleteFromBasketView(View):
+    def get(self, request, *args, **kwargs):
+        BasketEvent.objects.filter(set_id=self.kwargs["set_id"]).delete()
+        return redirect(reverse("tickets:basket"))

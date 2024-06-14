@@ -41,7 +41,7 @@ class EventFilter(django_filters.FilterSet):
             if self.form.cleaned_data.get(k) is not None:
                 qs = qs.filter(category=k.split("_")[-1].upper(), max_visitors__gte=self.form.cleaned_data[k])
 
-        for k in ["max_price_standard",  "max_price_child",  "max_price_student",  "max_price_retiree"]:
+        for k in ["max_price_standard", "max_price_child", "max_price_student", "max_price_retiree"]:
             if self.form.cleaned_data.get(k) is not None:
                 qs = qs.filter(category=k.split("_")[-1].upper(), price__lte=self.form.cleaned_data[k])
 

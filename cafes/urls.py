@@ -5,5 +5,5 @@ from cafes.views import CafeListView
 app_name = "cafes"
 
 urlpatterns = [
-    path('', CafeListView.as_view(), name='cafe-list'),
+    path("", CafeListView.as_view(), name="cafe-list"),
 ]

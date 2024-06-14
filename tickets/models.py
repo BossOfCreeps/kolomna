@@ -8,6 +8,7 @@ class BasketEvent(models.Model):
     event_price = models.ForeignKey(EventSchedulePrice, models.CASCADE, "basket_events", verbose_name="Цена")
     user = models.ForeignKey(CustomUser, models.CASCADE, "basket_events", verbose_name="Пользователь")
     count = models.PositiveIntegerField(default=0, verbose_name="Количество")
+    set_id = models.UUIDField("ID единого билета", blank=True, null=True)
 
     def __str__(self):
         return f"{self.event_price} | {self.user}"
@@ -47,6 +48,7 @@ class PurchaseEvent(models.Model):
     purchase = models.ForeignKey(Purchase, models.CASCADE, "events", verbose_name="Покупка")
     event = models.ForeignKey(Event, models.CASCADE, "purchase_events", verbose_name="Мероприятие")
     count = models.PositiveIntegerField("Количество")
+    set_id = models.UUIDField("ID единого билета", blank=True, null=True)
 
     category = models.CharField("Категория покупателя", max_length=255, choices=EventPriceCategory.choices)
     price = models.PositiveIntegerField("Цена")

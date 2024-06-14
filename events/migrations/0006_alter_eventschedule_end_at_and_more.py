@@ -13,17 +13,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="eventschedule",
             name="end_at",
-            field=models.DateTimeField(
-                default="2000-01-01", verbose_name="Дата и время конца"
-            ),
+            field=models.DateTimeField(default="2000-01-01", verbose_name="Дата и время конца"),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name="eventschedule",
             name="start_at",
-            field=models.DateTimeField(
-                default="2000-01-01", verbose_name="Дата и время начало"
-            ),
+            field=models.DateTimeField(default="2000-01-01", verbose_name="Дата и время начало"),
             preserve_default=False,
         ),
     ]

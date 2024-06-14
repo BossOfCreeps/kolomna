@@ -25,9 +25,7 @@ class Migration(migrations.Migration):
                 ("name", models.CharField(max_length=1024, verbose_name="Название")),
                 (
                     "file",
-                    models.ImageField(
-                        blank=True, null=True, upload_to="media/organizations"
-                    ),
+                    models.ImageField(blank=True, null=True, upload_to="media/organizations"),
                 ),
             ],
             options={

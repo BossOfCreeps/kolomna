@@ -36,25 +36,16 @@
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="{% url 'events:organisation-list' %}">Музеи</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
-                           aria-expanded="false">
-                            Активности
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a class="dropdown-item" href="#">Активность 1</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">Активность 2</a>
-                            </li>
-                        </ul>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="{% url 'cafes:cafe-list' %}">Кафе</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="{% url "events:event-list" %}">Программы</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% url "events:event_set-list" %}">
+                            Единый билет
+                        </a>
                     </li>
 
                     {% if request.user.is_tic_employee %}

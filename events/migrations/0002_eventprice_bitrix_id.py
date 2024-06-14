@@ -13,8 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="eventprice",
             name="bitrix_id",
-            field=models.PositiveIntegerField(
-                blank=True, null=True, verbose_name="ID в Bitrix"
-            ),
+            field=models.PositiveIntegerField(blank=True, null=True, verbose_name="ID в Bitrix"),
         ),
     ]

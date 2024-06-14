@@ -13,17 +13,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="event",
             name="abbreviation",
-            field=models.CharField(
-                default="", max_length=1024, verbose_name="Аббревиатура"
-            ),
+            field=models.CharField(default="", max_length=1024, verbose_name="Аббревиатура"),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name="organization",
             name="abbreviation",
-            field=models.CharField(
-                default="", max_length=1024, verbose_name="Аббревиатура"
-            ),
+            field=models.CharField(default="", max_length=1024, verbose_name="Аббревиатура"),
             preserve_default=False,
         ),
         migrations.AddField(
@@ -35,9 +31,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="organization",
             name="short_name",
-            field=models.CharField(
-                default="", max_length=1024, verbose_name="Короткое название"
-            ),
+            field=models.CharField(default="", max_length=1024, verbose_name="Короткое название"),
             preserve_default=False,
         ),
     ]

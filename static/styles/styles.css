@@ -538,6 +538,10 @@ nav .badge {
     width: 270px;
 }
 
+.set_event_in_basket {
+    text-decoration: line-through;
+}
+
 @media only screen and (max-width: 600px) {
     .navbar-brand {
         margin: 0

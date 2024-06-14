@@ -21,7 +21,15 @@
                                 <p>
                                     {{ basket_event.count }}
                                     {% category_to_str_tag basket_event.event_price.category %}
-                                    ({{ basket_event.event_price.price }}₽)
+                                    {% if basket_event.set_id %}
+                                        <span>
+                                            ("Единый билет {{ e }}")
+                                        </span>
+                                    {% else %}
+                                        <span>
+                                            ({{ basket_event.event_price.price }}₽)
+                                        </span>
+                                    {% endif %}
                                 </p>
                             {% endfor %}
                         </div>
@@ -43,7 +51,32 @@
                     </div>
                 {% endfor %}
             {% endfor %}
+
+            {% if sets %}
+                <p class="blue-div mt-5">Единые билеты</p>
+                {% for set in sets %}
+                    <div class="row basket">
+                        <div class="col-sm-10">
+                            <p>{{ set.name }}</p>
+                        </div>
+                        <div class="col-sm-1 text-center">
+                            <p>
+                                {{ set.price }} ₽
+                            </p>
+                        </div>
+                        <div class="col-sm-1 text-center">
+                            <p>
+                                <a href="{% url 'events:event_set-del_from_basket' set.set_id %}">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        
             {% if data %}
+
                 <div class="basket-buy-block mt-5">
                     {% if request.user.is_tic_employee %}
                         <div class="input-group mb-3">
@@ -56,7 +89,7 @@
                         </div>
                     {% endif %}
                     <p>
-                        Итого: {{ all_price }} ₽
+                        Итого: {{ total_price }} ₽
                     </p>
                     <p>
                         <input type="submit" class="btn full-blue-btn" value="Купить">

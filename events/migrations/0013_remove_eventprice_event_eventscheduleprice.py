@@ -43,15 +43,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "max_visitors",
-                    models.PositiveIntegerField(
-                        verbose_name="Максимальное количество посетителей категории"
-                    ),
+                    models.PositiveIntegerField(verbose_name="Максимальное количество посетителей категории"),
                 ),
                 (
                     "bitrix_id",
-                    models.PositiveIntegerField(
-                        blank=True, null=True, verbose_name="ID в Bitrix"
-                    ),
+                    models.PositiveIntegerField(blank=True, null=True, verbose_name="ID в Bitrix"),
                 ),
                 (
                     "event_schedule",

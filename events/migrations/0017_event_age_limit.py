@@ -13,9 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="event",
             name="age_limit",
-            field=models.CharField(
-                default="6+", max_length=1024, verbose_name="Возрастной ценз"
-            ),
+            field=models.CharField(default="6+", max_length=1024, verbose_name="Возрастной ценз"),
             preserve_default=False,
         ),
     ]

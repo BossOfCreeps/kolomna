@@ -24,4 +24,4 @@ def category_to_str_tag(value: str):
 
 @register.simple_tag()
 def count_price(value: list):
-    return sum([v.event_price.price * v.count for v in value])
+    return sum([v.event_price.price * v.count for v in value if v.set_id is None])

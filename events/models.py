@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.urls import reverse
 
@@ -179,3 +181,18 @@ class EventSchedulePrice(models.Model):
     class Meta:
         verbose_name = "Вариант билета"
         verbose_name_plural = "Варианты билета"
+
+
+class EventSet(models.Model):
+    name = models.CharField("Название", max_length=1024)
+    description = models.TextField("Описание")
+    events = models.ManyToManyField(Event, "sets", verbose_name="Мероприятия")
+    price = models.PositiveIntegerField("Цена")
+    set_id = models.UUIDField("ID единого билета", default=uuid.uuid4())
+
+    def __str__(self):
+        return f"{self.name}"
+
+    class Meta:
+        verbose_name = "Набор мероприятий"
+        verbose_name_plural = "Наборы мероприятий"

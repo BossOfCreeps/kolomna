@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from events.models import Event, EventImage, Organization, EventSchedule, EventSchedulePrice
+from events.models import Event, EventImage, Organization, EventSchedule, EventSchedulePrice, EventSet
 
 
 @admin.register(Event)
@@ -22,4 +22,9 @@ class EventScheduleAdmin(admin.ModelAdmin):
 
 @admin.register(Organization)
 class OrganizationAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(EventSet)
+class EventSetAdmin(admin.ModelAdmin):
     pass

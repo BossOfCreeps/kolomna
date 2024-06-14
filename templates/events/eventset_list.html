@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mb-5">
+        <div class="row">
+            <div class="col text-center mt-5 mb-5">
+                <h1>Единые билеты</h1>
+            </div>
+        </div>
+        <div class="row">
+            {% for set in object_list %}
+                <div class="col-sm-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2>{{ set.name }}</h2>
+                            <p>{{ set.description }}</p>
+                            <a class="btn full-blue-btn mt-3 mb-3" href="{% url 'events:event_set-detail' set.pk %}">
+                                Подробнее
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

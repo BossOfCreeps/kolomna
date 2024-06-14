@@ -112,8 +112,7 @@ class MassEmailFormView(FormView):
     def get_form_kwargs(self):
         kwargs = super(MassEmailFormView, self).get_form_kwargs()
         kwargs["emails"] = [
-            (user.email, user.email)
-            for user in CustomUser.objects.filter(pk__in=self.request.GET.getlist("ids"))
+            (user.email, user.email) for user in CustomUser.objects.filter(pk__in=self.request.GET.getlist("ids"))
         ]
         return kwargs
 

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mb-5">
+        <div class="row">
+            <div class="col">
+                <h1 class=" text-center mt-5 mb-5">Единый билет "{{ object.name }}"</h1>
+                <p>{{ object.description|linebreaks }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col event-list">
+                <h2>Список мероприятий в пакете</h2>
+                <form method="post" action="{% url 'events:event_set-buy' object.pk %}">
+                    {% for event in object.events.all %}
+                        <div class="card mb-3">
+                            <div class="row g-0">
+                                <div class="col-md-3">
+                                    <img src="{{ event.images.first.file.url }}" class="img-fluid rounded-start"
+                                         alt="{{ event.name }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ event.name }}</h5>
+                                        <p class="card-text stars-rate">
+                                        </p>
+                                        <p class="card-text">
+                                            <a class="btn" href="{% url 'events:event-detail' event.id %}"
+                                               target="_blank">
+                                                Подробнее <i class="fa-solid fa-arrow-right"></i>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    {% for schedule in event.schedules.all %}
+                                        {% if schedule.lefts_visitors_sum > 1 %}
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="radio" required
+                                                       name="schedule_{{ event.id }}" id="schedule{{ schedule.id }}"
+                                                       value="{{ schedule.id }}">
+                                                <label class="form-check-label" for="schedule{{ schedule.id }}">
+                                                    {{ schedule.date_range }}
+                                                </label>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <input type="submit" value="Добавить мероприятие" class="btn btn-primary">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
