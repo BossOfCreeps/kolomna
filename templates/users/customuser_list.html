@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+    <div class="container mb-5">
+        <div class="row mt-5 mb-5 text-center">
+            <div class="col">
+                <h1>Пользователи</h1>
+            </div>
+        </div>
+
+        <form class="form user-list-form">
+            <div class="row mb-3">
+                <div class="col">
+                    <div class="input-group">
+                        <span class="input-group-text">Посещенное мероприятие</span>
+                        <select class="form-control selectpicker mt-1" multiple data-live-search="true"
+                                name="events" data-actions-box="true">
+                            {% for event in all_events %}
+                                <option value="{{ event.id }}" {% if event in active_events %}selected{% endif %}>
+                                    {{ event.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col">
+                    <div class="input-group">
+                        <span class="input-group-text">НЕпосещенное мероприятие</span>
+                        <select class="form-control selectpicker mt-1" multiple data-live-search="true"
+                                name="no_events" data-actions-box="true">
+                            {% for event in all_events %}
+                                <option value="{{ event.id }}" {% if event in disabled_events %}selected{% endif %}>
+                                    {{ event.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col">
+                    <div class="input-group">
+                        <span class="input-group-text">Диапазон дат посещения</span>
+                        <input type="date" class="form-control" placeholder="С" name="start_date"
+                               value="{{ start_date }}">
+                        <input type="date" class="form-control" placeholder="До" name="end_date"
+                               value="{{ end_date }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-5 mt-4">
+                <div class="col">
+                    <input class="btn full-blue-btn" type="submit" value="Отфильтровать">
+                </div>
+            </div>
+        </form>
+
+        <div class="row mt-5">
+            <div class="col">
+                <table class="table  table-striped">
+                    <thead>
+                    <tr>
+                        <th rowspan="2" scope="col">Почта</th>
+                        <th rowspan="2" scope="col">Фамилия</th>
+                        <th rowspan="2" scope="col">Имя</th>
+                        <th colspan="2" scope="col">Все мероприятия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for object in object_list %}
+                        <tr>
+                            <th scope="row">{{ object.email }}</th>
+                            <td>{{ object.last_name }}</td>
+                            <td>{{ object.first_name }}</td>
+                            <td>{{ object.purchases_as_str|linebreaks }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    <script>
+        $('select').selectpicker();
+    </script>
+{% endblock %}

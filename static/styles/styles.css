@@ -534,6 +534,10 @@ nav .badge {
     text-decoration: bold;
 }
 
+.user-list-form .input-group-text {
+    width: 270px;
+}
+
 @media only screen and (max-width: 600px) {
     .navbar-brand {
         margin: 0

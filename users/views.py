@@ -1,11 +1,14 @@
+from collections import defaultdict
+
 from django.contrib.auth import login, logout
 from django.db.models import Max, Q
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import FormView, TemplateView, View
+from django.views.generic import FormView, TemplateView, View, ListView
 
-from tickets.models import Purchase, PurchaseStatus
+from events.models import Event
+from tickets.models import Purchase, PurchaseStatus, PurchaseEvent
 from users.forms import RegistrationForm, LoginForm
 from users.models import CustomUser
 
@@ -72,3 +75,49 @@ class LogoutView(View):
     def get(self, request):
         logout(self.request)
         return redirect(reverse("core:index"))
+
+
+class UserListView(ListView):
+    template_name = "users/customuser_list.html"
+
+    def get_queryset(self):
+        qs = PurchaseEvent.objects.all()
+
+        if self.request.GET.get("start_date"):
+            qs = qs.filter(start_at__date__gte=self.request.GET.get("start_date"))
+
+        if self.request.GET.get("end_date"):
+            qs = qs.filter(end_at__date__lte=self.request.GET.get("end_date"))
+
+        users_data = defaultdict(set)
+        for obj in qs:
+            users_data[obj.purchase.user].add(str(obj.event.id))
+
+        good_events = set(self.request.GET.getlist("events", []))
+        bad_events = set(self.request.GET.getlist("no_events", []))
+
+        result = []
+        for user in CustomUser.objects.filter(is_tic_employee=False):
+            user_events = users_data.get(user)
+
+            if not (
+                (good_events and not user_events)
+                or (good_events and user_events and not good_events.issubset(user_events))
+                or (bad_events and bad_events.intersection(user_events))
+            ):
+                result.append(user)
+
+        return result
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["start_date"] = self.request.GET.get("start_date")
+        context["end_date"] = self.request.GET.get("end_date")
+
+        context["all_events"] = Event.objects.all()
+        if "events" in self.request.GET:
+            context["active_events"] = Event.objects.filter(pk__in=self.request.GET.getlist("events"))
+        if "no_events" in self.request.GET:
+            context["disabled_events"] = Event.objects.filter(pk__in=self.request.GET.getlist("no_events"))
+
+        return context

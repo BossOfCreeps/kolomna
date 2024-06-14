@@ -1,6 +1,14 @@
 from django.urls import path
 
-from users.views import RegistrationView, LoginView, ProfileView, LogoutView, ProfileHistoryView, ProfileSavedView
+from users.views import (
+    RegistrationView,
+    LoginView,
+    ProfileView,
+    LogoutView,
+    ProfileHistoryView,
+    ProfileSavedView,
+    UserListView,
+)
 
 app_name = "users"
 
@@ -11,4 +19,5 @@ urlpatterns = [
     path("", ProfileView.as_view(), name="profile"),
     path("history", ProfileHistoryView.as_view(), name="profile-history"),
     path("saved", ProfileSavedView.as_view(), name="profile-saved"),
+    path("list", UserListView.as_view(), name="user-list"),
 ]
