@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 from django.contrib.auth import login, logout
 from django.db.models import Max, Q
 from django.shortcuts import redirect
@@ -8,8 +6,10 @@ from django.utils import timezone
 from django.views.generic import FormView, TemplateView, View, ListView
 
 from events.models import Event
-from tickets.models import Purchase, PurchaseStatus, PurchaseEvent
-from users.forms import RegistrationForm, LoginForm
+from helpers.logic import parse_users_by_purchase_events
+from helpers.mail import send_email
+from tickets.models import Purchase, PurchaseStatus
+from users.forms import RegistrationForm, LoginForm, MassEmailForm
 from users.models import CustomUser
 
 
@@ -81,33 +81,12 @@ class UserListView(ListView):
     template_name = "users/customuser_list.html"
 
     def get_queryset(self):
-        qs = PurchaseEvent.objects.all()
-
-        if self.request.GET.get("start_date"):
-            qs = qs.filter(start_at__date__gte=self.request.GET.get("start_date"))
-
-        if self.request.GET.get("end_date"):
-            qs = qs.filter(end_at__date__lte=self.request.GET.get("end_date"))
-
-        users_data = defaultdict(set)
-        for obj in qs:
-            users_data[obj.purchase.user].add(str(obj.event.id))
-
-        good_events = set(self.request.GET.getlist("events", []))
-        bad_events = set(self.request.GET.getlist("no_events", []))
-
-        result = []
-        for user in CustomUser.objects.filter(is_tic_employee=False):
-            user_events = users_data.get(user)
-
-            if not (
-                (good_events and not user_events)
-                or (good_events and user_events and not good_events.issubset(user_events))
-                or (bad_events and bad_events.intersection(user_events))
-            ):
-                result.append(user)
-
-        return result
+        return parse_users_by_purchase_events(
+            self.request.GET.get("start_date"),
+            self.request.GET.get("end_date"),
+            self.request.GET.getlist("events", []),
+            self.request.GET.getlist("no_events", []),
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -121,3 +100,26 @@ class UserListView(ListView):
             context["disabled_events"] = Event.objects.filter(pk__in=self.request.GET.getlist("no_events"))
 
         return context
+
+
+class MassEmailFormView(FormView):
+    form_class = MassEmailForm
+    template_name = "users/mass_send_email.html"
+
+    def get_success_url(self):
+        return reverse("users:user-list")
+
+    def get_form_kwargs(self):
+        kwargs = super(MassEmailFormView, self).get_form_kwargs()
+        kwargs["emails"] = [
+            (user.email, user.email)
+            for user in CustomUser.objects.filter(pk__in=self.request.GET.getlist("ids"))
+        ]
+        return kwargs
+
+    def form_valid(self, form):
+        send_email(form.cleaned_data["title"], form.cleaned_data["text"], form.cleaned_data["emails"])
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print(form.errors)

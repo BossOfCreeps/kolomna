@@ -56,6 +56,12 @@
                     <input class="btn full-blue-btn" type="submit" value="Отфильтровать">
                 </div>
             </div>
+            <div class="row mb-5 mt-4">
+                <div class="col">
+                    <a href="{% url 'users:mass-email' %}?{% for o in object_list %}ids={{ o.id }}&{% endfor %}"
+                       class="btn blue-btn">Сделать рассылку по пользователям из таблицы</a>
+                </div>
+            </div>
         </form>
 
         <div class="row mt-5">

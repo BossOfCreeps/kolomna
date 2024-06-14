@@ -8,6 +8,7 @@ from users.views import (
     ProfileHistoryView,
     ProfileSavedView,
     UserListView,
+    MassEmailFormView,
 )
 
 app_name = "users"
@@ -20,4 +21,5 @@ urlpatterns = [
     path("history", ProfileHistoryView.as_view(), name="profile-history"),
     path("saved", ProfileSavedView.as_view(), name="profile-saved"),
     path("list", UserListView.as_view(), name="user-list"),
+    path("mass_email", MassEmailFormView.as_view(), name="mass-email"),
 ]
