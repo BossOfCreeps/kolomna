@@ -7,7 +7,7 @@ from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import TemplateView, View, DetailView, FormView, CreateView
+from django.views.generic import TemplateView, View, DetailView, CreateView
 from qrcode.main import make
 
 from events.models import EventSchedulePrice, EventSet
@@ -23,16 +23,22 @@ class BasketView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        has_collisions = False
+        has_collisions, more_then_total_count = False, set()
         date_ranges = []
-        total_price = 0
+        total_price, total_count = 0, defaultdict(int)
         set_ids = set()
         data = defaultdict(lambda: defaultdict(list))
         for obj in self.request.user.basket_events.order_by("event_price__event_schedule__start_at").all():
             data[obj.event_price.event_schedule.start_at.date()][obj.event_price.event_schedule].append(obj)
 
+            if obj.count > obj.event_price.max_visitors:
+                more_then_total_count.add(obj.id)
+
             if not has_collisions:
-                for range_start, range_end in date_ranges:
+                for range_start, range_end, event_schedule in date_ranges:
+                    if event_schedule == obj.event_price.event_schedule:
+                        continue
+
                     event_schedule_start = obj.event_price.event_schedule.start_at - timedelta(minutes=45)
                     event_schedule_end = obj.event_price.event_schedule.end_at + timedelta(minutes=45)
 
@@ -45,13 +51,21 @@ class BasketView(TemplateView):
                         has_collisions = True
                         break
 
-            date_ranges.append([obj.event_price.event_schedule.start_at, obj.event_price.event_schedule.end_at])
+            date_ranges.append(
+                [
+                    obj.event_price.event_schedule.start_at,
+                    obj.event_price.event_schedule.end_at,
+                    obj.event_price.event_schedule,
+                ]
+            )
 
             if obj.set_id is None:
                 total_price += obj.count * obj.event_price.price
             elif obj.set_id not in set_ids:
                 set_ids.add(obj.set_id)
                 total_price += EventSet.objects.get(set_id=obj.set_id).price
+
+            total_count[obj.event_price.event_schedule] += obj.count
 
         data_copy = {}
         for k, v in data.items():
@@ -64,6 +78,13 @@ class BasketView(TemplateView):
         context["sets"] = EventSet.objects.filter(set_id__in=set_ids)
 
         context["has_collisions"] = has_collisions
+
+        for es, count in total_count.items():
+            if count > es.event.max_visitors:
+                for be in BasketEvent.objects.filter(event_price_id__in=es.prices.values_list("id", flat=True)):
+                    more_then_total_count.add(be.id)
+
+        context["more_then_total_count"] = more_then_total_count
 
         return context
 

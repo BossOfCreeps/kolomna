@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from pprint import pprint
 
 from django.db import transaction
@@ -58,7 +58,7 @@ class EventScheduleAPIView(View):
             [
                 {"id": s.id, "date_range": s.date_range}
                 for s in EventSchedule.objects.filter(
-                    event_id=self.request.GET["event_id"], start_at__gte=timezone.now()
+                    event_id=self.request.GET["event_id"], start_at__gte=timezone.now() + timedelta(hours=3)
                 ).order_by("start_at")
             ],
             safe=False,

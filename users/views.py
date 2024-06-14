@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.contrib.auth import login, logout
 from django.db.models import Max, Q
 from django.shortcuts import redirect
@@ -49,7 +51,7 @@ class ProfileView(TemplateView):
         context["purchases"] = Purchase.objects.annotate(start_at=Max("events__start_at")).filter(
             user=self.request.user,
             status__in=[PurchaseStatus.SUCCESS.value, PurchaseStatus.NEW.value],
-            start_at__gte=timezone.now(),
+            start_at__gte=timezone.now() + timedelta(hours=3),
         )
         return context
 
@@ -62,7 +64,7 @@ class ProfileHistoryView(TemplateView):
         context["purchases"] = (
             Purchase.objects.annotate(start_at=Max("events__start_at"))
             .filter(user=self.request.user)
-            .filter(Q(status=PurchaseStatus.CLOSED.value) | Q(start_at__lte=timezone.now()))
+            .filter(Q(status=PurchaseStatus.CLOSED.value) | Q(start_at__lte=timezone.now() + timedelta(hours=3)))
         )
         return context
 

@@ -7,10 +7,10 @@
         <div class="row">
             <div class="col">
                 <form class="form" method="POST" novalidate>
-                    <h1>Регистрация нового пользователя</h1>
+                    <h1 class="mb-5 mt-5 text-center">Регистрация нового пользователя</h1>
                     {% csrf_token %}
                     {% bootstrap_form form %}
-                    {% bootstrap_button button_type="submit" content="ОК" %}
+                    <input type="submit" class="btn full-blue-btn mt-3" value="Зарегистрироваться">
                 </form>
             </div>
         </div>

@@ -22,7 +22,7 @@
                         </div>
                         <div class="col-sm-3">
                             {% for basket_event in basket_events %}
-                                <p>
+                                <p {% if basket_event.id in more_then_total_count %}class="bg-danger"{% endif %}>
                                     {{ basket_event.count }}
                                     {% category_to_str_tag basket_event.event_price.category %}
                                     {% if basket_event.set_id %}
@@ -84,7 +84,13 @@
                 {% endfor %}
             {% endif %}
 
-            {% if data %}
+            {% if more_then_total_count %}
+                <p class="red_text mt-5">
+                    Вы выбрали слишком много мест. Красным указаны билеты, которые вы не можете купить.
+                </p>
+            {% endif %}
+
+            {% if data and not more_then_total_count %}
                 <div class="basket-buy-block mt-5">
                     {% if request.user.is_tic_employee %}
                         <div class="input-group mb-3">
@@ -114,7 +120,8 @@
                                {% if has_collisions %}disabled{% endif %}>
                     </p>
                 </div>
-            {% else %}
+            {% endif %}
+            {% if not data %}
                 Корзина пустая
             {% endif %}
         </form>

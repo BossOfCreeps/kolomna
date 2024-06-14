@@ -1,7 +1,9 @@
 import uuid
+from datetime import timedelta
 
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
 from helpers import datetime_to_str, date_to_str
 
@@ -24,6 +26,7 @@ class Organization(models.Model):
     class Meta:
         verbose_name = "Организация"
         verbose_name_plural = "Организации"
+        ordering = ["id"]
 
 
 class Event(models.Model):
@@ -53,6 +56,10 @@ class Event(models.Model):
 
         return f"{min_price}-{max_price}"
 
+    @property
+    def active_event_schedules(self):
+        return self.schedules.filter(start_at__gte=timezone.now() + timedelta(hours=3))
+
     def __str__(self):
         return self.name
 
@@ -62,11 +69,15 @@ class Event(models.Model):
     class Meta:
         verbose_name = "Мероприятие"
         verbose_name_plural = "Мероприятия"
+        ordering = ["id"]
 
 
 class EventImage(models.Model):
     event = models.ForeignKey(Event, models.CASCADE, "images", verbose_name="Мероприятие")
     file = models.ImageField(upload_to="media/events")
+
+    class Meta:
+        ordering = ["id"]
 
 
 class EventSchedule(models.Model):
@@ -163,6 +174,7 @@ class EventSchedule(models.Model):
     class Meta:
         verbose_name = "Расписание мероприятия"
         verbose_name_plural = "Расписания мероприятий"
+        ordering = ["start_at"]
 
 
 class EventPriceCategory(models.TextChoices):
@@ -185,6 +197,7 @@ class EventSchedulePrice(models.Model):
     class Meta:
         verbose_name = "Вариант билета"
         verbose_name_plural = "Варианты билета"
+        ordering = ["event_schedule_id", "category"]
 
 
 class EventSet(models.Model):
@@ -192,7 +205,7 @@ class EventSet(models.Model):
     description = models.TextField("Описание")
     events = models.ManyToManyField(Event, "sets", verbose_name="Мероприятия")
     price = models.PositiveIntegerField("Цена")
-    set_id = models.UUIDField("ID единого билета", default=uuid.uuid4(), editable=False)
+    set_id = models.UUIDField("ID единого билета", default="0", editable=False)
 
     def __str__(self):
         return f"{self.name}"
@@ -203,3 +216,4 @@ class EventSet(models.Model):
     class Meta:
         verbose_name = "Набор мероприятий"
         verbose_name_plural = "Наборы мероприятий"
+        ordering = ["id"]

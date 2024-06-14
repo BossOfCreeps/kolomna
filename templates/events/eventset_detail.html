@@ -14,7 +14,7 @@
         </div>
         <div class="row">
             <div class="col event-list">
-                <h2>Список мероприятий в пакете</h2>
+                <h2>Мероприятия</h2>
                 <form method="post" action="{% url 'events:event_set-buy' object.pk %}">
                     {% for event in object.events.all %}
                         <div class="card mb-3">
@@ -37,7 +37,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    {% for schedule in event.schedules.all %}
+                                    {% for schedule in event.active_event_schedules %}
                                         {% if schedule.lefts_visitors_sum > 1 %}
                                             <div class="form-check mb-2">
                                                 <input class="form-check-input" type="radio" required

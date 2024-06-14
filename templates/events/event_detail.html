@@ -22,7 +22,7 @@
 
         <div class="row mt-4">
             <div class="col-sm-8">
-                {{ object.html_description|safe }}
+                {{ object.html_description|safe|linebreaks }}
             </div>
             <div class="col-sm-4">
                 {% for image in object.images.all %}

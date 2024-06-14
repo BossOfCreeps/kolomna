@@ -53,9 +53,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "file",
-                    models.ImageField(
-                        upload_to="media/reviews", verbose_name="Изображение"
-                    ),
+                    models.ImageField(upload_to="media/reviews", verbose_name="Изображение"),
                 ),
                 (
                     "review",
