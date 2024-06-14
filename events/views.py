@@ -188,28 +188,6 @@ class EventScheduleCreateView(FormView):
         raise Exception(form.errors)
 
 
-class EventScheduleUpdateView(FormView):
-    form_class = EventScheduleUpdateForm
-    template_name = "events/eventschedule_update.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["object"] = EventSchedule.objects.get(pk=self.kwargs["pk"])
-        return context
-
-    def form_valid(self, form):
-
-        return
-        if "group_update" in self.request.POST:
-            qs = EventSchedule.objects.filter(group_id=form.instance.group_id)
-        else:
-            qs = EventSchedule.objects.filter(pk=form.instance.pk)
-
-        qs.update(**form.cleaned_data, group_id=uuid.uuid4())
-
-        return HttpResponseRedirect(self.get_success_url())
-
-
 class EventScheduleDeleteView(FormView):
     pass
 
@@ -234,6 +212,9 @@ class EventSetUpdateView(UpdateView):
 
 class EventSetDeleteView(DeleteView):
     model = EventSet
+
+    def get_success_url(self):
+        return reverse("events:event_set-list")
 
 
 class EventSetBuyView(View):

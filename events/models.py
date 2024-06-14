@@ -188,10 +188,13 @@ class EventSet(models.Model):
     description = models.TextField("Описание")
     events = models.ManyToManyField(Event, "sets", verbose_name="Мероприятия")
     price = models.PositiveIntegerField("Цена")
-    set_id = models.UUIDField("ID единого билета", default=uuid.uuid4())
+    set_id = models.UUIDField("ID единого билета", default=uuid.uuid4(), editable=False)
 
     def __str__(self):
         return f"{self.name}"
+
+    def get_absolute_url(self):
+        return reverse("events:event_set-detail", args=[self.id])
 
     class Meta:
         verbose_name = "Набор мероприятий"

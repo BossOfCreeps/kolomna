@@ -5,6 +5,10 @@
         <div class="row">
             <div class="col">
                 <h1 class=" text-center mt-5 mb-5">Единый билет "{{ object.name }}"</h1>
+                {% if request.user.is_tic_employee %}
+                    <a href="{% url 'events:event_set-update' object.pk %}" class="btn blue-btn">Редактировать</a>
+                    <a href="{% url 'events:event_set-delete' object.pk %}" class="btn blue-btn">Удалить</a>
+                {% endif %}
                 <p>{{ object.description|linebreaks }}</p>
             </div>
         </div>

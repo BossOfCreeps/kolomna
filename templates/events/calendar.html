@@ -106,7 +106,7 @@
                     </p>
                 </div>
                 <div class="mt-3">
-                    <a href="#" id="update_link"><i class="fa-solid fa-pen me-3"></i></a>
+                    <a href="#" id="update_link" hidden><i class="fa-solid fa-pen me-3"></i></a>
                     <a href="#" id="delete_link"><i class="fa-solid fa-trash me-3"></i></a>
                 </div>
             </div>
@@ -213,7 +213,6 @@
                     document.getElementById('calendar-event-info-price_student').innerHTML = extendedProps.event_price_student;
                     document.getElementById('calendar-event-info-price_retiree').innerHTML = extendedProps.event_price_retiree;
 
-                    document.getElementById('update_link').href = '/events/event_schedule/' + info.event.id + '/update'
                     document.getElementById('delete_link').href = '/events/event_schedule/' + info.event.id + '/delete'
 
                     sleep(100).then(() => {

@@ -14,7 +14,7 @@ def create_yookassa_url(total_price, purchase_ids: list[int], user: CustomUser, 
             "confirmation": {"type": "redirect", "return_url": return_url},
             "capture": True,
             "description": f"Заказы ({', '.join(list(map(str, purchase_ids)))})",
-            #"metadata": {"orderNumber": f"{purchase_id}"},
+            # "metadata": {"orderNumber": f"{purchase_id}"},
             "receipt": {"customer": {"full_name": user.get_full_name(), "email": user.email}},
         }
     )

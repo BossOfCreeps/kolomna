@@ -7,6 +7,13 @@
                 <h1>Единые билеты</h1>
             </div>
         </div>
+        {% if request.user.is_tic_employee %}
+            <div class="row">
+                <div class="col mb-3">
+                    <a href="{% url 'events:event_set-create' %}" class="btn blue-btn">Создать</a>
+                </div>
+            </div>
+        {% endif %}
         <div class="row">
             {% for set in object_list %}
                 <div class="col-sm-4 mb-3">

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="text-center mb-5 mt-5">
+                    {% if form.instance.pk %}
+                        Редактировать {{ form.instance.name }}
+                    {% else %}
+                        Создать
+                    {% endif %}
+                </h1>
+                <form class="form" method="post" enctype='multipart/form-data'>
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <input type="submit" value="ОК" class="btn full-blue-btn">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
