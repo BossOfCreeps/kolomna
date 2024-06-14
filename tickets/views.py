@@ -177,7 +177,7 @@ class EventBuyView(View):
 
 class EventDeleteView(View):
     def get(self, request, *args, **kwargs):
-        BasketEvent.objects.filter(event_price__event_schedule_id=self.kwargs["pk"], set_id__isnull=True)
+        BasketEvent.objects.filter(event_price__event_schedule_id=self.kwargs["pk"], set_id__isnull=True).delete()
         return redirect(reverse("tickets:basket"))
 
 

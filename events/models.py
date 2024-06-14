@@ -95,7 +95,7 @@ class EventSchedule(models.Model):
 
     @property
     def all_purchased(self):
-        data = self.event.purchase_events.filter(start_at=self.start_at, end_at=self.end_at)
+        data = self.event.purchase_events.filter(start_at=self.start_at, end_at=self.end_at, purchase__status="SUCCESS")
         return data.aggregate(models.Sum("count"))["count__sum"] if data else 0
 
     @property
@@ -113,7 +113,9 @@ class EventSchedule(models.Model):
                 result[cat] = 0
                 continue
 
-            purchased = self.event.purchase_events.filter(category=cat, start_at=self.start_at, end_at=self.end_at)
+            purchased = self.event.purchase_events.filter(
+                category=cat, start_at=self.start_at, end_at=self.end_at, purchase__status="SUCCESS"
+            )
             if not purchased:
                 result[cat] = started.max_visitors
                 continue
@@ -141,7 +143,9 @@ class EventSchedule(models.Model):
             result[f"price_{cat.lower()}"] = event_price.price
             result[f"max_visitors_{cat.lower()}"] = event_price.max_visitors
 
-            purchases = self.event.purchase_events.filter(category=cat, start_at=self.start_at, end_at=self.end_at)
+            purchases = self.event.purchase_events.filter(
+                category=cat, start_at=self.start_at, end_at=self.end_at, purchase__status="SUCCESS"
+            )
             result[f"purchase_{cat.lower()}"] = (
                 f"{purchases.aggregate(models.Sum("count"))["count__sum"] if purchases else 0}"
                 f"/"
