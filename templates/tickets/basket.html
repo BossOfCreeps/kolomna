@@ -12,9 +12,11 @@
                     <div class="row basket">
                         <div class="col-sm-1 text-center">
                             <p>{{ event_schedule.start_at|date:"H:i" }}</p>
+                            <p>{{ event_schedule.end_at|date:"H:i" }}</p>
                         </div>
                         <div class="col-sm-6">
                             <p>{{ event_schedule.event.name }}</p>
+                            <p><small>{{ event_schedule.event.organization.name }}</small></p>
                         </div>
                         <div class="col-sm-3">
                             {% for basket_event in basket_events %}
@@ -23,7 +25,7 @@
                                     {% category_to_str_tag basket_event.event_price.category %}
                                     {% if basket_event.set_id %}
                                         <span>
-                                            ("Единый билет {{ e }}")
+                                            ("Единый билет")
                                         </span>
                                     {% else %}
                                         <span>
@@ -74,9 +76,8 @@
                     </div>
                 {% endfor %}
             {% endif %}
-        
-            {% if data %}
 
+            {% if data %}
                 <div class="basket-buy-block mt-5">
                     {% if request.user.is_tic_employee %}
                         <div class="input-group mb-3">
@@ -88,11 +89,21 @@
                             </select>
                         </div>
                     {% endif %}
+                    {% if has_collisions %}
+                        <p class="red_text mt-5">
+                            Мероприятия в корзине накладываются. Вы можете не успеть добраться. В случае билеты при
+                            опоздании не возвращаются
+                        </p>
+                        <p class="btn btn-danger mb-5" onclick="enableForm()">
+                            Перепроверил расписание и беру на себя все риски и не имею претензий к организаторам
+                        </p>
+                    {% endif %}
                     <p>
                         Итого: {{ total_price }} ₽
                     </p>
                     <p>
-                        <input type="submit" class="btn full-blue-btn" value="Купить">
+                        <input type="submit" class="btn full-blue-btn" value="Купить" id="basket_buy_button"
+                               {% if has_collisions %}disabled{% endif %}>
                     </p>
                 </div>
             {% else %}
@@ -105,5 +116,11 @@
 {% block scripts %}
     <script>
         $('select').selectpicker();
+    </script>
+
+    <script>
+        function enableForm() {
+            document.getElementById("basket_buy_button").disabled = false;
+        }
     </script>
 {% endblock %}

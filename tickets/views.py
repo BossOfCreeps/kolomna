@@ -1,7 +1,7 @@
 import json
 from collections import defaultdict
+from datetime import timedelta
 
-from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db import transaction
 from django.http import HttpResponse
@@ -11,7 +11,7 @@ from django.views.generic import TemplateView, View, DetailView
 from qrcode.main import make
 
 from events.models import EventSchedulePrice, EventSet
-from helpers import create_yookassa_url, send_email
+from helpers import create_yookassa_url
 from tickets.forms import BuyForm
 from tickets.models import BasketEvent, Purchase, PurchaseEvent, EventPriceCategory, PurchaseStatus
 from users.models import CustomUser
@@ -23,11 +23,29 @@ class BasketView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        has_collisions = False
+        date_ranges = []
         total_price = 0
         set_ids = set()
         data = defaultdict(lambda: defaultdict(list))
         for obj in self.request.user.basket_events.order_by("event_price__event_schedule__start_at").all():
             data[obj.event_price.event_schedule.start_at.date()][obj.event_price.event_schedule].append(obj)
+
+            if not has_collisions:
+                for range_start, range_end in date_ranges:
+                    event_schedule_start = obj.event_price.event_schedule.start_at - timedelta(minutes=45)
+                    event_schedule_end = obj.event_price.event_schedule.end_at + timedelta(minutes=45)
+
+                    if (
+                        range_start < event_schedule_start < range_end
+                        or range_start < event_schedule_end < range_end
+                        or (range_start < event_schedule_start and range_end > event_schedule_end)
+                        or (range_start > event_schedule_start and range_end < event_schedule_end)
+                    ):
+                        has_collisions = True
+                        break
+
+            date_ranges.append([obj.event_price.event_schedule.start_at, obj.event_price.event_schedule.end_at])
 
             if obj.set_id is None:
                 total_price += obj.count * obj.event_price.price
@@ -44,6 +62,8 @@ class BasketView(TemplateView):
         context["users"] = CustomUser.objects.filter(is_tic_employee=False)
 
         context["sets"] = EventSet.objects.filter(set_id__in=set_ids)
+
+        context["has_collisions"] = has_collisions
 
         return context
 
