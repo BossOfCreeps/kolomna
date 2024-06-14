@@ -151,3 +151,4 @@ YOOKASSA_KEY = getenv("YOOKASSA_KEY")
 #
 
 PAGINATE_BY = int(getenv("PAGINATE_BY", 5))
+SERVER_URL = getenv("SERVER_URL")

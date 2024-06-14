@@ -1,6 +1,7 @@
 import json
 from collections import defaultdict
 
+from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db import transaction
 from django.http import HttpResponse
@@ -10,7 +11,7 @@ from django.views.generic import TemplateView, View, DetailView
 from qrcode.main import make
 
 from events.models import EventSchedulePrice, EventSet
-from helpers import create_yookassa_url
+from helpers import create_yookassa_url, send_email
 from tickets.forms import BuyForm
 from tickets.models import BasketEvent, Purchase, PurchaseEvent, EventPriceCategory, PurchaseStatus
 from users.models import CustomUser
@@ -101,7 +102,7 @@ class BuyBasketView(View):
             purchase.save()
             purchase_ids.append(purchase.id)
 
-            mega_total_price+=total_price
+            mega_total_price += total_price
             # TODO: add_deal(
             #    "Заказ",
             #    request.user.bitrix_id,
@@ -187,7 +188,10 @@ class PurchaseApproveView(View):
         qs = Purchase.objects.filter(yookassa_url__endswith=data["object"]["id"])
 
         if data["event"] == "payment.succeeded":
-            qs.update(status=PurchaseStatus.SUCCESS.value)
+            for purchase in qs:
+                purchase.status = PurchaseStatus.SUCCESS.value
+                purchase.save()
+
         elif data["event"] == "payment.canceled":
             qs.update(status=PurchaseStatus.CLOSED.value)
 

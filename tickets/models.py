@@ -1,6 +1,8 @@
+from django.conf import settings
 from django.db import models
 
 from events.models import EventSchedulePrice, EventSchedule, Event, EventPriceCategory, Organization, EventSet
+from helpers import date_to_str, datetime_to_str, send_email
 from users.models import CustomUser
 
 
@@ -44,6 +46,24 @@ class Purchase(models.Model):
     def organizations(self):
         return Organization.objects.filter(pk__in=self.events.values_list("event__organization", flat=True))
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        if self.status == PurchaseStatus.SUCCESS.value:
+            message = f"""<img src="{settings.SERVER_URL}{self.qr_code.url}" width="200" height="200"><table>"""
+
+            for event in self.events.all():
+                message += f"""
+                <tr>
+                    <td style="border: 1px solid black;">{event.date_range}</td>
+                    <td style="border: 1px solid black;">{event.event.name}</td>
+                    <td style="border: 1px solid black;">{event.event.organization.address}</td>
+                </tr>
+                """
+
+            message += "</table><br>"
+
+            send_email(self.title, message, [self.user.email])
+
     def __str__(self):
         return f"{self.user} | {self.created_at.isoformat()}"
 
@@ -62,6 +82,24 @@ class PurchaseEvent(models.Model):
 
     start_at = models.DateTimeField("Дата и время начало")
     end_at = models.DateTimeField("Дата и время конца")
+
+    @property
+    def start_at_as_str(self):
+        return datetime_to_str(self.start_at)
+
+    @property
+    def end_at_as_str(self):
+        return datetime_to_str(self.end_at)
+
+    @property
+    def date_range(self):
+        if self.start_at.date() == self.end_at.date():
+            return (
+                f"{date_to_str(self.start_at.date())} "
+                f"{self.start_at.strftime('%H:%M')} - {self.end_at.strftime('%H:%M')}"
+            )
+
+        return f"{self.start_at_as_str} - {self.end_at_as_str}"
 
     def __str__(self):
         return f"{self.event} | {self.start_at} | {self.category}"
