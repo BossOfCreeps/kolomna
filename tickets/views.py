@@ -48,18 +48,30 @@ class BasketView(TemplateView):
 
 
 class BuyBasketView(View):
+    @transaction.atomic()
     def post(self, request, *args, **kwargs):
         by_tic_employee = "user" in self.request.POST
         user_id = self.request.POST.get("user") if by_tic_employee else request.user.id
 
         qs = BasketEvent.objects.filter(user=request.user)
 
-        with transaction.atomic():
+        singles = []
+        set_map = defaultdict(list)
+        for obj in qs:
+            if obj.set_id is None:
+                singles.append([obj])
+            else:
+                set_map[obj.set_id].append(obj)
+
+        purchase_ids, mega_total_price = [], 0
+        for basket_events in singles + list(set_map.values()):
             purchase = Purchase.objects.create(user_id=user_id, total_price=0)
 
-            total_price, objs = 0, []
-            for obj in qs:
-                total_price += obj.count * obj.event_price.price
+            total_price, objs, set_id = 0, [], None
+            for obj in basket_events:
+                set_id = obj.set_id
+                if set_id is None:
+                    total_price += obj.count * obj.event_price.price
                 objs.append(
                     PurchaseEvent(
                         purchase=purchase,
@@ -69,7 +81,6 @@ class BuyBasketView(View):
                         price=obj.event_price.price,
                         start_at=obj.event_price.event_schedule.start_at,
                         end_at=obj.event_price.event_schedule.end_at,
-                        set_id=obj.set_id,
                     )
                 )
             PurchaseEvent.objects.bulk_create(objs)
@@ -81,16 +92,16 @@ class BuyBasketView(View):
 
             if by_tic_employee:
                 purchase.status = PurchaseStatus.SUCCESS.value
-            else:
-                purchase.yookassa_url = create_yookassa_url(
-                    total_price,
-                    purchase.id,
-                    request.user,
-                    f'{self.request.scheme}://{self.request.get_host()}{reverse("users:profile")}',
-                )
-            purchase.total_price = total_price
-            purchase.save()
 
+            if set_id is not None:
+                total_price = EventSet.objects.get(set_id=set_id).price
+
+            purchase.total_price = total_price
+            purchase.set_id = set_id
+            purchase.save()
+            purchase_ids.append(purchase.id)
+
+            mega_total_price+=total_price
             # TODO: add_deal(
             #    "Заказ",
             #    request.user.bitrix_id,
@@ -103,9 +114,18 @@ class BuyBasketView(View):
             BasketEvent.objects.filter(user=request.user).delete()
 
         if by_tic_employee:
-            return redirect(reverse("tickets:purchase-detail", args=[purchase.pk]))
-        else:
-            return redirect(purchase.yookassa_url)
+            return redirect(reverse("tickets:basket"))
+
+        yookassa_url = create_yookassa_url(
+            mega_total_price,
+            purchase_ids,
+            request.user,
+            f'{self.request.scheme}://{self.request.get_host()}{reverse("users:profile")}',
+        )
+
+        Purchase.objects.filter(id__in=purchase_ids).update(yookassa_url=yookassa_url)
+
+        return redirect(yookassa_url)
 
 
 class EventBuyView(View):

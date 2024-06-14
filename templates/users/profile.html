@@ -33,7 +33,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">
-                                        Билет от {{ purchase.created_at|date:"SHORT_DATETIME_FORMAT" }}
+                                        {{ purchase.title }}
                                     </h5>
                                     <div>
                                         <img src="{{ purchase.qr_code.url }}" class="profile-qrcode" alt="">
