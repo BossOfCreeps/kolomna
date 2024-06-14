@@ -32,6 +32,13 @@ body {
 
 .navbar-brand {
     margin-right: 100px;
+    font-family: Candal, serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 22px;
+    letter-spacing: 0.5px;
+    text-align: left;
+
 }
 
 .main-btn {
@@ -473,6 +480,58 @@ nav .badge {
     height: 20px;
     display: inline-block;
     border: 1px solid gray;
+}
+
+.profile-left-block {
+    background-color: #0B91DC;
+    height: 600px;
+    padding: 50px;
+    color: white;
+    font-family: Roboto, serif;
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-align: left;
+    border-radius: 8px;
+    line-height: 50px;
+}
+
+.profile-left-block h3 {
+    font-family: Roboto, serif;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 22px;
+    letter-spacing: 1px;
+    text-align: left;
+    margin-left: 20px;
+}
+
+.profile-left-block .active {
+    color: #2D1703;
+    background-color: white;
+    width: 350px;
+    border-radius: 8px;
+    padding-left: 20px;
+}
+
+.profile-left-block a {
+    text-decoration: none;
+    color: white;
+    margin-left: 20px;
+}
+
+.fc-resourceTimeGridWeek-view span {
+    writing-mode: vertical-lr;
+}
+
+.profile-qrcode {
+    width: 200px;
+    height: 200px;
+}
+
+.red_text {
+    color: red;
+    text-decoration: bold;
 }
 
 @media only screen and (max-width: 600px) {

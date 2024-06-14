@@ -61,18 +61,13 @@
                 </div>
             </div>
         </form>
-        <div class="row mb-3" style="text-align: right">
-            <div class="col">
-                <a class="btn blue-btn" href="{% url 'events:event-create' %}">Новое мероприятие</a>
-                <a class="btn blue-btn" href="{% url 'events:event_schedule-create' %}">Добавить расписание</a>
-            </div>
-        </div>
-        <div class="row mb-5">
-            <div class="col">
-                <div id='calendar'></div>
-            </div>
-        </div>
     </div>
+
+    <a class="btn blue-btn" href="{% url 'events:event-create' %}">Новое мероприятие</a>
+    <a class="btn blue-btn" href="{% url 'events:event_schedule-create' %}">Добавить расписание</a>
+
+    <div id='calendar' class="mt-5 mb-5"></div>
+
     <div id="calendar-event-info">
         <button type="button" class="btn-close" aria-label="Close" onclick="closeEventInfo()"></button>
 
@@ -149,13 +144,19 @@
                 locale: 'ru-ru',
                 themeSystem: 'bootstrap5',
                 datesAboveResources: true,
-                buttonText: {today: "Сегодня", month: "Месяц", week: "Неделя", day: "День"},
+                buttonText: {today: "Сегодня", month: "Месяц", week: "Неделя целиком", day: "День"},
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'resourceTimeGridDay,timeGridWeek'
+                    right: 'resourceTimeGridDay,timeGridWeek,resourceTimeGridWeek'
                 },
-                views: {resourceTimeGridWeek: {type: 'resourceTimeGrid', duration: {days: 7}, buttonText: 'Неделя'}},
+                views: {
+                    resourceTimeGridWeek: {
+                        type: 'resourceTimeGrid',
+                        duration: {days: 7},
+                        buttonText: 'Неделя по организациям'
+                    }
+                },
                 initialView: 'resourceTimeGridDay',
                 resources: [
                     {% for organization in organizations %}

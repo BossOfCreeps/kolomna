@@ -13,14 +13,14 @@
                 <h3 class="mb-5">
                     Добро пожаловать, {{ request.user.first_name }} {{ request.user.last_name }}!
                 </h3>
-                <div class="active">
-                    <p>Купленные билеты</p>
+                <div class="mt-3">
+                    <a href="{% url 'users:profile' %}">Купленные билеты</a>
                 </div>
                 <div class="mt-3">
                     <a href="{% url 'users:profile-saved' %}">Сохраненные мероприятия</a>
                 </div>
-                <div class="mt-3">
-                    <a href="{% url 'users:profile-history' %}">История</a>
+                <div class="mt-3 active">
+                    <p>История</p>
                 </div>
                 <div class="mt-5">
                     <a href="{% url 'users:logout' %}">Выйти</a>
@@ -40,14 +40,14 @@
                                     </div>
 
                                     <div>
-                                        {% if purchase.status == 'NEW' %}
-                                            <a href="{{ purchase.yookassa_url }}">Оплатить</a>
-                                        {% endif %}
+                                        <p class="red_text">
+                                            {% if purchase.status == 'CLOSED' %}
+                                                Не был оплачен
+                                            {% else %}
+                                                Истёк срок
+                                            {% endif %}
+                                        </p>
                                     </div>
-
-                                    <a href="{% url 'tickets:purchase-detail' purchase.pk %}" class="btn blue-btn mt-3">
-                                        Посмотреть
-                                    </a>
                                 </div>
                             </div>
                         </div>
