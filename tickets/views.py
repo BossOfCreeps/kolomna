@@ -140,10 +140,10 @@ class BuyBasketView(View):
 
             purchase.total_price = total_price
             purchase.set_id = set_id
-            purchase.save()
             purchase_ids.append(purchase.id)
 
             mega_total_price += total_price
+            purchase_ids.bitrix_id = 9999
             # TODO: add_deal(
             #    "Заказ",
             #    request.user.bitrix_id,
@@ -153,6 +153,7 @@ class BuyBasketView(View):
             #    event_prices,
             # )
 
+            purchase.save()
             BasketEvent.objects.filter(user=request.user).delete()
 
         if by_tic_employee:

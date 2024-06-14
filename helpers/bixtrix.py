@@ -1,13 +1,15 @@
+import logging
 from datetime import datetime
-from pprint import pprint
 
 from django.conf import settings
 from fast_bitrix24 import Bitrix
 
 bx = Bitrix(settings.BITRIX_URL)
 
+logger = logging.getLogger(__name__)
 
-def add_contact(first_name: str, last_name: str, email: str):
+
+def add_contact(first_name: str, last_name: str, email: str, phone: str):
     response = bx.call(
         "crm.contact.add",
         {
@@ -16,20 +18,28 @@ def add_contact(first_name: str, last_name: str, email: str):
                 "LAST_NAME": last_name,
                 "OPENED": "Y",
                 "TYPE_ID": "CLIENT",
-                "EMAIL": email,
+                "EMAIL": [{"VALUE": email, "VALUE_TYPE": "PERSONAL"}],
+                "PHONE": [{"VALUE": phone, "VALUE_TYPE": "PERSONAL"}],
             }
         },
     )
+    logger.debug(response)
     return response["order0000000000"]
 
 
-def list_contact():
-    leads = bx.get_all("crm.contact.list")
-    pprint(leads)
+def add_product(name: str):
+    list_response = bx.call("crm.product.list", {"filter": {"NAME": name}})
+    if list_response:
+        logger.debug(list_response)
+        return list_response["ID"]
+
+    add_response = bx.call("crm.product.add", {"fields": {"NAME": name}})
+    logger.debug(add_response)
+    return add_response["order0000000000"]
 
 
 def add_deal(title: str, bitrix_id: int, price: int, start_at: datetime, end_at: datetime, event_prices: list):
-    response = bx.call(
+    add_response = bx.call(
         "crm.deal.add",
         {
             "fields": {
@@ -42,19 +52,16 @@ def add_deal(title: str, bitrix_id: int, price: int, start_at: datetime, end_at:
             }
         },
     )
-    pk = response["order0000000000"]
+    pk = add_response["order0000000000"]
+    logger.debug(add_response)
 
-    bx.call(
+    set_response = bx.call(
         "crm.deal.productrows.set",
         {
             "id": pk,
             "rows": [{"PRODUCT_ID": event_price.bitrix_id, "PRICE": event_price.price} for event_price in event_prices],
         },
     )
+    logger.debug(set_response)
 
     return pk
-
-
-def add_product(name: str, price: int):
-    response = bx.call("crm.product.add", {"fields": {"NAME": name, "CURRENCY_ID": "RUB", "PRICE": price}})
-    return response["order0000000000"]

@@ -16,7 +16,7 @@ class CustomUserManager(BaseUserManager):
         user = self.model(email=self.normalize_email(email), **extra_fields)
         user.set_password(password)
 
-        user.bitrix_id = add_contact(user.first_name, user.last_name, user.email)
+        user.bitrix_id = add_contact(user.first_name, user.last_name, user.email, user.phone)
         user.save()
 
         return user
@@ -31,7 +31,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     bitrix_id = models.PositiveIntegerField("ID в Bitrix", blank=True, null=True)
     is_tic_employee = models.BooleanField(default=False)
-
+    phone = models.CharField("Телефон", max_length=100, blank=True, null=True)
     objects = CustomUserManager()
 
     @property

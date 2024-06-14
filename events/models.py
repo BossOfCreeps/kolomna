@@ -88,18 +88,19 @@ class EventSchedule(models.Model):
 
     @property
     def start_at_as_str(self):
-        return datetime_to_str(self.start_at)
+        return datetime_to_str(self.start_at + timedelta(hours=3))
 
     @property
     def end_at_as_str(self):
-        return datetime_to_str(self.end_at)
+        return datetime_to_str(self.end_at + timedelta(hours=3))
 
     @property
     def date_range(self):
         if self.start_at.date() == self.end_at.date():
             return (
                 f"{date_to_str(self.start_at.date())} "
-                f"{self.start_at.strftime('%H:%M')} - {self.end_at.strftime('%H:%M')}"
+                f"{(self.start_at + timedelta(hours=3)).strftime('%H:%M')} - "
+                f"{(self.end_at + timedelta(hours=3)).strftime('%H:%M')}"
             )
 
         return f"{self.start_at_as_str} - {self.end_at_as_str}"

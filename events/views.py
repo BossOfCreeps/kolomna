@@ -150,9 +150,7 @@ class EventScheduleCreateView(FormView):
                     price=form.cleaned_data[f"price_{cat.lower()}"],
                     category=cat,
                     max_visitors=form.cleaned_data[f"visitors_{cat.lower()}"],
-                    bitrix_id=add_product(
-                        f'"{event.name}" для категории "{cat}"', form.cleaned_data[f"price_{cat.lower()}"]
-                    ),
+                    bitrix_id=add_product(f'"{event.name}" для категории "{cat}"'),
                 )
 
         elif form.cleaned_data["period"] == "periodical":
@@ -177,9 +175,7 @@ class EventScheduleCreateView(FormView):
                         price=form.cleaned_data[f"price_{cat.lower()}"],
                         category=cat,
                         max_visitors=form.cleaned_data[f"visitors_{cat.lower()}"],
-                        bitrix_id=add_product(
-                            f'"{event.name}" для категории "{cat}"', form.cleaned_data[f"price_{cat.lower()}"]
-                        ),
+                        bitrix_id=add_product(f'"{event.name}" для категории "{cat}"'),
                     )
 
         return redirect(reverse("events:calendar"))

@@ -35,6 +35,7 @@ class Purchase(models.Model):
     yookassa_url = models.URLField("Ссылка", null=True, blank=True)
     total_price = models.PositiveIntegerField("Стоимость")
     set_id = models.UUIDField("ID единого билета", blank=True, null=True)
+    bitrix_id = models.PositiveIntegerField("ID в Bitrix", blank=True, null=True)
 
     @property
     def title(self):

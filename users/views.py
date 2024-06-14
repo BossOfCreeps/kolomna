@@ -26,6 +26,7 @@ class RegistrationView(FormView):
             form.cleaned_data["password"],
             first_name=form.cleaned_data["first_name"],
             last_name=form.cleaned_data["last_name"],
+            phone=form.cleaned_data["phone"],
         )
         login(self.request, user)
         return super().form_valid(form)

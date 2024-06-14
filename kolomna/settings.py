@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django_bootstrap5",
     "django_filters",
     "sslserver",
+    "phonenumber_field",
     #
     "events.apps.EventsConfig",
     "tickets.apps.TicketsConfig",
