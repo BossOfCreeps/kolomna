@@ -39,7 +39,6 @@ def add_deal(title, user_bitrix_id, price, basket_events, is_set: bool):
         "crm.deal.add",
         {
             "fields": {
-                "ID": "11",
                 "TITLE": title,
                 "CONTACT_ID": user_bitrix_id,
                 "CURRENCY_ID": "RUB",

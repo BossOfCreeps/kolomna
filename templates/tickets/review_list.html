@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col text-center mt-5 mb-5">
+                <h1>Отзывы</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Опубликовано</th>
+                        <th scope="col">Пользователь</th>
+                        <th scope="col">Мероприятие</th>
+                        <th scope="col">Рейтинг</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for review in object_list %}
+                        <tr>
+                            <th scope="row">{{ review.created_at|date:"Y-m-d H:i" }}</th>
+                            <td>{{ review.user.get_full_name }}</td>
+                            <td>{{ review.event }}</td>
+                            <td>{{ review.rate }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

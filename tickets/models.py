@@ -113,8 +113,11 @@ class PurchaseEvent(models.Model):
 
 
 class Review(models.Model):
-    purchase = models.ForeignKey(Purchase, models.CASCADE, "reviews", verbose_name="Покупка")
+    event = models.ForeignKey(Event, models.CASCADE, "reviews", verbose_name="Мероприятие")
+    user = models.ForeignKey(CustomUser, models.CASCADE, "reviews", verbose_name="Пользователь")
     text = models.TextField("Текст")
+    rate = models.PositiveIntegerField("Рейтинг")
+    created_at = models.DateTimeField("Дата", auto_now_add=True)
 
     @staticmethod
     def get_absolute_url():

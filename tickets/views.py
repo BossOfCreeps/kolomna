@@ -8,13 +8,13 @@ from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import TemplateView, View, DetailView, CreateView, FormView
+from django.views.generic import TemplateView, View, DetailView, CreateView, FormView, ListView
 from qrcode.main import make
 
-from events.models import EventSchedulePrice, EventSet
+from events.models import EventSchedulePrice, EventSet, Event
 from helpers import create_yookassa_url, add_deal, update_deal_stage, add_task
 from tickets.forms import BuyForm, ReviewForm
-from tickets.models import BasketEvent, Purchase, PurchaseEvent, EventPriceCategory, PurchaseStatus
+from tickets.models import BasketEvent, Purchase, PurchaseEvent, EventPriceCategory, PurchaseStatus, Review
 from users.models import CustomUser
 
 logger = logging.getLogger(__name__)
@@ -246,17 +246,29 @@ class PurchaseApproveView(View):
         return HttpResponse()
 
 
-class PurchaseReviewView(CreateView):
+class PurchaseDeleteView(FormView):
+    pass
+
+
+class ReviewCreateView(CreateView):
     form_class = ReviewForm
     template_name = "tickets/purchase_review.html"
 
     def get_form_kwargs(self):
-        kwargs = super(PurchaseReviewView, self).get_form_kwargs()
-        kwargs["purchases"] = (
-            Purchase.objects.filter(pk=self.request.GET["id"]) if self.request.GET.get("id") else Purchase.objects.all()
-        )
+        events = Event.objects.all()
+
+        if self.request.GET.get("purchase_id"):
+            events = events.filter(
+                pk__in=PurchaseEvent.objects.filter(purchase_id=self.request.GET["purchase_id"]).values_list(
+                    "event_id", flat=True
+                )
+            )
+
+        kwargs = super(ReviewCreateView, self).get_form_kwargs()
+        kwargs["event"] = events
+        kwargs["user"] = self.request.user
         return kwargs
 
 
-class PurchaseDeleteView(FormView):
-    pass
+class ReviewListView(ListView):
+    model = Review
