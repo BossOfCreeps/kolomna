@@ -1,4 +1,5 @@
 import uuid
+from collections import defaultdict
 from datetime import datetime, timedelta
 from pprint import pprint
 
@@ -14,7 +15,7 @@ from events.filters import EventFilter
 from events.forms import EventForm, EventScheduleCreateForm, EventScheduleUpdateForm
 from events.models import Event, Organization, EventPriceCategory, EventSchedule, EventSchedulePrice, EventSet
 from helpers import add_product
-from tickets.models import BasketEvent
+from tickets.models import BasketEvent, PurchaseEvent
 
 
 class OrganizationListView(ListView):
@@ -187,6 +188,19 @@ class EventScheduleCreateView(FormView):
 class EventScheduleDetailView(FormView):
     template_name = "events/eventschedule_detail.html"
     form_class = EventScheduleUpdateForm
+
+    def get_context_data(self, **kwargs):
+        obj = EventSchedule.objects.get(pk=self.kwargs["pk"])
+
+        context = super().get_context_data(**kwargs)
+        context["object"] = obj
+
+        purchase_events = defaultdict(list)
+        for pe in PurchaseEvent.objects.filter(event=obj.event, start_at=obj.start_at, end_at=obj.end_at):
+            purchase_events[pe.purchase].append(pe)
+
+        context["purchase_events"] = dict(purchase_events)
+        return context
 
 
 class EventSetListView(ListView):

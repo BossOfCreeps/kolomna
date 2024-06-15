@@ -531,7 +531,6 @@ nav .badge {
 
 .red_text {
     color: red;
-    text-decoration: bold;
 }
 
 .user-list-form .input-group-text {
@@ -628,5 +627,25 @@ nav .badge {
         margin-top: 20px;
         width: 300px;
         margin-left: 50px;
+    }
+
+    .profile-left-block {
+        background-color: #0B91DC;
+        padding: 20px;
+        color: white;
+        font-family: Roboto, serif;
+        font-size: 17px;
+        font-weight: 400;
+        letter-spacing: 1px;
+        text-align: left;
+        border-radius: 8px;
+        line-height: 50px;
+        height: 400px;
+        width: 100%;
+        margin-bottom: 30px;
+    }
+
+    .profile-left-block .active {
+        width: 100%;
     }
 }

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load prettifiers %}
 {% load django_bootstrap5 %}
 
 {% block content %}
@@ -8,14 +9,22 @@
                 <h1 class="text-center mt-5 mb-5">
                     Расписание
                 </h1>
+                <p>{{ object.event }}</p>
+                <p>{{ object.event.organization }}
+                <p>{{ object.date_range }}</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
                 <form class="form" method="post" enctype='multipart/form-data'>
                     {% csrf_token %}
 
                     {% if object.group_id == null %}
                     {% else %}
                     {% endif %}
-                    <div id="prices" class="mb-5">
-                        <h3>Цены и кол-во мест на билеты</h3>
+                    <div id="prices" class=" mt-5 mb-5">
+                        <h2 class="mb-5">Цены и кол-во мест на билеты</h2>
 
                         <div class="input-group mb-3">
                             <label class="input-group-text">Стандартный</label>
@@ -53,6 +62,46 @@
                     <input type="submit" class="btn full-blue-btn" value="Изменить">
                 </form>
             </div>
+        </div>
+
+        <div class="basket">
+            <h2 class="mt-5 mb-5">Билеты</h2>
+            {% for purchase, pes in purchase_events.items %}
+                <div class="row">
+                    <div class="col-sm-1">
+                        <p>{{ purchase.id }}</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p>
+                            <a href="#">{{ purchase.user.get_full_name }}</a>
+                        </p>
+                    </div>
+                    <div class="col-sm-2">
+                        {% for purchase_event in pes %}
+                            <p>
+                                {{ purchase_event.count }}
+                                {% category_to_str_tag purchase_event.category %}
+                                {% if purchase_event.set_id %}
+                                    <span>
+                                        ("Единый билет №{% set_by_uuid purchase_event.set_id %}")
+                                    </span>
+                                {% else %}
+                                    <span>
+                                        ({% widthratio purchase_event.count 1 purchase_event.price %}₽)
+                                    </span>
+                                {% endif %}
+                            </p>
+                        {% endfor %}
+                    </div>
+                    <div class="col-sm-1 text-center">
+                        <p>
+                            <a href="{% url 'tickets:purchase-delete' purchase.id %}">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}

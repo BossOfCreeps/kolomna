@@ -9,7 +9,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-4 profile-left-block">
+            <div class="col-sm-4 profile-left-block">
                 <h3 class="mb-5">
                     Добро пожаловать, {{ request.user.first_name }} {{ request.user.last_name }}!
                 </h3>
@@ -26,11 +26,11 @@
                     <a href="{% url 'users:logout' %}">Выйти</a>
                 </div>
             </div>
-            <div class="col-8">
+            <div class="col-sm-8">
                 <div class="row">
                     {% for purchase in purchases %}
                         <div class="col-sm-6 mb-3 mb-sm-0 text-center">
-                            <div class="card">
+                            <div class="card mb-3">
                                 <div class="card-body">
                                     <h5 class="card-title">
                                         Билет от {{ purchase.created_at|date:"SHORT_DATETIME_FORMAT" }}

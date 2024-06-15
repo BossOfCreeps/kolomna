@@ -8,7 +8,7 @@ from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import TemplateView, View, DetailView, CreateView
+from django.views.generic import TemplateView, View, DetailView, CreateView, FormView
 from qrcode.main import make
 
 from events.models import EventSchedulePrice, EventSet
@@ -100,16 +100,16 @@ class BuyBasketView(View):
 
         qs = BasketEvent.objects.filter(user=request.user)
 
-        singles_basket_events = []
+        singles_basket_events = defaultdict(list)
         sets_basket_events = defaultdict(list)
         for obj in qs:
             if obj.set_id is None:
-                singles_basket_events.append([obj])
+                singles_basket_events[obj.event_price.event_schedule].append(obj)
             else:
                 sets_basket_events[obj.set_id].append(obj)
 
         purchase_ids, mega_total_price = [], 0
-        for basket_events in singles_basket_events + list(sets_basket_events.values()):
+        for basket_events in list(singles_basket_events.values()) + list(sets_basket_events.values()):
             purchase = Purchase.objects.create(user_id=user_id, total_price=0)
 
             total_price, objs, set_id = 0, [], None
@@ -256,3 +256,7 @@ class PurchaseReviewView(CreateView):
             Purchase.objects.filter(pk=self.request.GET["id"]) if self.request.GET.get("id") else Purchase.objects.all()
         )
         return kwargs
+
+
+class PurchaseDeleteView(FormView):
+    pass
