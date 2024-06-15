@@ -12,7 +12,6 @@ class IndexView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # TODO: весь день
         context["event_schedules"] = EventSchedule.objects.filter(
             start_at__gte=timezone.now() + timedelta(hours=3)
         ).order_by("start_at")[:3]

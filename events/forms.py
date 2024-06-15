@@ -57,10 +57,5 @@ class EventScheduleCreateForm(forms.Form):
     )
 
 
-class EventScheduleUpdateForm(forms.ModelForm):
-    start_at = DateTimeLocalField(label="Дата и время начало")
-    end_at = DateTimeLocalField(label="Дата и время конца")
-
-    class Meta:
-        model = EventSchedule
-        fields = ["start_at", "end_at"]
+class EventScheduleUpdateForm(forms.Form):
+    pass

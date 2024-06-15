@@ -184,8 +184,9 @@ class EventScheduleCreateView(FormView):
         raise Exception(form.errors)
 
 
-class EventScheduleDeleteView(FormView):
-    pass
+class EventScheduleDetailView(FormView):
+    template_name = "events/eventschedule_detail.html"
+    form_class = EventScheduleUpdateForm
 
 
 class EventSetListView(ListView):
