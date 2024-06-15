@@ -100,75 +100,61 @@ class BuyBasketView(View):
 
         qs = BasketEvent.objects.filter(user=request.user)
 
-        singles_basket_events = defaultdict(list)
-        sets_basket_events = defaultdict(list)
+        purchase = Purchase.objects.create(user_id=user_id, total_price=0)
+
+        total_price, objs, set_ids = 0, [], []
         for obj in qs:
             if obj.set_id is None:
-                singles_basket_events[obj.event_price.event_schedule].append(obj)
+                total_price += obj.count * obj.event_price.price
             else:
-                sets_basket_events[obj.set_id].append(obj)
+                set_ids.append(obj.set_id)
 
-        purchase_ids, mega_total_price = [], 0
-        for basket_events in list(singles_basket_events.values()) + list(sets_basket_events.values()):
-            purchase = Purchase.objects.create(user_id=user_id, total_price=0)
-
-            total_price, objs, set_id = 0, [], None
-            for obj in basket_events:
-                set_id = obj.set_id
-                if set_id is None:
-                    total_price += obj.count * obj.event_price.price
-                objs.append(
-                    PurchaseEvent(
-                        purchase=purchase,
-                        event=obj.event_price.event_schedule.event,
-                        count=obj.count,
-                        category=obj.event_price.category,
-                        price=obj.event_price.price,
-                        start_at=obj.event_price.event_schedule.start_at,
-                        end_at=obj.event_price.event_schedule.end_at,
-                    )
+            objs.append(
+                PurchaseEvent(
+                    purchase=purchase,
+                    event=obj.event_price.event_schedule.event,
+                    count=obj.count,
+                    category=obj.event_price.category,
+                    price=obj.event_price.price,
+                    start_at=obj.event_price.event_schedule.start_at,
+                    end_at=obj.event_price.event_schedule.end_at,
+                    set_id=obj.set_id,
                 )
-            PurchaseEvent.objects.bulk_create(objs)
-
-            purchase.qr_code.save(f"{purchase.pk}.jpg", ContentFile(""), save=True)
-            make(f'{self.request.get_host()}{reverse("tickets:purchase-visit", args=[purchase.pk])}').save(
-                purchase.qr_code.path
             )
+        PurchaseEvent.objects.bulk_create(objs)
 
-            if by_tic_employee:
-                purchase.status = PurchaseStatus.SUCCESS.value
-
-            if set_id is not None:
-                total_price = EventSet.objects.get(set_id=set_id).price
-
-            purchase.total_price = total_price
-            purchase.set_id = set_id
-            purchase_ids.append(purchase.id)
-
-            mega_total_price += total_price
-
-            purchase.bitrix_id = add_deal(
-                purchase.title, purchase.user.bitrix_id, total_price, basket_events, is_set=set_id is not None
-            )
-
-            purchase.save()
-            BasketEvent.objects.filter(user=request.user).delete()
+        purchase.qr_code.save(f"{purchase.pk}.jpg", ContentFile(""), save=True)
+        make(f'{self.request.get_host()}{reverse("tickets:purchase-visit", args=[purchase.pk])}').save(
+            purchase.qr_code.path
+        )
 
         if by_tic_employee:
-            for bitrix_id in Purchase.objects.filter(id__in=purchase_ids).values_list("bitrix_id", flat=True):
-                update_deal_stage(bitrix_id)
+            purchase.status = PurchaseStatus.SUCCESS.value
+
+        for set_id in set_ids:
+            total_price += EventSet.objects.get(set_id=set_id).price
+
+        purchase.total_price = total_price
+        purchase.bitrix_id = add_deal(
+            purchase.title, purchase.user.bitrix_id, total_price, qs
+        )
+        purchase.save()
+
+        BasketEvent.objects.filter(user=request.user).delete()
+
+        if by_tic_employee:
+            update_deal_stage(purchase.bitrix_id)
             return redirect(reverse("tickets:basket"))
 
-        yookassa_url = create_yookassa_url(
-            mega_total_price,
-            purchase_ids,
+        purchase.yookassa_url = create_yookassa_url(
+            total_price,
+            purchase.title,
             request.user,
             f'{self.request.scheme}://{self.request.get_host()}{reverse("users:profile")}',
         )
+        purchase.save()
 
-        Purchase.objects.filter(id__in=purchase_ids).update(yookassa_url=yookassa_url)
-
-        return redirect(yookassa_url)
+        return redirect(purchase.yookassa_url)
 
 
 class EventBuyView(View):

@@ -34,7 +34,7 @@ def add_product(name: str):
     return add_response["order0000000000"]
 
 
-def add_deal(title, user_bitrix_id, price, basket_events, is_set: bool):
+def add_deal(title, user_bitrix_id, price, basket_events):
     add_response = bx.call(
         "crm.deal.add",
         {
@@ -50,28 +50,24 @@ def add_deal(title, user_bitrix_id, price, basket_events, is_set: bool):
             }
         },
     )
-    pk = add_response["order0000000000"]
-
-    price_if_set = None
-    if is_set:
-        price_if_set = price / len(basket_events)
+    deal_bitrix_id = add_response["order0000000000"]
 
     bx.call(
         "crm.deal.productrows.set",
         {
-            "id": pk,
+            "id": deal_bitrix_id,
             "rows": [
                 {
                     "PRODUCT_ID": be.event_price.bitrix_id,
                     "QUANTITY": be.count,
-                    "PRICE": be.event_price.price if price_if_set is None else price_if_set,
+                    # "PRICE": be.event_price.price,
                 }
                 for be in basket_events
             ],
         },
     )
 
-    return pk
+    return deal_bitrix_id
 
 
 def update_deal_stage(bitrix_id, stage: str = "EXECUTING"):

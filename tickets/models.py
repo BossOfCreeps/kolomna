@@ -35,11 +35,12 @@ class Purchase(models.Model):
     status = models.CharField("Статус", max_length=255, choices=PurchaseStatus.choices, default=PurchaseStatus.NEW)
     yookassa_url = models.URLField("Ссылка", null=True, blank=True)
     total_price = models.PositiveIntegerField("Стоимость")
-    set_id = models.UUIDField("ID единого билета", blank=True, null=True)
     bitrix_id = models.PositiveIntegerField("ID в Bitrix", blank=True, null=True)
 
     @property
     def title(self):
+        return f'Покупка "{self.id}"'
+
         if self.set_id:
             return f'Единый билет "{EventSet.objects.get(set_id=self.set_id).name}"'
         else:
@@ -79,6 +80,7 @@ class PurchaseEvent(models.Model):
     purchase = models.ForeignKey(Purchase, models.CASCADE, "events", verbose_name="Покупка")
     event = models.ForeignKey(Event, models.CASCADE, "purchase_events", verbose_name="Мероприятие")
     count = models.PositiveIntegerField("Количество")
+    set_id = models.UUIDField("ID единого билета", blank=True, null=True)
 
     category = models.CharField("Категория покупателя", max_length=255, choices=EventPriceCategory.choices)
     price = models.PositiveIntegerField("Цена")
