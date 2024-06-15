@@ -38,16 +38,20 @@
                                     <div>
                                         <img src="{{ purchase.qr_code.url }}" class="profile-qrcode" alt="">
                                     </div>
-
                                     <div>
                                         <p class="red_text">
                                             {% if purchase.status == 'CLOSED' %}
                                                 Не был оплачен
+                                            {% elif  purchase.status == 'VISITED' %}
+                                                Посещён
                                             {% else %}
                                                 Истёк срок
                                             {% endif %}
                                         </p>
                                     </div>
+                                    <a href="{% url 'tickets:purchase-detail' purchase.pk %}" class="btn blue-btn mt-3">
+                                        Посмотреть
+                                    </a>
                                 </div>
                             </div>
                         </div>

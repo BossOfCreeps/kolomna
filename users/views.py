@@ -65,7 +65,10 @@ class ProfileHistoryView(TemplateView):
         context["purchases"] = (
             Purchase.objects.annotate(start_at=Max("events__start_at"))
             .filter(user=self.request.user)
-            .filter(Q(status=PurchaseStatus.CLOSED.value) | Q(start_at__lte=timezone.now() + timedelta(hours=3)))
+            .filter(
+                Q(status__in=[PurchaseStatus.CLOSED.value, PurchaseStatus.VISITED.value])
+                | Q(start_at__lte=timezone.now() + timedelta(hours=3))
+            )
         )
         return context
 

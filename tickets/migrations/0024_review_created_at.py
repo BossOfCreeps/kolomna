@@ -13,9 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="review",
             name="created_at",
-            field=models.DateTimeField(
-                auto_now_add=True, default="2020-01-01", verbose_name="Дата"
-            ),
+            field=models.DateTimeField(auto_now_add=True, default="2020-01-01", verbose_name="Дата"),
             preserve_default=False,
         ),
     ]

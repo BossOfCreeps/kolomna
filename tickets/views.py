@@ -13,7 +13,7 @@ from qrcode.main import make
 
 from events.models import EventSchedulePrice, EventSet, Event
 from helpers import create_yookassa_url, add_deal, update_deal_stage, add_task
-from tickets.forms import BuyForm, ReviewForm
+from tickets.forms import BuyForm, ReviewForm, PurchaseVisitForm
 from tickets.models import BasketEvent, Purchase, PurchaseEvent, EventPriceCategory, PurchaseStatus, Review
 from users.models import CustomUser
 
@@ -131,7 +131,7 @@ class BuyBasketView(View):
             PurchaseEvent.objects.bulk_create(objs)
 
             purchase.qr_code.save(f"{purchase.pk}.jpg", ContentFile(""), save=True)
-            make(f'{self.request.get_host()}{reverse("tickets:purchase-detail", args=[purchase.pk])}').save(
+            make(f'{self.request.get_host()}{reverse("tickets:purchase-visit", args=[purchase.pk])}').save(
                 purchase.qr_code.path
             )
 
@@ -244,6 +244,23 @@ class PurchaseApproveView(View):
             qs.update(status=PurchaseStatus.CLOSED.value)
 
         return HttpResponse()
+
+
+class PurchaseVisitView(FormView):
+    form_class = PurchaseVisitForm
+    template_name = "tickets/purchase_visit.html"
+
+    def get_success_url(self):
+        return reverse("core:index")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["object"] = Purchase.objects.get(pk=self.kwargs["pk"])
+        return context
+
+    def form_valid(self, form):
+        Purchase.objects.filter(pk=self.kwargs["pk"]).update(status=PurchaseStatus.VISITED.value)
+        return super().form_valid(form)
 
 
 class PurchaseDeleteView(FormView):

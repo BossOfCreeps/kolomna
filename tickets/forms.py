@@ -38,3 +38,7 @@ class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ["event", "text", "rate", "files"]
+
+
+class PurchaseVisitForm(forms.Form):
+    pass

@@ -24,6 +24,7 @@ class BasketEvent(models.Model):
 class PurchaseStatus(models.TextChoices):
     NEW = "NEW"
     SUCCESS = "SUCCESS"
+    VISITED = "VISITED"
     CLOSED = "CLOSED"
 
 

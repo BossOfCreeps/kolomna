@@ -5,11 +5,13 @@
     <div class="container">
         <div class="row">
             <div class="col">
+                <h1 class="mt-5 mb-5 text-center">Отметить посещение отзыв</h1>
                 <form class="form" method="POST" enctype='multipart/form-data'>
-                    <h1 class="mt-5 mb-5 text-center">Написать отзыв</h1>
                     {% csrf_token %}
                     {% bootstrap_form form %}
-                    {% bootstrap_button button_type="submit" content="ОК" %}
+                    <div class="text-center">
+                        <button class="btn full-blue-btn" type="submit">Отметить</button>
+                    </div>
                 </form>
             </div>
         </div>

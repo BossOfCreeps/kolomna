@@ -10,6 +10,7 @@ from tickets.views import (
     ReviewCreateView,
     PurchaseDeleteView,
     ReviewListView,
+    PurchaseVisitView,
 )
 
 app_name = "tickets"
@@ -24,6 +25,7 @@ urlpatterns = [
     path("purchase/<int:pk>", PurchaseDetailView.as_view(), name="purchase-detail"),
     path("purchase/<int:pk>/delete", PurchaseDeleteView.as_view(), name="purchase-delete"),
     path("purchase/approve", PurchaseApproveView.as_view(), name="purchase-approve"),
+    path("purchase/<int:pk>/visit", PurchaseVisitView.as_view(), name="purchase-visit"),
     #
     path("review", ReviewListView.as_view(), name="review-list"),
     path("review/create", ReviewCreateView.as_view(), name="review-create"),
