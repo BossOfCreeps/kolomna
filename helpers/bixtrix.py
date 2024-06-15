@@ -22,16 +22,16 @@ def add_contact(first_name: str, last_name: str, email: str, phone: str):
             }
         },
     )
-    return response["order0000000000"]
+    return response
 
 
 def add_product(name: str):
     list_response = bx.callMethod("crm.product.list", {"filter": {"NAME": name}})
     if list_response:
-        return list_response["ID"]
+        return list_response[0]["ID"]
 
     add_response = bx.callMethod("crm.product.add", {"fields": {"NAME": name}})
-    return add_response["order0000000000"]
+    return add_response
 
 
 def add_deal(title, user_bitrix_id, price, basket_events, is_set: bool):
@@ -50,7 +50,7 @@ def add_deal(title, user_bitrix_id, price, basket_events, is_set: bool):
             }
         },
     )
-    pk = add_response["order0000000000"]
+    pk = add_response
 
     price_if_set = None
     if is_set:
