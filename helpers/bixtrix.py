@@ -1,15 +1,15 @@
 import logging
 
 from django.conf import settings
-from fast_bitrix24 import Bitrix
+from bitrix24 import Bitrix24
 
-bx = Bitrix(settings.BITRIX_URL)
+bx = Bitrix24(settings.BITRIX_URL)
 
 logger = logging.getLogger(__name__)
 
 
 def add_contact(first_name: str, last_name: str, email: str, phone: str):
-    response = bx.call(
+    response = bx.callMethod(
         "crm.contact.add",
         {
             "fields": {
@@ -26,16 +26,16 @@ def add_contact(first_name: str, last_name: str, email: str, phone: str):
 
 
 def add_product(name: str):
-    list_response = bx.call("crm.product.list", {"filter": {"NAME": name}})
+    list_response = bx.callMethod("crm.product.list", {"filter": {"NAME": name}})
     if list_response:
         return list_response["ID"]
 
-    add_response = bx.call("crm.product.add", {"fields": {"NAME": name}})
+    add_response = bx.callMethod("crm.product.add", {"fields": {"NAME": name}})
     return add_response["order0000000000"]
 
 
 def add_deal(title, user_bitrix_id, price, basket_events, is_set: bool):
-    add_response = bx.call(
+    add_response = bx.callMethod(
         "crm.deal.add",
         {
             "fields": {
@@ -56,7 +56,7 @@ def add_deal(title, user_bitrix_id, price, basket_events, is_set: bool):
     if is_set:
         price_if_set = price / len(basket_events)
 
-    bx.call(
+    bx.callMethod(
         "crm.deal.productrows.set",
         {
             "id": pk,
@@ -75,11 +75,11 @@ def add_deal(title, user_bitrix_id, price, basket_events, is_set: bool):
 
 
 def update_deal_stage(bitrix_id, stage: str = "EXECUTING"):
-    bx.call("crm.deal.add", {"id": bitrix_id, "fields": {"STAGE_ID": stage}})
+    bx.callMethod("crm.deal.add", {"id": bitrix_id, "fields": {"STAGE_ID": stage}})
 
 
 def add_task(title, deal_bitrix_id):
-    bx.call(
+    bx.callMethod(
         "tasks.task.add",
         {
             "fields": {

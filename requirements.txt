@@ -12,3 +12,4 @@ django-phonenumber-field==7.3.0
 gunicorn==22.0.0
 psycopg2-binary==2.9.9
 phonenumbers==8.13.38
+bitrix24-rest==2.0.0
