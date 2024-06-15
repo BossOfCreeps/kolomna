@@ -27,7 +27,7 @@
                                     {% category_to_str_tag basket_event.event_price.category %}
                                     {% if basket_event.set_id %}
                                         <span>
-                                            ("Единый билет №{% set_by_uuid basket_event.set_id %}")
+                                            ("Набор №{% set_by_uuid basket_event.set_id %}")
                                         </span>
                                     {% else %}
                                         <span>
@@ -59,7 +59,7 @@
             {% endfor %}
 
             {% if sets %}
-                <p class="blue-div mt-5">Единые билеты</p>
+                <p class="blue-div mt-5">Наборы</p>
                 {% for set in sets %}
                     <div class="row basket">
                         <div class="col-sm-1">

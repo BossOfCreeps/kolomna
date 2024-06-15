@@ -41,7 +41,7 @@ class Purchase(models.Model):
     @property
     def title(self):
         if self.set_id:
-            return f'Единый билет "{EventSet.objects.get(set_id=self.set_id).name}"'
+            return f'Набор "{EventSet.objects.get(set_id=self.set_id).name}"'
         else:
             return f'Билет "{self.events.first().event.name}"'
 
