@@ -5,13 +5,14 @@ from datetime import timedelta
 
 from django.core.files.base import ContentFile
 from django.db import transaction
+from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, View, DetailView, CreateView, FormView, ListView, DeleteView
 from qrcode.main import make
 
-from events.models import EventSchedulePrice, EventSet, Event
+from events.models import EventSchedulePrice, EventSet, Event, EventSchedule
 from helpers import create_yookassa_url, add_deal, update_deal_stage, add_task
 from tickets.forms import BuyForm, ReviewForm, PurchaseVisitForm
 from tickets.models import BasketEvent, Purchase, PurchaseEvent, EventPriceCategory, PurchaseStatus, Review
@@ -26,6 +27,8 @@ class BasketView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        purchases_map = defaultdict(int)
+
         has_collisions, more_then_total_count = False, set()
         date_ranges = []
         total_price, total_count = 0, defaultdict(int)
@@ -33,6 +36,17 @@ class BasketView(TemplateView):
         data = defaultdict(lambda: defaultdict(list))
         for obj in self.request.user.basket_events.order_by("event_price__event_schedule__start_at").all():
             data[obj.event_price.event_schedule.start_at.date()][obj.event_price.event_schedule].append(obj)
+
+            for cat in EventPriceCategory.values:
+                purchased_cat = PurchaseEvent.objects.filter(
+                    event=obj.event_price.event_schedule.event,
+                    start_at=obj.event_price.event_schedule.start_at,
+                    end_at=obj.event_price.event_schedule.end_at,
+                    purchase__status__in=[PurchaseStatus.SUCCESS.value, PurchaseStatus.VISITED.value],
+                    category=cat,
+                )
+                purchased_cat_visitors = purchased_cat.aggregate(Sum("count"))["count__sum"] if purchased_cat else 0
+                purchases_map[obj.event_price.event_schedule] += purchased_cat_visitors
 
             if obj.count > obj.event_price.max_visitors:
                 more_then_total_count.add(obj.id)
@@ -82,8 +96,9 @@ class BasketView(TemplateView):
 
         context["has_collisions"] = has_collisions
 
+        # TODO: учитывать купленные
         for es, count in total_count.items():
-            if count > es.event.max_visitors:
+            if count > es.event.max_visitors - purchases_map.get(es, 0):
                 for be in BasketEvent.objects.filter(event_price_id__in=es.prices.values_list("id", flat=True)):
                     more_then_total_count.add(be.id)
 
