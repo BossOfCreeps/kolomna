@@ -94,7 +94,7 @@
                 <div class="basket-buy-block mt-5">
                     {% if request.user.is_tic_employee %}
                         <div class="input-group mb-3">
-                            <span class="input-group-text">Пользователь, которому купить:</span>
+                            <span class="input-group-text">Пользователь, которому создать билеты</span>
                             <select class="form-control selectpicker" data-live-search="true" name="user">
                                 {% for user in users %}
                                     <option value="{{ user.id }}">{{ user.get_full_name }}</option>

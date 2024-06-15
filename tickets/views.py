@@ -177,19 +177,23 @@ class EventBuyView(View):
         form.is_valid()
         schedule = form.cleaned_data["schedule"]
 
-        BasketEvent.objects.bulk_create(
-            [
-                BasketEvent(
-                    event_price=EventSchedulePrice.objects.get(
-                        event_schedule=schedule, category=key.split("_")[-1].upper()
-                    ),
+        for key in EventPriceCategory.values:
+            if form.cleaned_data.get(f"visitor_{key.lower()}"):
+                event_price = EventSchedulePrice.objects.get(
+                    event_schedule=schedule, category=key.split("_")[-1].upper()
+                )
+
+                exist_obj = BasketEvent.objects.filter(set_id=None, user=request.user, event_price=event_price).first()
+                if exist_obj:
+                    exist_obj.count += form.cleaned_data[f"visitor_{key.lower()}"]
+                    exist_obj.save()
+                    continue
+
+                BasketEvent.objects.create(
+                    event_price=event_price,
                     user=request.user,
                     count=form.cleaned_data[f"visitor_{key.lower()}"],
                 )
-                for key in EventPriceCategory.values
-                if form.cleaned_data.get(f"visitor_{key.lower()}")
-            ]
-        )
 
         if "next_basket" in request.POST:
             return redirect(reverse("tickets:basket"))
