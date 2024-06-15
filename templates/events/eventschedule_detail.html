@@ -9,12 +9,15 @@
                 <h1 class="text-center mt-5 mb-5">
                     Расписание
                 </h1>
-                <p>{{ object.event }}</p>
+                <p>
+                    <a href="{% url 'events:event-detail' object.event_id %}">{{ object.event }}</a>
+                </p>
                 <p>{{ object.event.organization }}
                 <p>{{ object.date_range }}</p>
             </div>
         </div>
 
+        <!--
         <div class="row">
             <div class="col">
                 <form class="form" method="post" enctype='multipart/form-data'>
@@ -63,9 +66,13 @@
                 </form>
             </div>
         </div>
+        -->
 
         <div class="basket">
             <h2 class="mt-5 mb-5">Билеты</h2>
+            {% if not purchase_events %}
+                <p>Пока никто не купил билеты</p>
+            {% endif %}
             {% for purchase, pes in purchase_events.items %}
                 <div class="row">
                     <div class="col-sm-1">
@@ -84,6 +91,8 @@
                                 Оплачен
                             {% elif purchase.status == 'NEW' %}
                                 Создан
+                            {% elif purchase.status == 'CLOSED' %}
+                                Отменён
                             {% else %}
                                 {{ purchase.status }}
                             {% endif %}
@@ -109,7 +118,7 @@
                     </div>
                     <div class="col-sm-1 text-center">
                         <p>
-                            <a href="{% url 'tickets:purchase-delete' purchase.id %}">
+                            <a href="{% url 'tickets:purchase-delete' purchase.id %}?event_schedule_id={{ object.id }}">
                                 <i class="fa-solid fa-trash"></i>
                             </a>
                         </p>

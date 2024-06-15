@@ -8,7 +8,7 @@ from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import TemplateView, View, DetailView, CreateView, FormView, ListView
+from django.views.generic import TemplateView, View, DetailView, CreateView, FormView, ListView, DeleteView
 from qrcode.main import make
 
 from events.models import EventSchedulePrice, EventSet, Event
@@ -263,8 +263,26 @@ class PurchaseVisitView(FormView):
         return super().form_valid(form)
 
 
-class PurchaseDeleteView(FormView):
-    pass
+class PurchaseDeleteView(DeleteView):
+    model = Purchase
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["event_schedule_id"] = self.request.GET["event_schedule_id"]
+
+        data = defaultdict(lambda: defaultdict(list))
+        for purchase_event in self.object.events.order_by("start_at").all():
+            data[purchase_event.start_at.date()][purchase_event.start_at].append(purchase_event)
+
+        data_copy = {}
+        for k, v in data.items():
+            data_copy[k] = dict(v)
+
+        context["data"] = data_copy
+        return context
+
+    def get_success_url(self):
+        return reverse("events:event_schedule-detail", args=[self.request.GET["event_schedule_id"]])
 
 
 class ReviewCreateView(CreateView):
