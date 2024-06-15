@@ -1,17 +1,39 @@
 {% extends 'base.html' %}
+{% load prettifiers %}
 {% load django_bootstrap5 %}
 
 {% block content %}
     <div class="container">
         <div class="row">
             <div class="col">
-                <h1 class="mt-5 mb-5 text-center">Отметить посещение отзыв</h1>
+                <h1 class="mt-5 mb-5 text-center">Отметить посещение</h1>
                 <form class="form" method="POST" enctype='multipart/form-data'>
                     {% csrf_token %}
-                    {% bootstrap_form form %}
-                    <div class="text-center">
-                        <button class="btn full-blue-btn" type="submit">Отметить</button>
-                    </div>
+                    <table class="table  table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">Дата и время</th>
+                            <th scope="col">Мероприятие</th>
+                            <th scope="col">Категория</th>
+                            <th scope="col">Число билетов</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for event in object.events.all %}
+                            <tr>
+                                <td>{{ event.date_range }}</td>
+                                <td>{{ event.event.name }}</td>
+                                <td>{% category_to_str_tag event.category %}</td>
+                                <td>{{ event.count }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% if object.status == 'SUCCESS' %}
+                        <button class="btn full-blue-btn" type="submit">Отметить посещение</button>
+                    {% elif object.status ==  'VISITED' %}
+                        <p>Уже посещено</p>
+                    {% endif %}
                 </form>
             </div>
         </div>

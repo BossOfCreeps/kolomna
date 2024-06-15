@@ -118,7 +118,10 @@ class EventUpdateView(UpdateView):
 
 
 class EventDeleteView(DeleteView):
-    pass
+    model = Event
+
+    def get_success_url(self):
+        return reverse("core:index")
 
 
 class EventScheduleCreateView(FormView):

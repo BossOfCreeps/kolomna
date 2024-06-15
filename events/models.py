@@ -107,7 +107,9 @@ class EventSchedule(models.Model):
 
     @property
     def all_purchased(self):
-        data = self.event.purchase_events.filter(start_at=self.start_at, end_at=self.end_at, purchase__status="SUCCESS")
+        data = self.event.purchase_events.filter(
+            start_at=self.start_at, end_at=self.end_at, purchase__status__in=["SUCCESS", "VISITED"]
+        )
         return data.aggregate(models.Sum("count"))["count__sum"] if data else 0
 
     @property

@@ -71,11 +71,25 @@
                     <div class="col-sm-1">
                         <p>{{ purchase.id }}</p>
                     </div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-6">
                         <p>
                             <a href="#">{{ purchase.user.get_full_name }}</a>
                         </p>
                     </div>
+                    <div class="col-sm-2">
+                        <p>
+                            {% if purchase.status == "VISITED" %}
+                                Посещен
+                            {% elif purchase.status == 'SUCCESS' %}
+                                Оплачен
+                            {% elif purchase.status == 'NEW' %}
+                                Создан
+                            {% else %}
+                                {{ purchase.status }}
+                            {% endif %}
+                        </p>
+                    </div>
+
                     <div class="col-sm-2">
                         {% for purchase_event in pes %}
                             <p>

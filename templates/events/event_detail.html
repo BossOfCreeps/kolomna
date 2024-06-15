@@ -17,6 +17,10 @@
         <div class="row mt-4">
             <div class="col">
                 <h1>{{ object.name }} <span class="badge badge-age-limit">{{ object.age_limit }}</span></h1>
+            
+                {% if request.user.is_tic_employee %}
+                    <a class="btn btn-danger mb-2" href="{% url 'events:event-delete' object.id %}">Удалить</a>
+                {% endif %}
             </div>
         </div>
 
