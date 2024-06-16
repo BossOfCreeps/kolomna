@@ -9,7 +9,6 @@ from events.views import (
     CalendarView,
     EventDetailView,
     EventCreateView,
-    EventUpdateView,
     EventDeleteView,
     EventScheduleDetailView,
     EventScheduleCreateView,
@@ -31,7 +30,6 @@ urlpatterns = [
     path("", EventListView.as_view(), name="event-list"),
     path("<int:pk>", EventDetailView.as_view(), name="event-detail"),
     path("create", EventCreateView.as_view(), name="event-create"),
-    path("<int:pk>/update", EventUpdateView.as_view(), name="event-update"),
     path("<int:pk>/delete", EventDeleteView.as_view(), name="event-delete"),
     #
     path("api/event_schedule", EventScheduleAPIView.as_view(), name="event_schedule-list"),

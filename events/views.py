@@ -112,11 +112,6 @@ class EventCreateView(CreateView):
         return reverse("events:event_schedule-create") + f"?event_id={self.object.id}"
 
 
-class EventUpdateView(UpdateView):
-    model = Event
-    form_class = EventForm
-
-
 class EventDeleteView(DeleteView):
     model = Event
 

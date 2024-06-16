@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% load django_bootstrap5 %}
 
+{% block title %}
+    {% if form.instance.pk %}
+        Редактировать {{ form.instance.name }}
+    {% else %}
+        Создать
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     <div class="container">
         <div class="row">

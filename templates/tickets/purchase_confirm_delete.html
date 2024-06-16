@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load prettifiers %}
 
+{% block title %}
+    Удалить {{ object.title }}?
+{% endblock %}
+
 {% block content %}
     <form method="post">
         {% csrf_token %}

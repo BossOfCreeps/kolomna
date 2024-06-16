@@ -2,6 +2,10 @@
 {% load static %}
 {% load prettifiers %}
 
+{% block title %}
+    {{ object.title }}
+{% endblock %}
+
 {% block content %}
     <h1 class="text-center mt-5 mb-3">Заказ от {{ object.created_at }}</h1>
 

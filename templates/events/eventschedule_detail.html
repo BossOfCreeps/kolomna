@@ -2,12 +2,16 @@
 {% load prettifiers %}
 {% load django_bootstrap5 %}
 
+{% block title %}
+    {{ object.event.name }}  {{ object.date_range }}
+{% endblock %}
+
 {% block content %}
     <div class="container mb-5">
         <div class="row">
             <div class="col">
                 <h1 class="text-center mt-5 mb-5">
-                    Расписание
+                    {{ object.event.name }} <br> {{ object.date_range }}
                 </h1>
                 <p>
                     <a href="{% url 'events:event-detail' object.event_id %}">{{ object.event }}</a>
@@ -16,57 +20,6 @@
                 <p>{{ object.date_range }}</p>
             </div>
         </div>
-
-        <!--
-        <div class="row">
-            <div class="col">
-                <form class="form" method="post" enctype='multipart/form-data'>
-                    {% csrf_token %}
-
-                    {% if object.group_id == null %}
-                    {% else %}
-                    {% endif %}
-                    <div id="prices" class=" mt-5 mb-5">
-                        <h2 class="mb-5">Цены и кол-во мест на билеты</h2>
-
-                        <div class="input-group mb-3">
-                            <label class="input-group-text">Стандартный</label>
-                            <input class="form-control" type="number" min="0" name="price_standard" required
-                                   placeholder="Цена" value="{{ object.prices_info.price_standard }}">
-                            <input class="form-control" type="number" min="0" name="visitors_standard" required
-                                   placeholder="Кол-во мест" value="{{ object.prices_info.max_visitors_standard }}">
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <label class="input-group-text" for="price_student">Студенческий</label>
-                            <input class="form-control" type="number" min="0" name="price_student" required
-                                   placeholder="Цена" value="{{ object.prices_info.price_student }}">
-                            <input class="form-control" type="number" min="0" name="visitors_student" required
-                                   placeholder="Кол-во мест" value="{{ object.prices_info.max_visitors_student }}">
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <label class="input-group-text" for="price_child">Детский</label>
-                            <input class="form-control" type="number" min="0" name="price_child" required
-                                   placeholder="Цена" value="{{ object.prices_info.price_child }}">
-                            <input class="form-control" type="number" min="0" name="visitors_child" required
-                                   placeholder="Кол-во мест" value="{{ object.prices_info.max_visitors_child }}">
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <label class="input-group-text" for="price_retiree">Льготный</label>
-                            <input class="form-control" type="number" min="0" name="price_retiree" required
-                                   placeholder="Цена" value="{{ object.prices_info.price_retiree }}">
-                            <input class="form-control" type="number" min="0" name="visitors_retiree" required
-                                   placeholder="Кол-во мест" value="{{ object.prices_info.max_visitors_retiree }}">
-                        </div>
-                    </div>
-
-                    <input type="submit" class="btn full-blue-btn" value="Изменить">
-                </form>
-            </div>
-        </div>
-        -->
 
         <div class="basket">
             <h2 class="mt-5 mb-5">Билеты</h2>

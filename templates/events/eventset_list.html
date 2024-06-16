@@ -1,10 +1,14 @@
 {% extends "base.html" %}
 
+{% block title %}
+    Наборы мероприятий
+{% endblock %}
+
 {% block content %}
     <div class="container mb-5">
         <div class="row">
             <div class="col text-center mt-5 mb-5">
-                <h1>Наборы</h1>
+                <h1>Наборы мероприятий</h1>
             </div>
         </div>
         {% if request.user.is_tic_employee %}
