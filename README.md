@@ -146,6 +146,11 @@
 
 * На странице "отзывы" можно увидеть список отзывов
 
+### Отметка посещения билетов
+
+* Ссылка qr кода билета ведёт на возможность отметки посещения
+* Нажав на кнопку статус билета меняется
+
 # Полезные команды
 
 `python3 manage.py dumpdata --exclude admin.logentry --exclude auth.permission --exclude contenttypes.contenttype --exclude sessions.session`
