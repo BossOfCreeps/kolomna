@@ -120,6 +120,8 @@ class EventSchedule(models.Model):
     def lefts_visitors_by_cat(self):
         max_lefts_visitors = self.lefts_visitors_sum
 
+        total_purchased = 0
+
         result = {}
         for cat in EventPriceCategory.values:
             started = self.prices.filter(category=cat).first()
@@ -128,18 +130,25 @@ class EventSchedule(models.Model):
                 continue
 
             purchased = self.event.purchase_events.filter(
-                category=cat, start_at=self.start_at, end_at=self.end_at, purchase__status="SUCCESS"
+                category=cat, start_at=self.start_at, end_at=self.end_at, purchase__status__in=["SUCCESS", "VISITED"]
             )
             if not purchased:
                 result[cat] = started.max_visitors
                 continue
+            purchased_val = purchased.aggregate(models.Sum("count"))["count__sum"]
 
-            category_lefts_visitors = started.max_visitors - purchased.aggregate(models.Sum("count"))["count__sum"]
+            category_lefts_visitors = started.max_visitors - purchased_val
+            total_purchased += purchased_val
+
             if category_lefts_visitors > max_lefts_visitors:
                 result[cat] = max_lefts_visitors
                 continue
 
             result[cat] = category_lefts_visitors
+
+        if total_purchased >= self.event.max_visitors:
+            for cat in EventPriceCategory.values:
+                result[cat] = 0
 
         return result
 
