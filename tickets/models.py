@@ -3,7 +3,7 @@ from django.db import models
 from django.urls import reverse
 
 from events.models import EventSchedulePrice, EventSchedule, Event, EventPriceCategory, Organization, EventSet
-from helpers import date_to_str, datetime_to_str, send_email
+from helpers import date_to_str, datetime_to_str, send_email, category_to_str
 from users.models import CustomUser
 
 
@@ -60,6 +60,7 @@ class Purchase(models.Model):
                     <td style="border: 1px solid black;">{event.date_range}</td>
                     <td style="border: 1px solid black;">{event.event.name}</td>
                     <td style="border: 1px solid black;">{event.event.organization.address}</td>
+                    <td style="border: 1px solid black;">{event.count} {category_to_str(event.category)}</td>
                 </tr>
                 """
 

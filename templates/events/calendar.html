@@ -84,7 +84,7 @@
                     <i class="fa-regular fa-calendar"></i> <span id="calendar-event-info-date"></span>
                 </p>
                 <p class="mb-4">
-                    <i class="fa-solid fa-people-group"></i> <span id="calendar-event-info-visitors"></span> ост
+                    <i class="fa-solid fa-people-group"></i> <span id="calendar-event-info-visitors"></span> куплено
                 </p>
                 <p class="mb-4">
                     <i class="fa-regular fa-clock"></i> <span id="calendar-event-info-duration"></span>
@@ -186,7 +186,7 @@
                             event_id: {{ event_schedule.event.id  }},
                             event_name: '{{ event_schedule.event.name  }}',
                             event_date: '{{ event_schedule.date_range  }}',
-                            event_lefts_visitors_sum: {{ event_schedule.lefts_visitors_sum  }},
+                            event_lefts_visitors_sum: {{ event_schedule.all_purchased  }},
                             event_max_visitors: {{ event_schedule.event.max_visitors  }},
                             event_duration: '{{ event_schedule.event.duration_as_str  }}',
                             {% for k,v in event_schedule.prices_info.items %}

@@ -45,7 +45,7 @@
                             {% elif purchase.status == 'SUCCESS' %}
                                 Оплачен
                             {% elif purchase.status == 'NEW' %}
-                                Создан
+                                Не оплачен
                             {% elif purchase.status == 'CLOSED' %}
                                 Отменён
                             {% else %}
@@ -73,9 +73,11 @@
                     </div>
                     <div class="col-sm-1 text-center">
                         <p>
-                            <a href="{% url 'tickets:purchase-delete' purchase.id %}?event_schedule_id={{ object.id }}">
-                                <i class="fa-solid fa-trash"></i>
-                            </a>
+                            {% if purchase.status == "SUCCESS" %}
+                                <a href="{% url 'tickets:purchase-delete' purchase.id %}?event_schedule_id={{ object.id }}">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            {% endif %}
                         </p>
                     </div>
                 </div>
