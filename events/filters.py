@@ -3,7 +3,7 @@ from datetime import datetime
 import django_filters
 from django.db.models import Q
 
-from events.models import Event, Organization, EventSchedulePrice
+from events.models import Event, Organization, EventSchedulePrice, EventPriceCategory
 
 
 class EventFilter(django_filters.FilterSet):

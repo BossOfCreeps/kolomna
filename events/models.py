@@ -222,6 +222,11 @@ class EventSet(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.pk is None:
+            self.set_id = uuid.uuid4()
+        super().save(force_insert, force_update, using, update_fields)
+
     def get_absolute_url(self):
         return reverse("events:event_set-detail", args=[self.id])
 
