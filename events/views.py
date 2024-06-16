@@ -250,3 +250,10 @@ class EventSetDeleteFromBasketView(View):
     def get(self, request, *args, **kwargs):
         BasketEvent.objects.filter(set_id=self.kwargs["set_id"]).delete()
         return redirect(reverse("tickets:basket"))
+
+
+class EventScheduleDeleteView(DeleteView):
+    model = EventSchedule
+
+    def get_success_url(self):
+        return reverse("events:calendar")

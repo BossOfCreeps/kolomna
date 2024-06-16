@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Удалить {{ object.event.name }} от {{ object.date_range }}?
+{% endblock %}
+
+{% block content %}
+    <div class="container mb-5">
+        <div class="row">
+            <div class="col text-center mt-5 mb-5">
+                <form method="post">
+                    {% csrf_token %}
+                    <h1>Удалить <br> {{ object.event.name }} <br> {{ object.date_range }}?</h1>
+                    <input type="submit" class="btn full-blue-btn mt-3" value="Да">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

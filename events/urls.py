@@ -19,6 +19,7 @@ from events.views import (
     EventSetDeleteView,
     EventSetBuyView,
     EventSetDeleteFromBasketView,
+    EventScheduleDeleteView,
 )
 
 app_name = "events"
@@ -42,7 +43,8 @@ urlpatterns = [
     path("calendar", CalendarView.as_view(), name="calendar"),
     #
     path("event_schedule/create", EventScheduleCreateView.as_view(), name="event_schedule-create"),
-    path("event_schedule/<int:pk>", EventScheduleDetailView.as_view(), name="event_schedule-detail"),  # TODO:
+    path("event_schedule/<int:pk>", EventScheduleDetailView.as_view(), name="event_schedule-detail"),
+    path("event_schedule/<int:pk>/delete", EventScheduleDeleteView.as_view(), name="event_schedule-delete"),
     #
     path("event_set", EventSetListView.as_view(), name="event_set-list"),
     path("event_set/<int:pk>", EventSetDetailView.as_view(), name="event_set-detail"),

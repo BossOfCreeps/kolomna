@@ -21,6 +21,8 @@
             </div>
         </div>
 
+        <a class="btn btn-danger mb-2" href="{% url 'events:event_schedule-delete' object.id %}">Удалить</a>
+
         <div class="basket">
             <h2 class="mt-5 mb-5">Билеты</h2>
             {% if not purchase_events %}
