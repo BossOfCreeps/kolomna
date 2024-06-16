@@ -20,7 +20,10 @@
                             <p class="card-text">{{ organization.name }}</p>
                             <span>{{ organization.description }}</span>
                             <div class="in-one-line mt-3">
-                                <a class="btn full-blue-btn mt-3 mb-3" href="#">Купить билет</a>
+                                <a class="btn full-blue-btn mt-3 mb-3"
+                                   href="{% url 'events:event-list' %}?organization={{ organization.id }}">
+                                    Купить билет
+                                </a>
                                 <a class="btn" href="#">Подробнее <i class="fa-solid fa-arrow-right"></i></a>
                             </div>
                         </div>

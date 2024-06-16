@@ -21,7 +21,7 @@
         <div class="row mt-4">
             <div class="col">
                 <h1>{{ object.name }} <span class="badge badge-age-limit">{{ object.age_limit }}</span></h1>
-            
+
                 {% if request.user.is_tic_employee %}
                     <a class="btn btn-danger mb-2" href="{% url 'events:event-delete' object.id %}">Удалить</a>
                 {% endif %}
@@ -43,10 +43,17 @@
 
         <div class="row mt-5">
             <div class="col">
-                <button class="btn full-blue-btn mb-3" data-bs-toggle="modal" data-bs-target="#eventChooseModal"
-                        onclick="setEventId({{ event.pk }})">
-                    Купить
-                </button>
+                {% if request.user.is_authenticated %}
+                    <button class="btn full-blue-btn mb-3" data-bs-toggle="modal" data-bs-target="#eventChooseModal"
+                            onclick="setEventId({{ event.pk }})">
+                        Купить
+                    </button>
+                {% else %}
+                    <button type="button" class="btn full-blue-btn mb-3" data-bs-toggle="modal"
+                            data-bs-target="#regModal">
+                        Войти
+                    </button>
+                {% endif %}
             </div>
         </div>
 

@@ -92,11 +92,18 @@
                                 </div>
                             </div>
                             <div class="col-sm-2 text-center vertical-center">
-                                <button class="btn blue-btn mb-3" data-bs-toggle="modal"
-                                        data-bs-target="#eventChooseModal"
-                                        onclick="setEventId({{ event.pk }})">
-                                    Купить
-                                </button>
+                                {% if request.user.is_authenticated %}
+                                    <button class="btn blue-btn mb-3" data-bs-toggle="modal"
+                                            data-bs-target="#eventChooseModal"
+                                            onclick="setEventId({{ event.pk }})">
+                                        Купить
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="btn blue-btn" data-bs-toggle="modal"
+                                            data-bs-target="#regModal">
+                                        Войти
+                                    </button>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
