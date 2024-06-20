@@ -143,15 +143,12 @@ AUTH_USER_MODEL = "users.CustomUser"
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "formatters": {
-        "console": {"format": "%(name)-12s %(levelname)-8s %(message)s"},
-        "file": {"format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"},
+    "formatters": {"console": {"format": "%(name)-12s %(levelname)-8s %(message)s"}},
+    "handlers": {"console": {"class": "logging.StreamHandler", "formatter": "console"}},
+    "loggers": {
+        "django.db.backends": {"level": "DEBUG" if DEBUG else "WARNING", "handlers": ["console"]},
+        "": {"level": "DEBUG", "handlers": ["console"]},
     },
-    "handlers": {
-        "console": {"class": "logging.StreamHandler", "formatter": "console"},
-        "file": {"level": "DEBUG", "class": "logging.FileHandler", "formatter": "file", "filename": "debug.log"},
-    },
-    "loggers": {"": {"level": "DEBUG", "handlers": ["console", "file"]}},
 }
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
