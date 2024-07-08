@@ -152,8 +152,14 @@
 * Ссылка qr кода билета ведёт на возможность отметки посещения
 * Нажав на кнопку статус билета меняется
 
-# Полезные команды
+# Полезное
+
+## Команды
 
 `python3 manage.py dumpdata --exclude admin.logentry --exclude auth.permission --exclude contenttypes.contenttype --exclude sessions.session`
 
 `python3 manage.py runsslserver 0.0.0.0:5432 --certificate fullchain.pem --key privkey.pem`
+
+## Ссылки
+
+[Deploy](https://habr.com/ru/articles/546778/)
